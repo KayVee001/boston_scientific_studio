@@ -4,153 +4,139 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>FutureBridge Account Studio, Boston Scientific</title>
-<meta name="description" content="Account intelligence and plain English outreach for the FutureBridge Life Sciences and MedTech practice." />
-
-<!-- Libraries resolved by the visitor's browser, so the file stays static and hostable on GitHub Pages -->
 <script crossorigin src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
 <script crossorigin src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.25.9/babel.min.js"></script>
-
 <style>
   :root{
     --paper:#F7F6F2; --surface:#FFFFFF; --ink:#172A3A; --ink-2:#46586A; --faint:#8B96A1;
-    --hair:#E7E4DD; --panel:#F1EFEA; --red:#D8281C; --red-soft:#FBEDEC;
-    --ok:#2E7D52; --ok-soft:#EAF4EE; --warn:#9A6B12; --warn-soft:#F7F0E0;
-    --r:6px; --maxw:1060px;
+    --hair:#E7E4DD; --panel:#F2F0EB; --red:#D8281C; --red-soft:#FBEDEC;
+    --ok:#2E7D52; --ok-soft:#EAF4EE; --warn:#9A6B12; --warn-soft:#F7F0E0; --blue:#2C5A78;
+    --r:6px; --maxw:1080px;
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
-  body{
-    background:var(--paper); color:var(--ink);
-    font-family:Arial,Helvetica,sans-serif; font-size:15px; line-height:1.62;
-    -webkit-font-smoothing:antialiased;
-  }
-  a{color:var(--ink-2)}
+  body{background:var(--paper);color:var(--ink);font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.62;-webkit-font-smoothing:antialiased}
+  a{color:var(--blue)}
   ::selection{background:#F6D9D6}
-
-  /* Loading splash shown until React mounts */
   #boot{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;background:var(--paper);z-index:9}
-  #boot .fade{color:var(--faint);font-size:13px;letter-spacing:.3px}
-
+  #boot .fade{color:var(--faint);font-size:13px}
   .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
 
-  /* Header */
   header.bar{border-bottom:1px solid var(--hair);background:var(--surface)}
-  .bar .inner{display:flex;align-items:center;gap:14px;padding:16px 0}
+  .bar .inner{display:flex;align-items:center;gap:14px;padding:14px 0}
   .eyebrow{font-size:10.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--red);font-weight:700}
-  .brand-sub{font-size:11px;letter-spacing:.4px;color:var(--ink-2)}
-  h1.title{font-size:17px;font-weight:700;margin:1px 0 0;letter-spacing:-.1px}
-  .acct{margin-left:auto;text-align:right}
+  h1.title{font-size:17px;font-weight:700;margin:1px 0 0}
+  .spacer{margin-left:auto}
+  .acct{text-align:right;margin-right:6px}
   .acct .k{font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--faint)}
   .acct .v{font-size:13px;font-weight:700}
 
-  /* Tabs */
   nav.tabs{border-bottom:1px solid var(--hair);background:var(--surface);position:sticky;top:0;z-index:5}
   nav.tabs .inner{display:flex;gap:2px;overflow-x:auto}
-  nav.tabs button{
-    appearance:none;background:transparent;border:none;cursor:pointer;white-space:nowrap;
-    font:inherit;font-size:13.5px;color:var(--ink-2);padding:13px 14px;
-    border-bottom:3px solid transparent;margin-bottom:-1px;
-  }
+  nav.tabs button{appearance:none;background:transparent;border:none;cursor:pointer;white-space:nowrap;font:inherit;font-size:13.5px;color:var(--ink-2);padding:13px 14px;border-bottom:3px solid transparent;margin-bottom:-1px}
   nav.tabs button.on{color:var(--ink);font-weight:700;border-bottom-color:var(--red)}
   nav.tabs button:hover{color:var(--ink)}
 
-  main{padding:26px 0 90px}
-  .lead{color:var(--ink-2);font-size:14px;max-width:64ch;margin:0 0 20px}
+  main{padding:26px 0 96px}
+  .lead{color:var(--ink-2);font-size:14px;max-width:70ch;margin:0 0 20px}
 
-  /* Buttons */
-  .btn{appearance:none;font:inherit;font-size:13.5px;cursor:pointer;border-radius:var(--r);
-    border:1px solid var(--hair);background:var(--surface);color:var(--ink);padding:8px 14px;transition:background .12s}
+  .btn{appearance:none;font:inherit;font-size:13.5px;cursor:pointer;border-radius:var(--r);border:1px solid var(--hair);background:var(--surface);color:var(--ink);padding:8px 14px;transition:background .12s}
   .btn:hover{background:var(--panel)}
   .btn.primary{background:var(--ink);color:#fff;border-color:var(--ink);font-weight:700}
   .btn.primary:hover{background:#0f2230}
   .btn.red{background:var(--red);border-color:var(--red);color:#fff;font-weight:700}
   .btn.red:hover{background:#bf2017}
   .btn.sm{padding:5px 10px;font-size:12.5px}
-  .btn:disabled{opacity:.55;cursor:default}
+  .btn:disabled{opacity:.5;cursor:default}
   .btn:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+  .spin{display:inline-block;width:12px;height:12px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:sp .7s linear infinite;vertical-align:-1px;margin-right:6px}
+  @keyframes sp{to{transform:rotate(360deg)}}
 
-  /* Cards */
   .card{background:var(--surface);border:1px solid var(--hair);border-radius:var(--r);margin-bottom:16px}
   .card .cap{padding:11px 16px;border-bottom:1px solid var(--hair);font-size:14px;font-weight:700;background:#FCFBF9;border-radius:var(--r) var(--r) 0 0}
   .card .body{padding:14px 16px}
-  .muted{color:var(--ink-2)}
-  .tiny{font-size:12px;color:var(--faint)}
-  .hr{height:1px;background:var(--hair);border:0;margin:14px 0}
-
-  /* Forms */
+  .muted{color:var(--ink-2)} .tiny{font-size:12px;color:var(--faint)}
   label.lab{display:block;font-size:10.5px;letter-spacing:.9px;text-transform:uppercase;color:var(--ink-2);margin:0 0 6px}
-  input.f,select.f,textarea.f{width:100%;font:inherit;font-size:14px;color:var(--ink);background:var(--surface);
-    border:1px solid var(--hair);border-radius:var(--r);padding:9px 11px;outline:none}
+  input.f,select.f,textarea.f{width:100%;font:inherit;font-size:14px;color:var(--ink);background:var(--surface);border:1px solid var(--hair);border-radius:var(--r);padding:9px 11px;outline:none}
   textarea.f{resize:vertical;line-height:1.55}
   input.f:focus,select.f:focus,textarea.f:focus{border-color:var(--ink-2)}
 
-  /* Pills */
-  .pill{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;border:1px solid var(--hair);
-    border-radius:100px;padding:3px 10px;background:var(--panel);color:var(--ink-2);white-space:nowrap}
+  .pill{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;border:1px solid var(--hair);border-radius:100px;padding:3px 10px;background:var(--panel);color:var(--ink-2);white-space:nowrap}
   .pill.ok{background:var(--ok-soft);color:var(--ok);border-color:#CFE6D9}
   .pill.warn{background:var(--warn-soft);color:var(--warn);border-color:#EBDFC2}
   .pill.bad{background:var(--red-soft);color:var(--red);border-color:#F2CFCC}
-  .pri{font-weight:700;color:var(--red)}
-  .pri.p2{color:var(--warn)}
-  .pri.p3{color:var(--faint)}
+  .pri{font-weight:700;color:var(--red)} .pri.p2{color:var(--warn)} .pri.p3{color:var(--faint)}
 
-  /* Intelligence bullets */
-  .ibul{display:flex;gap:10px;margin:0 0 11px}
-  .ibul:last-child{margin-bottom:0}
+  .ibul{display:flex;gap:10px;margin:0 0 11px} .ibul:last-child{margin-bottom:0}
   .ibul .dot{width:7px;height:7px;background:var(--red);margin-top:8px;flex:0 0 auto;border-radius:1px}
   .ibul p{margin:0;font-size:14px}
-  .src{font-size:11.5px;color:var(--faint);margin-left:6px;text-decoration:underline}
+  .src{font-size:11.5px;color:var(--blue);margin-left:6px;text-decoration:underline}
 
-  /* Contact row */
+  .exp{border:1px solid var(--hair);border-radius:var(--r);margin-bottom:8px;overflow:hidden}
+  .exp .head{display:flex;gap:10px;align-items:flex-start;padding:11px 13px;cursor:pointer;background:var(--surface)}
+  .exp .head:hover{background:#FCFBF9}
+  .exp .chev{margin-left:auto;color:var(--faint);font-size:12px;flex:0 0 auto;padding-left:8px}
+  .exp .detail{padding:0 13px 12px 33px;font-size:13px;color:var(--ink-2);line-height:1.6}
+
+  .tbl{width:100%;border-collapse:collapse;font-size:13px}
+  .tbl th,.tbl td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--hair);vertical-align:top}
+  .tbl th{font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:var(--ink-2);font-weight:700;background:#FCFBF9}
+  .tbl td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .tbl tr:last-child td{border-bottom:none}
+  .tblwrap{overflow-x:auto;border:1px solid var(--hair);border-radius:var(--r)}
+  .flag{display:inline-block;font-size:10.5px;color:var(--warn);background:var(--warn-soft);border:1px solid #EBDFC2;border-radius:4px;padding:0 6px;margin-left:6px}
+
   .crow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 16px}
-  .cname{font-size:15px;font-weight:700}
-  .ctitle{font-size:12.5px;color:var(--ink-2)}
+  .cname{font-size:15px;font-weight:700} .ctitle{font-size:12.5px;color:var(--ink-2)}
   .grow{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
 
-  /* Draft cards */
-  .drafts{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-  @media(max-width:760px){.drafts{grid-template-columns:1fr}}
-  .draft{border:1px solid var(--hair);border-radius:var(--r);display:flex;flex-direction:column;background:var(--surface)}
-  .draft .top{display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid var(--hair);background:#FCFBF9}
-  .angle{font-size:11px;letter-spacing:.6px;text-transform:uppercase;color:var(--ink-2);font-weight:700}
-  .wc{margin-left:auto;font-size:11px;color:var(--faint)}
-  .draft .subject{font-size:13.5px;font-weight:700;margin:0 0 8px}
-  .draft .text{font-size:13.5px;line-height:1.66;white-space:pre-wrap;margin:0}
-  .draft .sign{margin:12px 0 0;font-size:12.5px;color:var(--ink-2)}
-  .draft .acts{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--hair)}
+  .mail{border:1px solid var(--hair);border-radius:var(--r);background:var(--surface)}
+  .mail .top{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--hair);background:#FCFBF9;flex-wrap:wrap}
+  .mail .wc{margin-left:auto;font-size:11px;color:var(--faint)}
+  .mail .inner2{padding:14px 16px}
+  .mail .subject{font-size:14px;font-weight:700;margin:0 0 10px}
+  .mail .text{font-size:14px;line-height:1.7;white-space:pre-wrap;margin:0}
+  .mail .sign{margin:14px 0 0;font-size:13px;color:var(--ink-2)}
+  .mail .acts{display:flex;gap:8px;padding:11px 14px;border-top:1px solid var(--hair);flex-wrap:wrap}
 
-  .builton{background:var(--panel);border:1px solid var(--hair);border-left:3px solid var(--red);border-radius:var(--r);padding:12px 14px;margin-bottom:14px}
+  .builton{background:var(--panel);border:1px solid var(--hair);border-left:3px solid var(--red);border-radius:var(--r);padding:13px 15px;margin-bottom:14px}
   .builton .k{font-size:10.5px;letter-spacing:.9px;text-transform:uppercase;color:var(--ink-2);margin:0 0 4px}
-  .builton .reson{font-size:14.5px;font-weight:700;margin:0 0 10px}
-  .builton ul{margin:0 0 8px;padding-left:18px}
-  .builton li{font-size:13px;margin:0 0 4px}
+  .builton .insight{font-size:15px;font-weight:700;margin:0 0 10px}
+  .builton ul{margin:0 0 8px;padding-left:18px} .builton li{font-size:13px;margin:0 0 4px}
 
-  .find{font-size:12.5px;padding:8px 10px;border:1px solid var(--hair);border-radius:var(--r);margin-bottom:6px;background:#fff}
-  .find .vc{font-weight:700;margin-right:6px}
-  .vc.confirmed{color:var(--ok)} .vc.nuanced{color:var(--warn)} .vc.not_verifiable{color:var(--red)}
+  .find{font-size:12.5px;padding:9px 11px;border:1px solid var(--hair);border-radius:var(--r);margin-bottom:6px;background:#fff}
+  .vc{font-weight:700;margin-right:6px} .vc.confirmed{color:var(--ok)} .vc.nuanced{color:var(--warn)} .vc.unsupported{color:var(--red)} .vc.not_verifiable{color:var(--red)}
+  .conf{display:inline-block;width:70px;height:7px;border-radius:4px;background:var(--hair);overflow:hidden;vertical-align:middle;margin:0 6px}
+  .conf > i{display:block;height:100%;background:var(--ok)}
 
-  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:var(--ink);color:#fff;
-    font-size:13px;padding:11px 18px;border-radius:var(--r);z-index:60;box-shadow:0 6px 24px rgba(0,0,0,.18);max-width:90vw}
-
-  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-  @media(max-width:680px){.grid2{grid-template-columns:1fr}}
   .empty{border:1px dashed var(--hair);border-radius:var(--r);padding:42px 22px;text-align:center;color:var(--ink-2);font-size:14px}
   .note{font-size:12.5px;color:var(--ink-2);line-height:1.55}
-  code.k{background:var(--panel);padding:1px 5px;border-radius:4px;font-size:12.5px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px} @media(max-width:680px){.grid2{grid-template-columns:1fr}}
+
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:13px;padding:11px 18px;border-radius:var(--r);z-index:80;box-shadow:0 6px 24px rgba(0,0,0,.18);max-width:90vw}
+
+  .scrim{position:fixed;inset:0;background:rgba(20,30,40,.32);z-index:60}
+  .drawer{position:fixed;top:0;right:0;height:100%;width:400px;max-width:92vw;background:var(--surface);border-left:1px solid var(--hair);z-index:70;display:flex;flex-direction:column;box-shadow:-8px 0 30px rgba(0,0,0,.10)}
+  .drawer .dhead{padding:14px 16px;border-bottom:1px solid var(--hair);display:flex;align-items:center;gap:10px}
+  .drawer .dscope{font-size:11px;color:var(--ink-2)}
+  .drawer .dbody{flex:1;overflow-y:auto;padding:14px 16px}
+  .drawer .dfoot{border-top:1px solid var(--hair);padding:12px 14px}
+  .msg{margin-bottom:12px;display:flex} .msg.u{justify-content:flex-end}
+  .bub{max-width:88%;font-size:13.5px;line-height:1.55;padding:9px 12px;border-radius:10px;white-space:pre-wrap}
+  .msg.u .bub{background:var(--ink);color:#fff;border-bottom-right-radius:3px}
+  .msg.a .bub{background:var(--panel);color:var(--ink);border-bottom-left-radius:3px}
+  .propose{border:1px solid var(--hair);border-radius:var(--r);padding:10px 12px;margin:6px 0;background:#FCFBF9}
+  .propose .lab2{font-size:10.5px;letter-spacing:.8px;text-transform:uppercase;color:var(--ink-2);margin-bottom:5px}
 
   @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
 <div id="boot">
-  <svg width="40" height="40" viewBox="0 0 100 100" aria-hidden="true">
-    <rect x="22" y="16" width="50" height="14" fill="#172A3A"></rect>
-    <rect x="22" y="48" width="50" height="14" fill="#172A3A"></rect>
-    <rect x="22" y="80" width="14" height="14" fill="#D8281C"></rect>
-  </svg>
+  <svg width="40" height="40" viewBox="0 0 100 100" aria-hidden="true"><rect x="22" y="16" width="50" height="14" fill="#172A3A"></rect><rect x="22" y="48" width="50" height="14" fill="#172A3A"></rect><rect x="22" y="80" width="14" height="14" fill="#D8281C"></rect></svg>
   <div class="fade">Loading the studio</div>
 </div>
 <div id="root"></div>
@@ -158,15 +144,13 @@
 <script type="text/babel" data-presets="react">
 const { useState, useEffect, useRef } = React;
 
-/* =========================================================================
-   FutureBridge Account Studio, Boston Scientific
-   Single file. Static. Hostable on GitHub Pages.
-   Generation, verification and audit reach the API at the moment of use,
-   using a key the operator supplies in Settings. Working data lives only
-   in this browser. Nothing is sent to a FutureBridge server.
-   ========================================================================= */
+/* ============================================================
+   FutureBridge Account Studio, Boston Scientific. Single file.
+   Static, hostable on GitHub Pages. The model, the audit and the
+   cloud save reach their service only at the moment of use, with
+   keys the operator supplies. Working data lives in this browser.
+   ============================================================ */
 
-/* ---- Models the operator can choose in Settings ---- */
 const MODELS = [
   { id: "claude-opus-4-8", label: "Opus 4.8, highest quality" },
   { id: "claude-sonnet-4-6", label: "Sonnet 4.6, recommended" },
@@ -174,237 +158,286 @@ const MODELS = [
 ];
 const DEFAULT_MODEL = "claude-sonnet-4-6";
 
-/* ---- Brand mark, the FutureBridge graphic device ---- */
-function Mark({ size = 34 }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 100 100" aria-label="FutureBridge">
-      <rect x="22" y="16" width="50" height="14" fill="#172A3A" />
-      <rect x="22" y="48" width="50" height="14" fill="#172A3A" />
-      <rect x="22" y="80" width="14" height="14" fill="#D8281C" />
-    </svg>
-  );
-}
-
-/* ---- Local storage, guarded so a preview iframe never breaks the app ---- */
-const LS = {
-  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
-  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
-};
-
-/* =========================================================================
-   Seeded account intelligence. A live refresh rebuilds this with sources.
-   ========================================================================= */
-const SEED_INTEL = [
-  { id: "financial", title: "Growth sits in cardiovascular, and capacity is the real ceiling", bullets: [
-    { text: "Full year 2025 results were reported on 4 February 2026. The growth is led by the cardiovascular business, which is much larger than the MedSurg side. Run a refresh to pull the exact revenue, growth and margin figures with sources before using any of them outside.", source: "https://news.bostonscientific.com" },
-    { text: "There are two main businesses, MedSurg and Cardiovascular. The growth and the senior attention sit in cardiovascular. A message into a MedSurg division lands better when it accepts that those teams compete for money and attention inside the wider company.", source: "" },
-    { text: "Read across the 2025 investor day and the 2025 results, the quiet point is that the limit on growth is how fast the company can build, prove and absorb, not how much the market wants. Making capacity, evidence and integration the things to talk about.", source: "" },
-  ]},
-  { id: "rd", title: "The real decisions are made inside the eight divisions", bullets: [
-    { text: "Research and product decisions are made at division level. Each of the eight divisions runs its own research leadership. Corporate research holds only the shared technologies that cut across divisions. So the divisions are the place to start, not the centre.", source: "" },
-    { text: "A second research centre in India makes India the largest research base outside the United States. That looks like a move to add capacity as much as to save cost, which fits the wider read that capacity is the constraint.", source: "" },
-    { text: "The company builds, spins out and buys back. Bolt Medical was started inside Boston Scientific in 2019, kept at part ownership, then bought back once the risk was lower. Outside ventures act as a way to add research capacity without carrying all of it in house.", source: "" },
-  ]},
-  { id: "ma", title: "The deals buy back ground the company once gave up", bullets: [
-    { text: "The Penumbra agreement, announced in January 2026, takes the company back into the brain blood vessel field it left in 2011. It reads as a return to old ground, not a new direction, and it extends the work the company already does in clot removal and blocking blood supply to tumours.", source: "" },
-    { text: "SoniVie brings a way to treat high blood pressure using sound energy on the nerves near the kidneys. That opens a new field that sits between heart care and metabolic health, and it brings a set of competitors the team has not had to read before.", source: "" },
-    { text: "The pattern is wider than one deal. The company keeps buying back positions it once sold. The deal list is a map of where leadership now thinks it gave up value too early.", source: "" },
-  ]},
-  { id: "shifts", title: "Four shifts are moving that the market has not yet named as one", bullets: [
-    { text: "Energy is moving into metabolic disease. Energy delivered through the gut has been floated as a route into type 2 diabetes, which would put the endoscopy division up against the economics of the new weight loss drugs.", source: "" },
-    { text: "Radiation is moving into new cancers. The liver therapy is being treated less as one product and more as a platform that can reach other tumours, including in the brain.", source: "" },
-    { text: "Software and sensing are becoming the thing that is hard to copy. In heart rhythm and in nerve stimulation the contest has moved from the device itself to the data, the sensing and the workflow in the room.", source: "" },
-    { text: "Across all of it, the limit is how fast the company can build and absorb, not how much demand exists. The India build, the buy back habit and the integration queue all point the same way.", source: "" },
-  ]},
-  { id: "competitors", title: "Where the pressure is coming from", bullets: [
-    { text: "Medtronic and Johnson and Johnson MedTech are moving onto the same new heart rhythm technology, which shortens the time any single device stays clearly ahead. Run a refresh for the latest share and launch detail on the top five rivals.", source: "" },
-    { text: "Stryker now owns the brain blood vessel business Boston Scientific sold it in 2011, so the new return to that field is a direct contest with a rival that has had fifteen years to dig in.", source: "" },
-    { text: "The new weight loss drugs change how many patients need certain procedures. The honest question for each division is whether the drug wave shrinks, delays or simply redirects its work.", source: "" },
-    { text: "In China, central buying keeps pushing prices down, and building locally to defend share uses up the very capacity that growth needs.", source: "" },
-  ]},
-  { id: "patents", title: "Pull patent activity live, never from memory", bullets: [
-    { text: "Patent filing by division and theme changes month to month and should never be quoted from memory. Use the refresh to pull recent filing themes with sources before any patent point goes into a message.", source: "" },
-  ]},
-];
-
-/* =========================================================================
-   Division playbook. Divisions first. Corporate research second with a
-   narrow offer. Open innovation only if they come to us. Ventures excluded.
-   The angle text is written in plain words so it can seed plain drafts.
-   ========================================================================= */
-const DIVISIONS = {
-  "Electrophysiology": { priority: "P1",
-    angle: "The new heart rhythm technology is no longer a device race. Rivals catch up within a cycle, so the lasting advantage now sits in the data from each procedure and the way the room works.",
-    wedge: "Where this energy know how travels next beyond the heart, and who is already moving there first." },
-  "Interventional Cardiology": { priority: "P1",
-    angle: "Treating high blood pressure through the nerves near the kidneys opens a field between heart care and metabolic health, with competitors arriving from outside the usual device world.",
-    wedge: "Which less obvious players enter the high blood pressure field from outside MedTech, and what that does to the next three years." },
-  "Endoscopy": { priority: "P1",
-    angle: "Energy delivered through the gut is quietly becoming a way to treat metabolic disease. A route into type 2 diabetes would change what this division is, and would meet the new weight loss drugs head on.",
-    wedge: "How an energy based metabolic treatment sits next to the weight loss drug wave rather than under it." },
-  "Interventional Oncology": { priority: "P1",
-    angle: "The liver radiation therapy is being treated as a platform that can reach other tumours. Growth now depends on the evidence and the referral routes in cancers that already have a settled standard of care.",
-    wedge: "Which cancers open first as the therapy becomes a platform, and what evidence from other fields shortens the path." },
-  "Neuromodulation": { priority: "P1",
-    angle: "The contest is moving from the device that delivers the pulse to the sensing and the data that tune the therapy to each patient. Hardware is closer to parity, so the advantage lives in the data layer.",
-    wedge: "Where sensing led therapy borrows from outside the nerve field, and who is ahead on the data." },
-  "WATCHMAN and Structural Heart": { priority: "P1",
-    angle: "Growth here is less about the device and more about finding the patients. Most of the people who could benefit are never identified, so the limit is the referral path, not the competition.",
-    wedge: "Which patient finding methods from other fields could release the large group of patients who are never diagnosed." },
-  "Neurovascular and Penumbra": { priority: "P1",
-    angle: "This is a return to a field the company left in 2011, against a rival that bought the original business. The first two years are about integration and winning back routine use, not about heritage.",
-    wedge: "What the return signals about where value was left behind, and which nearby signals lower the risk of the integration." },
-  "Corporate R&D": { priority: "P2",
-    angle: "The centre holds only the shared technologies. The honest offer is help ranking opportunities across divisions and reading the competition, nothing a single division already owns.",
-    wedge: "Which shared technology bets deserve money next, judged on outside evidence rather than internal lobbying." },
-  "Open Innovation": { priority: "Beyond P3",
-    angle: "Lower priority. Companies now publish their needs and startups reach them directly, so the broker role has thinned.",
-    wedge: "Engage only if they come to us." },
-};
-
 const SIGNERS = [
+  { name: "Rajpreet Gill", title: "VP, Client Partnership, FutureBridge" },
   { name: "Manoj Jiandani", title: "Practice Head, Life Sciences and HPC, FutureBridge" },
   { name: "Rachit Singla", title: "Director, Lifesciences, FutureBridge" },
   { name: "Raghuraj Dangi", title: "Director, Lifesciences, FutureBridge" },
 ];
 
-/* Words and habits that break the plain English standard */
 const FORBIDDEN = [
   "leverage","synergy","synergies","unlock","unleash","empower","holistic","robust","seamless",
   "transformative","disrupt","disruptive","cutting edge","best in class","world class","game changer",
   "paradigm","ecosystem","landscape","journey","deep dive","circle back","value add","north star",
-  "move the needle","low hanging fruit","thought leader","thought leadership","thought partner",
-  "at the intersection of","in today's fast paced world","rapidly evolving","delve","navigate",
-  "elevate","bespoke","curated","supercharge","revolutionary","I hope this email finds you well",
-  "I wanted to reach out","reach out","passion","heartfelt","pivotal","testament","underscore"
+  "move the needle","thought leader","thought leadership","thought partner","at the intersection of",
+  "rapidly evolving","delve","navigate","elevate","bespoke","curated","supercharge","revolutionary",
+  "I hope this email finds you well","I wanted to reach out","passion","pivotal","testament","underscore"
 ].join(", ");
 
-/* =========================================================================
-   The writing brief sent to the model on every draft.
-   This is where the plain English, no jargon standard is enforced.
-   ========================================================================= */
-function buildWritingBrief() {
-  return [
-"You write first outreach for FutureBridge, a strategic foresight and innovation advisory firm, to a senior leader at Boston Scientific. You write like a sharp, well read peer who knows the field. You are not a salesperson and you are not a consultant performing. The only job of the message is to earn a thirty minute conversation.",
-"",
-"How FutureBridge helps, to be used only as a quiet backdrop and never recited as a list: innovation strategy, scanning and adopting new technology, market and opportunity assessment, customer and consumer insight, sourcing technology and partners, and supply chain inputs. The firm has worked across MedTech for years and with many of the largest companies in the world on innovation and strategy. Never mention any past Boston Scientific work.",
-"",
-"PLAIN ENGLISH IS THE FIRST RULE, AND THE MOST IMPORTANT ONE.",
-"Use short, clear sentences. One idea per sentence. A bright fifteen year old should be able to follow the logic even if they do not know the products.",
-"Do not stack technical or business terms. Strip all consultant and marketing language. If a precise product or clinical word is genuinely the clearest way to say something, you may use it once, and only if you immediately make the point in everyday words. Prefer the plain version every time.",
-"Say the thing plainly instead of dressing it up. Replace abstraction with a concrete sentence about a decision, a risk or a choice the reader faces.",
-"",
-"SHAPE OF AN EMAIL.",
-"Open with one specific, human observation about a real decision or pressure this person faces right now. Not about the company website. Not flattery. Not a greeting like hope you are well.",
-"Then make two or three connected points. Each point says something true about their world and what it means for them, in plain words. No list of buzzwords.",
-"Add one short, plain line on how FutureBridge could help on exactly this. No list. No selling.",
-"Close with a confident, low pressure ask for a short conversation. Make it specific and easy to say yes to, and make clear it is not a sales call.",
-"Length is 150 to 170 words for the email body.",
-"",
-"SHAPE OF A LINKEDIN MESSAGE.",
-"A tighter version of the same point, 70 to 100 words, no sign off and no signature.",
-"",
-"SUBJECT LINE.",
-"Write it last. It states the actual point in plain words. Not a teaser, not clever, not a consulting title with a colon.",
-"",
-"NEVER DO THESE.",
-"No em dashes. No arrows. No semicolons used to stack clauses. No exclamation marks. No special characters. Sentence case.",
-"Never invent a quote, a number, a private financial figure, or a recent statement. Use only the verified signals provided. If there are none, open on the decision the division is facing, not on a made up personal hook.",
-"Do not use any of these words or phrases: " + FORBIDDEN + ".",
-"",
-"VARIETY.",
-"The two emails must take genuinely different angles, for example one on a market or competitive shift and one on an operating or capacity question. The two LinkedIn messages must also differ. Not reworded versions of the same message.",
-"",
-"IF THE PERSON DOES NOT FIT.",
-"If this person is not a sensible target for the FutureBridge offer, do not force a message. Set fit to false and explain why in one plain sentence.",
-  ].join("\n");
+function Mark({ size = 32 }) {
+  return (<svg width={size} height={size} viewBox="0 0 100 100" aria-label="FutureBridge">
+    <rect x="22" y="16" width="50" height="14" fill="#172A3A" /><rect x="22" y="48" width="50" height="14" fill="#172A3A" /><rect x="22" y="80" width="14" height="14" fill="#D8281C" /></svg>);
 }
 
-/* =========================================================================
-   API call. Direct from the browser using the operator's key.
-   ========================================================================= */
-async function callClaude({ system, user, model, apiKey, useSearch = false, maxTokens = 4000 }) {
-  if (!apiKey) throw new Error("No API key set. Open Settings and paste your Anthropic API key.");
-  const headers = {
-    "content-type": "application/json",
-    "x-api-key": apiKey,
-    "anthropic-version": "2023-06-01",
-    "anthropic-dangerous-direct-browser-access": "true",
-  };
-  const body = { model: model || DEFAULT_MODEL, max_tokens: maxTokens, system, messages: [{ role: "user", content: user }] };
-  if (useSearch) body.tools = [{ type: "web_search_20250305", name: "web_search" }];
+const LS = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
+};
 
-  let res;
-  try {
-    res = await fetch("https://api.anthropic.com/v1/messages", { method: "POST", headers, body: JSON.stringify(body) });
-  } catch (e) {
-    throw new Error("Could not reach the API. Check the network and that the key is valid.");
-  }
-  let data;
-  try { data = await res.json(); } catch (e) { throw new Error("The API returned an unreadable response."); }
-  if (!res.ok || data.error) {
-    const m = (data && data.error && data.error.message) || ("Request failed, status " + res.status);
-    if (res.status === 401) throw new Error("The API key was rejected. Check it in Settings.");
-    if (res.status === 429) throw new Error("Rate limit reached. Wait a moment and try again.");
-    throw new Error(m);
-  }
-  const text = (data.content || []).filter(b => b.type === "text").map(b => b.text).join("\n").trim();
-  return text;
+/* ============================================================
+   Division playbook. Divisions first. Corporate research second.
+   ============================================================ */
+const DIVISIONS = {
+  "Electrophysiology": { priority: "P1",
+    angle: "The new way of treating irregular heartbeats is no longer a race to build a better catheter. Rivals copy the device within a cycle, so the advantage that lasts now sits in the data from each procedure and in how smoothly the lab runs.",
+    wedge: "Where this energy method travels next beyond the heart, and who is already moving there first.",
+    ambition: "Lead the shift to the new ablation method, then defend it through data and lab workflow rather than the device alone." },
+  "Interventional Cardiology": { priority: "P1",
+    angle: "Treating high blood pressure through the nerves near the kidneys opens a field that sits between heart care and metabolic health, with competitors arriving from outside the usual device world.",
+    wedge: "Which less obvious players enter the high blood pressure field from outside MedTech, and what that does to the next three years.",
+    ambition: "Hold the lead in complex coronary work and open the high blood pressure field before the field gets crowded." },
+  "Endoscopy": { priority: "P1",
+    angle: "Energy delivered through the gut is quietly becoming a way to treat metabolic disease. A route into type 2 diabetes would change what this division is, and it would meet the new weight loss drugs head on.",
+    wedge: "How an energy based metabolic treatment sits next to the weight loss drug wave rather than under it.",
+    ambition: "Move from tools for procedures toward treating disease, starting with the gut as a route into metabolic health." },
+  "Interventional Oncology": { priority: "P1",
+    angle: "The liver radiation therapy is being treated as a platform that can reach other tumours. Growth now depends on the evidence and the referral routes in cancers that already have a settled standard of care.",
+    wedge: "Which cancers open first as the therapy becomes a platform, and what evidence from other fields shortens the path.",
+    ambition: "Turn a single liver therapy into a radiation platform that reaches new tumours, including the brain." },
+  "Neuromodulation": { priority: "P1",
+    angle: "The contest is moving from the device that delivers the pulse to the sensing and the data that tune the therapy to each patient. Hardware is closer to parity, so the advantage lives in the data layer.",
+    wedge: "Where sensing led therapy borrows from outside the nerve field, and who is ahead on the data.",
+    ambition: "Compete on the data and sensing that personalise therapy, not on the pulse generator alone." },
+  "WATCHMAN and Structural Heart": { priority: "P1",
+    angle: "Growth here is less about the device and more about finding the patients. Most of the people who could benefit are never identified, so the limit is the referral path, not the competition.",
+    wedge: "Which patient finding methods from other fields could release the large group of patients who are never diagnosed.",
+    ambition: "Hold the clear lead in heart appendage closure and grow it by finding the patients who are never diagnosed." },
+  "Neurovascular and Penumbra": { priority: "P1",
+    angle: "This is a return to a field the company left in 2011, against a rival that bought the original business. The first two years are about integration and winning back routine use, not about heritage.",
+    wedge: "What the return signals about where value was left behind, and which nearby signals lower the risk of the integration.",
+    ambition: "Re enter the brain blood vessel field and win back routine use from the rival that bought the old business." },
+  "Corporate R&D": { priority: "P2",
+    angle: "The centre holds only the shared technologies. The honest offer is help ranking opportunities across divisions and reading the competition, nothing a single division already owns.",
+    wedge: "Which shared technology bets deserve money next, judged on outside evidence rather than internal lobbying.",
+    ambition: "Place the shared technology bets that cut across divisions, judged on outside evidence." },
+  "Open Innovation": { priority: "Beyond P3",
+    angle: "Lower priority. Companies now publish their needs and startups reach them directly, so the broker role has thinned.",
+    wedge: "Engage only if they come to us.", ambition: "Not a focus." },
+};
+
+/* ============================================================
+   Seeded account intelligence. Figures are an indicative baseline
+   and must be confirmed with a live refresh before external use.
+   Where a figure is not publicly disclosed, it is marked as such.
+   ============================================================ */
+const SEED_INTEL = {
+  stamp: "Baseline. Figures are indicative. Refresh to confirm every number with a source before any external use.",
+  narrative: [
+    { id: "n1", title: "Growth sits in cardiovascular, and capacity is the real ceiling",
+      summary: "The growth and the senior attention sit in the much larger cardiovascular business. The honest read is that the limit on growth is how fast the company can build, prove and absorb, not how much the market wants.",
+      detail: "There are two main businesses, MedSurg and Cardiovascular. Cardiovascular is materially larger and carries most of the growth. A message into a MedSurg division lands better when it accepts those teams compete for money and attention inside the wider company. The investor day and the full year results point to manufacturing, clinical evidence and the queue of acquisitions to absorb as the things that cap the pipeline, more than demand does. That makes capacity, evidence throughput and integration the real subjects, not headline demand.",
+      source: "" },
+    { id: "n2", title: "The real decisions are made inside the eight divisions",
+      summary: "Research and product decisions are made at division level. The centre holds only the technologies that cut across divisions. So the divisions are the place to start, not the centre.",
+      detail: "Each of the eight divisions runs its own research leadership and owns its roadmap. Corporate research holds shared technologies only, historically areas such as 3D printing and manufacturing process. A second research centre in India makes India the largest research base outside the United States, which looks like a move to add capacity as much as to save cost. The company also builds, spins out and buys back, using outside ventures as a way to add research capacity without carrying all of it in house.",
+      source: "" },
+    { id: "n3", title: "The deals buy back ground the company once gave up",
+      summary: "The pattern across recent deals is a return to fields the company sold earlier. The deal list reads as a map of where leadership now thinks it gave up value too soon.",
+      detail: "The Penumbra agreement, announced in January 2026, takes the company back into the brain blood vessel field it left in 2011, against the rival that bought the original business. SoniVie brings a way to treat high blood pressure using sound energy on the nerves near the kidneys, which opens a field between heart care and metabolic health. Read together with earlier deals in urology, carotid care and back pain, the slate is a series of returns and adjacencies rather than a leap into something new.",
+      source: "" },
+    { id: "n4", title: "Four shifts are moving that the market has not yet named as one",
+      summary: "Energy is moving into metabolic disease. Radiation is moving into new cancers. Software and sensing are becoming the hard to copy advantage. And capacity, not demand, sets the ceiling.",
+      detail: "Energy delivered through the gut has been floated as a route into type 2 diabetes, which would put endoscopy up against the economics of the new weight loss drugs. The liver radiation therapy is being treated as a platform that can reach other tumours. In heart rhythm and nerve stimulation the contest has moved from the device to the data, the sensing and the workflow in the room. Underneath all of it, the India build, the buy back habit and the integration queue all say the same thing about capacity.",
+      source: "" },
+  ],
+  financials: {
+    note: "Company figures below are an indicative baseline drawn from prior public filings. Full year 2025 was reported on 4 February 2026 and is left to a live pull. Confirm every figure with a source on refresh before external use.",
+    columns: ["FY2022", "FY2023", "FY2024", "FY2025"],
+    rows: [
+      { metric: "Net sales, USD millions", cells: ["12,682", "14,240", "16,747", "Pull live"] },
+      { metric: "Research and development, USD millions", cells: ["1,302", "1,406", "1,646", "Pull live"] },
+      { metric: "R&D as percent of sales", cells: ["10.3", "9.9", "9.8", "Pull live"] },
+      { metric: "Gross margin, percent, approximate", cells: ["69", "69", "70", "Pull live"] },
+      { metric: "Operating margin, percent, indicative", cells: ["13", "15", "16", "Pull live"] },
+    ],
+  },
+  units: {
+    note: "Business unit revenue, indicative FY2024 figures. Boston Scientific does not separately disclose research spend by division, so the R&D column is marked as not disclosed. Confirm on refresh.",
+    columns: ["Business unit", "Revenue FY2024, USD m, indicative", "R&D by unit"],
+    rows: [
+      { name: "Cardiology, includes WATCHMAN", rev: "6,400", rd: "Not disclosed" },
+      { name: "Peripheral Interventions", rev: "2,300", rd: "Not disclosed" },
+      { name: "Electrophysiology", rev: "1,900", rd: "Not disclosed" },
+      { name: "Endoscopy", rev: "2,600", rd: "Not disclosed" },
+      { name: "Urology", rev: "2,200", rd: "Not disclosed" },
+      { name: "Neuromodulation", rev: "950", rd: "Not disclosed" },
+    ],
+  },
+  ma: {
+    note: "Recent and pending deals. Values are indicative and should be confirmed on refresh.",
+    rows: [
+      { date: "Jan 2026", target: "Penumbra, agreement", area: "Brain blood vessel care", value: "Pull live", why: "Return to a field exited in 2011, against the rival that bought the old business" },
+      { date: "2025", target: "SoniVie", area: "High blood pressure, sound energy on kidney nerves", value: "Pull live", why: "Opens a field between heart care and metabolic health" },
+      { date: "2025 to 2026", target: "Bolt Medical, buyback", area: "Breaking up hardened artery deposits", value: "Pull live", why: "Built inside, spun out, bought back once the risk was lower" },
+      { date: "2024", target: "Axonics", area: "Urology and nerve stimulation for the bladder", value: "approx 3,700", why: "Adds a fast growing position in urology" },
+      { date: "2024", target: "Silk Road Medical", area: "Carotid artery care", value: "approx 1,160", why: "Adds a less invasive route to treat the carotid artery" },
+      { date: "2023", target: "Relievant Medsystems", area: "Vertebrogenic back pain", value: "approx 850", why: "Adds a treatment for a common, underserved source of back pain" },
+    ],
+  },
+  market: {
+    note: "Positioning is stable and defensible. The share numbers are indicative ranges and must be confirmed with a source on refresh.",
+    leader: [
+      { area: "Heart appendage closure, WATCHMAN", bsx: "Clear market leader", next: "Abbott, with the Amulet device, is the main other player" },
+      { area: "The new heartbeat ablation method, Farapulse", bsx: "Strong early leader on adoption", next: "Johnson and Johnson, Medtronic and Abbott are all moving onto the same method" },
+      { area: "Single use devices used in gut endoscopy", bsx: "Among the leaders", next: "Olympus leads the scopes themselves, then Cook Medical, ConMed and Medtronic" },
+    ],
+    laggard: [
+      { area: "Pacemakers and implantable defibrillators", leaders: "Medtronic and Abbott lead by a wide margin", bsx: "Much smaller position", note: "A field the company has chosen not to chase hard" },
+      { area: "Replacement heart valves through a catheter, TAVR", leaders: "Edwards Lifesciences and Medtronic lead, Abbott is third", bsx: "Effectively out of the United States market after discontinuing its valve", note: "A large market the company is not currently in" },
+      { area: "Soft tissue surgical robots", leaders: "Intuitive Surgical dominates, Medtronic and Johnson and Johnson are entering", bsx: "Not present", note: "A field the company has so far left to others" },
+    ],
+  },
+  strategy: {
+    corporate: [
+      "Grow well above the medical device market by leading in cardiovascular.",
+      "Use steady, mid sized deals to enter or re enter fast growing areas, often buying back ground sold earlier.",
+      "Lift profit margins each year while still funding research.",
+      "Add capacity, including the second research base in India, because the limit on growth is how fast the company can build, prove and absorb.",
+      "Shift the source of advantage from the device toward data, sensing and software.",
+    ],
+  },
+};
+
+/* ============================================================
+   Helpers
+   ============================================================ */
+function firstNameOf(name) {
+  if (!name) return "there";
+  const n = String(name).trim().split(/\s+/)[0];
+  return n.replace(/[^A-Za-z'-]/g, "") || "there";
 }
-
+function sanitize(t) {
+  if (t == null) return "";
+  return String(t)
+    .replace(/\u2014/g, ", ").replace(/\u2013/g, "-")
+    .replace(/[\u2192\u21d2\u2794\u2799\u279c\u2190\u2191\u2193]/g, " ").replace(/->|=>/g, " ")
+    .replace(/[\u2018\u2019]/g, "'").replace(/[\u201c\u201d]/g, '"')
+    .replace(/[\u2022\u25aa\u25cf\u2043]/g, "")
+    .replace(/[ \t]{2,}/g, " ").replace(/ +\n/g, "\n").trim();
+}
+const wc = (t) => (t ? String(t).trim().split(/\s+/).filter(Boolean).length : 0);
 function extractJSON(text) {
   if (!text) return null;
-  let clean = text.replace(/```json/gi, "").replace(/```/g, "").trim();
-  try { return JSON.parse(clean); } catch (e) {}
-  const s = clean.indexOf("{"), e = clean.lastIndexOf("}");
-  if (s !== -1 && e !== -1 && e > s) { try { return JSON.parse(clean.slice(s, e + 1)); } catch (er) {} }
+  let c = text.replace(/```json/gi, "").replace(/```/g, "").trim();
+  try { return JSON.parse(c); } catch (e) {}
+  const s = c.indexOf("{"), e = c.lastIndexOf("}");
+  if (s !== -1 && e > s) { try { return JSON.parse(c.slice(s, e + 1)); } catch (er) {} }
   return null;
 }
 
-/* Backstop that enforces the standard even if the model slips */
-function sanitize(t) {
-  if (!t) return "";
-  return String(t)
-    .replace(/\u2014/g, ", ").replace(/\u2013/g, "-")
-    .replace(/[\u2192\u21d2\u2794\u2799\u279c\u2190\u2191\u2193]/g, " ")
-    .replace(/->|=>/g, " ")
-    .replace(/[\u2018\u2019]/g, "'").replace(/[\u201c\u201d]/g, '"')
-    .replace(/[\u2022\u25aa\u25cf\u2043]/g, "")
-    .replace(/[ \t]{2,}/g, " ")
-    .replace(/ +\n/g, "\n")
-    .trim();
+/* ============================================================
+   Service calls
+   ============================================================ */
+async function callClaude({ system, user, model, apiKey, useSearch = false, maxTokens = 4000 }) {
+  if (!apiKey) throw new Error("No Anthropic key set. Open Settings and add it.");
+  const headers = { "content-type": "application/json", "x-api-key": apiKey, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" };
+  const body = { model: model || DEFAULT_MODEL, max_tokens: maxTokens, system, messages: [{ role: "user", content: user }] };
+  if (useSearch) body.tools = [{ type: "web_search_20250305", name: "web_search" }];
+  let res;
+  try { res = await fetch("https://api.anthropic.com/v1/messages", { method: "POST", headers, body: JSON.stringify(body) }); }
+  catch (e) { throw new Error("Could not reach the model. Check the network and the key."); }
+  let data; try { data = await res.json(); } catch (e) { throw new Error("The model returned an unreadable response."); }
+  if (!res.ok || data.error) {
+    if (res.status === 401) throw new Error("The Anthropic key was rejected. Check it in Settings.");
+    if (res.status === 429) throw new Error("Rate limit reached. Wait a moment and try again.");
+    throw new Error((data && data.error && data.error.message) || ("Request failed, status " + res.status));
+  }
+  return (data.content || []).filter(b => b.type === "text").map(b => b.text).join("\n").trim();
 }
-const wc = (t) => (t ? String(t).trim().split(/\s+/).filter(Boolean).length : 0);
 
-/* =========================================================================
+function proxied(proxyUrl, target) { return proxyUrl ? (proxyUrl.replace(/\/$/, "") + "?url=" + encodeURIComponent(target)) : target; }
+
+/* Perplexity audit through the proxy, falls back to Claude when no proxy or key */
+async function auditFacts({ claimsText, contact, settings }) {
+  const ask = "You are an independent fact checker for a MedTech advisory firm. Check every checkable claim in the text below about " + contact + ". For each claim return a verdict of confirmed, nuanced or unsupported, a confidence from 0 to 100, a one line note, and a source URL where you have one. Return only valid JSON, no markdown: {\"engine\":\"\",\"findings\":[{\"claim\":\"\",\"verdict\":\"confirmed|nuanced|unsupported\",\"confidence\":0,\"note\":\"\",\"source\":\"\"}]}\n\nTEXT:\n" + claimsText;
+  if (settings.proxyUrl && settings.perplexityKey) {
+    const url = proxied(settings.proxyUrl, "https://api.perplexity.ai/chat/completions");
+    let res;
+    try {
+      res = await fetch(url, { method: "POST", headers: { "content-type": "application/json", "Authorization": "Bearer " + settings.perplexityKey },
+        body: JSON.stringify({ model: "sonar-pro", messages: [{ role: "user", content: ask }] }) });
+    } catch (e) { throw new Error("Could not reach Perplexity through the proxy."); }
+    const data = await res.json();
+    if (!res.ok) throw new Error((data && data.error && (data.error.message || data.error)) || ("Perplexity error, status " + res.status));
+    const txt = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
+    const p = extractJSON(txt) || {};
+    return { engine: "Perplexity sonar-pro", findings: p.findings || [] };
+  }
+  const txt = await callClaude({ system: "You are an independent fact checker. Use web search.", user: ask, model: settings.model, apiKey: settings.apiKey, useSearch: true, maxTokens: 3500 });
+  const p = extractJSON(txt) || {};
+  return { engine: "Claude with web search", findings: p.findings || [] };
+}
+
+/* GitHub Gist, the cloud save for approved emails */
+async function gistRequest(token, method, id, payload) {
+  const url = "https://api.github.com/gists" + (id ? "/" + id : "");
+  const res = await fetch(url, { method, headers: { "Authorization": "Bearer " + token, "Accept": "application/vnd.github+json", "content-type": "application/json" }, body: payload ? JSON.stringify(payload) : undefined });
+  const data = await res.json();
+  if (!res.ok) throw new Error((data && data.message) || ("GitHub error, status " + res.status));
+  return data;
+}
+
+/* ============================================================
    App
-   ========================================================================= */
+   ============================================================ */
 function App() {
   const [tab, setTab] = useState("intel");
-  const [settings, setSettings] = useState(() => LS.get("fb_settings", { apiKey: "", model: DEFAULT_MODEL, signer: 0 }));
+  const [settings, setSettings] = useState(() => LS.get("fb_settings", { apiKey: "", model: DEFAULT_MODEL, signer: 0, githubToken: "", gistId: "", proxyUrl: "", hubspotToken: "", perplexityKey: "" }));
   const [direction, setDirection] = useState(() => LS.get("fb_direction", ""));
   const [intel, setIntel] = useState(() => LS.get("fb_intel", SEED_INTEL));
-  const [intelStamp, setIntelStamp] = useState(() => LS.get("fb_intel_stamp", "Baseline. Refresh before using any figure outside."));
   const [contacts, setContacts] = useState(() => LS.get("fb_contacts", []));
   const [approved, setApproved] = useState(() => LS.get("fb_approved", []));
   const [audit, setAudit] = useState(() => LS.get("fb_audit", []));
+  const [cloud, setCloud] = useState(() => LS.get("fb_cloud", { lastSync: "" }));
   const [toast, setToast] = useState("");
+  const [drawer, setDrawer] = useState(null); // null or {scope:'global'|contactId, title}
+  const [globalChat, setGlobalChat] = useState([]);
 
   useEffect(() => LS.set("fb_settings", settings), [settings]);
   useEffect(() => LS.set("fb_direction", direction), [direction]);
   useEffect(() => LS.set("fb_intel", intel), [intel]);
-  useEffect(() => LS.set("fb_intel_stamp", intelStamp), [intelStamp]);
   useEffect(() => LS.set("fb_contacts", contacts), [contacts]);
   useEffect(() => LS.set("fb_approved", approved), [approved]);
   useEffect(() => LS.set("fb_audit", audit), [audit]);
+  useEffect(() => LS.set("fb_cloud", cloud), [cloud]);
 
-  const flash = (m) => { setToast(m); setTimeout(() => setToast(""), 2600); };
-  const logAudit = (type, detail, sources) =>
-    setAudit(prev => [{ time: new Date().toISOString().slice(0, 16).replace("T", " "), type, detail, sources: sources || [] }, ...prev].slice(0, 200));
-
+  const flash = (m) => { setToast(m); setTimeout(() => setToast(""), 2800); };
+  const logAudit = (type, detail, sources) => setAudit(prev => [{ time: new Date().toISOString().slice(0, 16).replace("T", " "), type, detail, sources: sources || [] }, ...prev].slice(0, 250));
   const setContact = (id, patch) => setContacts(prev => prev.map(c => c.id === id ? { ...c, ...(typeof patch === "function" ? patch(c) : patch) } : c));
+  const keySet = !!settings.apiKey;
 
-  const intelDigest = () => intel.map(s => s.title + "\n" + s.bullets.map(b => "- " + b.text).join("\n")).join("\n\n");
+  /* pull approved from the cloud on first load if configured */
+  useEffect(() => {
+    (async () => {
+      if (settings.githubToken && settings.gistId) {
+        try {
+          const g = await gistRequest(settings.githubToken, "GET", settings.gistId);
+          const file = g.files && g.files["approved.json"];
+          if (file && file.content) {
+            const data = JSON.parse(file.content);
+            if (Array.isArray(data.items)) { setApproved(data.items); setCloud({ lastSync: data.savedAt || "" }); }
+          }
+        } catch (e) { /* stay on local copy */ }
+      }
+    })();
+  // eslint-disable-next-line
+  }, []);
+
+  const intelDigest = () => {
+    const n = intel.narrative.map(s => s.title + ". " + s.summary).join("\n");
+    const strat = "Corporate direction: " + intel.strategy.corporate.join(" ");
+    return n + "\n" + strat;
+  };
 
   /* ---------------- Intelligence refresh ---------------- */
   const [refreshing, setRefreshing] = useState(false);
@@ -412,108 +445,94 @@ function App() {
     setRefreshing(true);
     try {
       const system = [
-        "You are a MedTech equity and strategy analyst refreshing an account brief on Boston Scientific. Use web search. Cite a real source URL on every figure.",
-        "Write each point in plain English, short sentences, no jargon, no em dashes, no arrows, sentence case. A point a non specialist could follow.",
-        "Keep the same themes as a working brief: where growth sits and the capacity constraint, where research decisions are made, the deal direction, the structural shifts, and the competitive pressure.",
-        "Return only valid JSON, no markdown: {\"stamp\":\"Refreshed, plus the date\",\"sections\":[{\"id\":\"\",\"title\":\"a plain conclusion as the heading\",\"bullets\":[{\"text\":\"\",\"source\":\"https://...\"}]}]}",
+        "You refresh an account brief on Boston Scientific. Use web search. Put a real source URL on every figure. Write plain English, short sentences, no jargon, no em dashes, no arrows, sentence case.",
+        "Return only valid JSON with this exact shape, filling real, sourced numbers where public, and the words not disclosed where a figure is not public:",
+        "{\"stamp\":\"Refreshed, with the date\",\"narrative\":[{\"id\":\"\",\"title\":\"a plain conclusion as the heading\",\"summary\":\"two plain sentences\",\"detail\":\"a short plain paragraph\",\"source\":\"https://...\"}],\"financials\":{\"note\":\"\",\"columns\":[\"FY2023\",\"FY2024\",\"FY2025\"],\"rows\":[{\"metric\":\"Net sales, USD millions\",\"cells\":[\"\",\"\",\"\"]}]},\"market\":{\"note\":\"\",\"leader\":[{\"area\":\"\",\"bsx\":\"\",\"next\":\"\"}],\"laggard\":[{\"area\":\"\",\"leaders\":\"\",\"bsx\":\"\",\"note\":\"\"}]},\"strategy\":{\"corporate\":[\"\"]}}",
       ].join("\n");
-      const text = await callClaude({ system, user: "Refresh the Boston Scientific brief now. Today is " + new Date().toDateString() + ".", model: settings.model, apiKey: settings.apiKey, useSearch: true, maxTokens: 6000 });
-      const parsed = extractJSON(text);
-      if (parsed && parsed.sections && parsed.sections.length) {
-        const clean = parsed.sections.map((s, i) => ({ id: s.id || ("s" + i), title: sanitize(s.title), bullets: (s.bullets || []).map(b => ({ text: sanitize(b.text), source: b.source || "" })) }));
-        setIntel(clean);
-        const stamp = sanitize(parsed.stamp || ("Refreshed " + new Date().toDateString()));
-        setIntelStamp(stamp);
-        logAudit("Intelligence refresh", "Account brief rebuilt from live sources", clean.flatMap(s => s.bullets.map(b => b.source).filter(Boolean)));
+      const text = await callClaude({ system, user: "Refresh the Boston Scientific brief now. Today is " + new Date().toDateString() + ". Include full year 2025 if it has been reported.", model: settings.model, apiKey: settings.apiKey, useSearch: true, maxTokens: 8000 });
+      const p = extractJSON(text);
+      if (p) {
+        setIntel(prev => ({
+          ...prev,
+          stamp: sanitize(p.stamp || ("Refreshed " + new Date().toDateString())),
+          narrative: (p.narrative && p.narrative.length) ? p.narrative.map((s, i) => ({ id: s.id || ("n" + i), title: sanitize(s.title), summary: sanitize(s.summary || ""), detail: sanitize(s.detail || ""), source: s.source || "" })) : prev.narrative,
+          financials: (p.financials && p.financials.rows) ? { note: sanitize(p.financials.note || prev.financials.note), columns: p.financials.columns || prev.financials.columns, rows: p.financials.rows.map(r => ({ metric: sanitize(r.metric), cells: (r.cells || []).map(x => sanitize(String(x))) })) } : prev.financials,
+          market: (p.market && (p.market.leader || p.market.laggard)) ? { note: sanitize(p.market.note || prev.market.note), leader: (p.market.leader || prev.market.leader).map(l => ({ area: sanitize(l.area), bsx: sanitize(l.bsx || ""), next: sanitize(l.next || "") })), laggard: (p.market.laggard || prev.market.laggard).map(l => ({ area: sanitize(l.area), leaders: sanitize(l.leaders || ""), bsx: sanitize(l.bsx || ""), note: sanitize(l.note || "") })) } : prev.market,
+          strategy: (p.strategy && p.strategy.corporate) ? { corporate: p.strategy.corporate.map(sanitize) } : prev.strategy,
+        }));
+        const srcs = (p.narrative || []).map(s => s.source).filter(Boolean);
+        logAudit("Intelligence refresh", "Account brief rebuilt from live sources", srcs);
         flash("Intelligence refreshed from live sources.");
-      } else flash("Refresh returned an unexpected shape. The baseline is kept.");
+      } else flash("Refresh returned an unexpected shape. Baseline kept.");
     } catch (e) { flash(e.message || "Refresh failed."); }
     finally { setRefreshing(false); }
   };
 
-  /* ---------------- Contact upload ---------------- */
+  /* ---------------- Contact upload and HubSpot pull ---------------- */
   const fileRef = useRef(null);
+  const mapRows = (rows) => rows.map((r, i) => {
+    const get = (...keys) => { for (const k of keys) { const hit = Object.keys(r).find(c => c.toLowerCase().replace(/[^a-z]/g, "").includes(k)); if (hit && r[hit]) return String(r[hit]).trim(); } return ""; };
+    const first = get("firstname", "first"), last = get("lastname", "last");
+    const name = get("fullname", "name", "contact") || (first + " " + last).trim();
+    if (!name) return null;
+    let division = get("division", "segment", "businessunit", "function"); if (!DIVISIONS[division]) division = "Electrophysiology";
+    return { id: "c_" + Date.now() + "_" + i, name, title: get("designation", "title", "role", "jobtitle"), division, email: get("email", "mail"), linkedin: get("linkedin", "profile", "url"), region: get("region", "location", "country"), status: "new", summary: "", signals: [], pains: [], draft: null, chat: [] };
+  }).filter(Boolean);
+
   const handleFile = (file) => {
-    const finish = (rows) => {
-      const mapped = rows.map((r, i) => {
-        const get = (...keys) => {
-          for (const k of keys) {
-            const hit = Object.keys(r).find(c => c.toLowerCase().replace(/[^a-z]/g, "").includes(k));
-            if (hit && r[hit]) return String(r[hit]).trim();
-          }
-          return "";
-        };
-        const first = get("firstname", "first"), last = get("lastname", "last");
-        const name = get("fullname", "name", "contact") || (first + " " + last).trim();
-        if (!name) return null;
-        let division = get("division", "segment", "businessunit", "function");
-        if (!DIVISIONS[division]) division = "Electrophysiology";
-        return {
-          id: "c_" + Date.now() + "_" + i, name,
-          title: get("designation", "title", "role", "jobtitle"),
-          division, email: get("email", "mail"), linkedin: get("linkedin", "profile", "url"),
-          region: get("region", "location", "country"),
-          status: "new", summary: "", signals: [], pains: [], drafts: null,
-        };
-      }).filter(Boolean);
-      if (!mapped.length) { flash("No usable rows found. Check the column headings."); return; }
-      setContacts(prev => [...prev, ...mapped]);
-      flash(mapped.length + " contacts loaded.");
-    };
+    const finish = (rows) => { const m = mapRows(rows); if (!m.length) { flash("No usable rows found. Check the column headings."); return; } setContacts(prev => [...prev, ...m]); flash(m.length + " contacts loaded."); };
     const ext = file.name.split(".").pop().toLowerCase();
     if (ext === "csv") Papa.parse(file, { header: true, skipEmptyLines: true, complete: r => finish(r.data) });
-    else {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        try {
-          const wb = XLSX.read(new Uint8Array(e.target.result), { type: "array" });
-          finish(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: "" }));
-        } catch (er) { flash("Could not read that file."); }
-      };
-      reader.readAsArrayBuffer(file);
-    }
+    else { const rd = new FileReader(); rd.onload = (e) => { try { const wb = XLSX.read(new Uint8Array(e.target.result), { type: "array" }); finish(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: "" })); } catch (er) { flash("Could not read that file."); } }; rd.readAsArrayBuffer(file); }
   };
 
-  const addManual = () => {
-    setContacts(prev => [...prev, { id: "c_" + Date.now(), name: "", title: "", division: "Electrophysiology", email: "", linkedin: "", region: "", status: "new", summary: "", signals: [], pains: [], drafts: null }]);
+  const [hsPulling, setHsPulling] = useState(false);
+  const pullFromHubSpot = async () => {
+    if (!settings.hubspotToken) { flash("Add a HubSpot token in Settings first."); return; }
+    if (!settings.proxyUrl) { flash("HubSpot blocks browser calls. Set a proxy URL in Settings, or import a CSV."); return; }
+    setHsPulling(true);
+    try {
+      const url = proxied(settings.proxyUrl, "https://api.hubapi.com/crm/v3/objects/contacts?limit=50&properties=firstname,lastname,email,jobtitle,company");
+      const res = await fetch(url, { headers: { "Authorization": "Bearer " + settings.hubspotToken } });
+      const data = await res.json();
+      if (!res.ok) throw new Error((data && data.message) || ("HubSpot error, status " + res.status));
+      const rows = (data.results || []).map(o => ({ FirstName: o.properties.firstname, LastName: o.properties.lastname, Email: o.properties.email, Title: o.properties.jobtitle }));
+      const m = mapRows(rows);
+      setContacts(prev => [...prev, ...m]);
+      logAudit("HubSpot pull", m.length + " contacts pulled", []);
+      flash(m.length + " contacts pulled from HubSpot.");
+    } catch (e) { flash("HubSpot pull failed. " + (e.message || "")); }
+    finally { setHsPulling(false); }
   };
+
+  const addManual = () => setContacts(prev => [...prev, { id: "c_" + Date.now(), name: "", title: "", division: "Electrophysiology", email: "", linkedin: "", region: "", status: "new", summary: "", signals: [], pains: [], draft: null, chat: [] }]);
 
   /* ---------------- Verify and research ---------------- */
   const research = async (id) => {
     const c = contacts.find(x => x.id === id); if (!c) return;
-    if (!c.name.trim()) { flash("Add a name before researching."); return; }
+    if (!c.name.trim()) { flash("Add a name first."); return; }
     setContact(id, { status: "researching" });
     try {
       const system = [
         "You research a single named person for a MedTech advisory firm. Use web search. Be honest about gaps and never invent a quote, a statement or a source.",
         "Step one. Check the person currently holds a role at Boston Scientific. If trusted sources show they have left, stop and report that.",
         "Step two. If current, correct the title and division if the sources show a change.",
-        "Step three. Gather public signals from the last six to twelve months, talks, interviews, articles, posts, patents or visible division focus. Paraphrase, never long quotes, with a source and a month.",
-        "Step four. From their role and the signals, name and score their three most likely work pressures, one to ten, each with a one line reason.",
-        "Write everything in plain English, short sentences, no jargon, no em dashes, no arrows.",
-        "Return only valid JSON, no markdown: {\"status\":\"verified|left_company|unclear\",\"corrected_title\":\"\",\"corrected_division\":\"\",\"summary\":\"two or three plain sentences on the person and what their division is driving at\",\"signals\":[{\"text\":\"\",\"source\":\"https://...\",\"date\":\"Mon YYYY\"}],\"pains\":[{\"pain\":\"\",\"score\":8,\"reason\":\"\"}]}",
+        "Step three. Gather public signals from the last six to twelve months. Talks, interviews, articles, posts, patents, or visible division focus. Paraphrase, never long quotes, with a source and a month.",
+        "Step four. From their role and the signals, name and score their three most likely work pressures, one to ten, each with a one line reason. Order them most pressing first.",
+        "Plain English, short sentences, no jargon, no em dashes, no arrows.",
+        "Return only valid JSON, no markdown: {\"status\":\"verified|left_company|unclear\",\"corrected_title\":\"\",\"corrected_division\":\"\",\"summary\":\"two or three plain sentences\",\"signals\":[{\"text\":\"\",\"source\":\"https://...\",\"date\":\"Mon YYYY\"}],\"pains\":[{\"pain\":\"\",\"score\":8,\"reason\":\"\"}]}",
       ].join("\n");
       const user = ["Person: " + c.name, "Stated title: " + (c.title || "unknown"), "Stated division: " + (c.division || "unknown"), "Company: Boston Scientific", c.linkedin ? "LinkedIn: " + c.linkedin : "", "Today is " + new Date().toDateString() + "."].filter(Boolean).join("\n");
       const text = await callClaude({ system, user, model: settings.model, apiKey: settings.apiKey, useSearch: true, maxTokens: 3500 });
       const p = extractJSON(text) || {};
       const status = p.status === "left_company" ? "left" : p.status === "verified" ? "verified" : "unclear";
-      const correctedDiv = p.corrected_division && DIVISIONS[p.corrected_division] ? p.corrected_division : c.division;
-      setContact(id, {
-        status, title: sanitize(p.corrected_title) || c.title, division: correctedDiv,
-        summary: sanitize(p.summary || ""),
-        signals: (p.signals || []).map(s => ({ text: sanitize(s.text), source: s.source || "", date: s.date || "" })),
-        pains: (p.pains || []).map(x => ({ pain: sanitize(x.pain), score: x.score, reason: sanitize(x.reason || "") })),
-      });
+      setContact(id, { status, title: sanitize(p.corrected_title) || c.title, division: (p.corrected_division && DIVISIONS[p.corrected_division]) ? p.corrected_division : c.division, summary: sanitize(p.summary || ""), signals: (p.signals || []).map(s => ({ text: sanitize(s.text), source: s.source || "", date: s.date || "" })), pains: (p.pains || []).map(x => ({ pain: sanitize(x.pain), score: x.score, reason: sanitize(x.reason || "") })) });
       logAudit("Contact research", c.name + ", status " + status, (p.signals || []).map(s => s.source).filter(Boolean));
-      if (status === "left") flash(c.name + " appears to have left. Research stopped.");
-      else flash("Research complete for " + c.name + ".");
-    } catch (e) {
-      setContact(id, { status: "new" });
-      flash("Research failed. " + (e.message || ""));
-    }
+      flash(status === "left" ? (c.name + " appears to have left. Research stopped.") : ("Research complete for " + c.name + "."));
+    } catch (e) { setContact(id, { status: "new" }); flash("Research failed. " + (e.message || "")); }
   };
 
-  /* ---------------- Generate outreach ---------------- */
+  /* ---------------- Generate the single best email and InMail ---------------- */
   const [genBusy, setGenBusy] = useState("");
   const generate = async (id) => {
     const c = contacts.find(x => x.id === id); if (!c) return;
@@ -521,437 +540,457 @@ function App() {
     setGenBusy(id);
     try {
       const div = DIVISIONS[c.division] || DIVISIONS["Electrophysiology"];
+      const fn = firstNameOf(c.name);
       const system = [
-        buildWritingBrief(),
+        "You write first outreach for FutureBridge, a strategic foresight and innovation advisory firm, to a senior leader at Boston Scientific. You write like a sharp, well read peer who knows the field. You are not a salesperson and not a consultant performing. The only job is to earn a thirty minute conversation.",
         "",
-        "ACCOUNT CONTEXT on Boston Scientific, for your understanding only, do not parrot it back:",
+        "Write ONE email and ONE LinkedIn message. The single best version, the one most likely to earn a reply from this specific person. Do not produce options.",
+        "",
+        "PLAIN ENGLISH IS THE FIRST RULE. Short, clear sentences. One idea per sentence. A bright fifteen year old should follow the logic even without knowing the products. Strip all consultant and marketing language. No selling. Not preachy.",
+        "",
+        "LEAD WITH AN UNCOMMON INSIGHT. Open on something true and not obvious about this person's world, a way of seeing a signal that affects their function, product, category or division growth, that they are unlikely to have heard put this way. Grab attention by being interesting and specific, not by flattery and not by a clever line.",
+        "",
+        "DO NOT TELL THEM WHAT THEY ALREADY KNOW. Never restate facts they own about their own division. Assume deep expertise. Earn the reply by adding a view, not by reciting their world back to them.",
+        "",
+        "USE THEIR TWO MOST PRESSING PRESSURES. Build the message around the top two pressures provided. Connect each to a concrete decision or risk they face. Keep it plain.",
+        "",
+        "SHAPE OF THE EMAIL. Start with the greeting on its own line, exactly: Hi " + fn + ",",
+        "Then the body. Open with the insight. Make two or three connected points tied to the two pressures, each saying what it means for a decision they face. Add one short plain line on how FutureBridge could help on exactly this, no list. Close with a confident, low pressure ask for a short conversation, specific and easy to say yes to, and clear it is not a sales call.",
+        "End the body with a closing line on its own, exactly: Warm regards,",
+        "The app prints the sender name under that line, so do not add a name.",
+        "Email body length is 150 to 175 words including the greeting and the closing line.",
+        "",
+        "SHAPE OF THE LINKEDIN MESSAGE. Start with Hi " + fn + ", then a tighter version of the same point, 70 to 100 words, no closing line and no signature.",
+        "",
+        "NEVER. No em dashes, no arrows, no semicolons stacking clauses, no exclamation marks, no special characters, sentence case. Never invent a quote, a number, a private financial figure or a recent statement. Use only the verified signals provided. Do not use any of these words or phrases: " + FORBIDDEN + ".",
+        "",
+        "ACCOUNT CONTEXT, for your understanding only, do not parrot it back:",
         intelDigest(),
         "",
-        "WHAT MATTERS FOR THIS PERSON'S DIVISION (" + c.division + "):",
-        div.angle + " The non obvious way in is this. " + div.wedge,
-        direction ? "\nSTANDING DIRECTION FROM THE OPERATOR, follow it:\n" + direction : "",
+        "WHAT MATTERS FOR THIS DIVISION (" + c.division + "): " + div.angle + " The non obvious way in: " + div.wedge + " The division's own ambition: " + div.ambition,
+        direction ? ("\nSTANDING DIRECTION FROM THE OPERATOR, follow it:\n" + direction) : "",
         "",
-        "Before the drafts, do the thinking. Write the single idea each message is built around. For each main signal or pressure, write the decision or risk it creates for this person. List what this person already knows, so the message never states the obvious.",
-        "",
+        "If this person is not a sensible target, set fit to false and explain in one plain sentence.",
         "Return only valid JSON, no markdown:",
-        "{\"fit\":true,\"fitReason\":\"\",\"resonanceLine\":\"\",\"soWhat\":[\"\"],\"alreadyKnows\":[\"\"],\"emails\":[{\"angle\":\"3 to 5 word label\",\"subject\":\"\",\"body\":\"\"},{\"angle\":\"\",\"subject\":\"\",\"body\":\"\"}],\"inmails\":[{\"angle\":\"\",\"body\":\"\"},{\"angle\":\"\",\"body\":\"\"}]}",
-        "Use \\n for line breaks inside a body. End each body before any sign off, the app adds the signature.",
+        "{\"fit\":true,\"fitReason\":\"\",\"painsUsed\":[\"\",\"\"],\"insight\":\"the uncommon insight you led with, one plain sentence\",\"signalsUsed\":[\"signal, then in plain words why it matters to them\"],\"email\":{\"subject\":\"plain, states the point, not a teaser\",\"body\":\"\"},\"inmail\":{\"body\":\"\"}}",
+        "Use \\n for line breaks inside a body.",
       ].join("\n");
-      const user = [
-        "READER",
-        "Name: " + c.name,
-        "Title: " + (c.title || "senior leader"),
-        "Division: " + c.division,
-        "Region: " + (c.region || "not stated"),
-        "Verification: " + c.status,
-        "Researcher summary: " + (c.summary || "none"),
-        "Verified recent signals: " + (c.signals.length ? c.signals.map(s => s.text + " (" + (s.date || "") + ")").join(" | ") : "none, so open on the division decision, not a personal hook"),
-        "Top scored pressures: " + (c.pains.length ? c.pains.map(p => p.pain + " (" + p.score + "/10)").join(" | ") : "infer from the division"),
-      ].join("\n");
-      const text = await callClaude({ system, user, model: settings.model, apiKey: settings.apiKey, maxTokens: 4000 });
+      const user = ["READER", "Name: " + c.name, "First name for the greeting: " + fn, "Title: " + (c.title || "senior leader"), "Division: " + c.division, "Region: " + (c.region || "not stated"), "Verification: " + c.status, "Summary: " + (c.summary || "none"), "Verified recent signals: " + (c.signals.length ? c.signals.map(s => s.text + " (" + (s.date || "") + ")").join(" | ") : "none, so lead on a division level insight, not a personal hook"), "Pressures, most pressing first: " + (c.pains.length ? c.pains.map(p => p.pain + " (" + p.score + "/10)").join(" | ") : "infer the top two from the division")].join("\n");
+      const text = await callClaude({ system, user, model: settings.model, apiKey: settings.apiKey, maxTokens: 3000 });
       const p = extractJSON(text);
-      if (p && p.emails) {
-        const drafts = {
-          fit: p.fit !== false,
-          fitReason: sanitize(p.fitReason || ""),
-          resonanceLine: sanitize(p.resonanceLine || ""),
-          soWhat: (p.soWhat || []).map(sanitize).filter(Boolean),
-          alreadyKnows: (p.alreadyKnows || []).map(sanitize).filter(Boolean),
-          emails: (p.emails || []).slice(0, 2).map(e => ({ angle: sanitize(e.angle || ""), subject: sanitize(e.subject || ""), body: sanitize(e.body || "") })),
-          inmails: (p.inmails || []).slice(0, 2).map(m => ({ angle: sanitize(m.angle || ""), body: sanitize(m.body || "") })),
-          findings: null,
-        };
-        setContact(id, { drafts });
+      if (p && p.email) {
+        setContact(id, { draft: { fit: p.fit !== false, fitReason: sanitize(p.fitReason || ""), painsUsed: (p.painsUsed || []).map(sanitize).filter(Boolean), insight: sanitize(p.insight || ""), signalsUsed: (p.signalsUsed || []).map(sanitize).filter(Boolean), email: { subject: sanitize(p.email.subject || ""), body: sanitize(p.email.body || "") }, inmail: { body: sanitize((p.inmail && p.inmail.body) || "") }, edited: false, findings: null, auditEngine: "" } });
         logAudit("Outreach drafted", c.name + ", " + c.division, []);
-        flash(drafts.fit ? "Drafts ready for " + c.name + "." : "Marked as not a fit. See the note.");
+        flash(p.fit !== false ? ("Draft ready for " + c.name + ".") : "Marked as not a fit. See the note.");
       } else flash("Generation returned an unexpected shape. Try again.");
     } catch (e) { flash("Generation failed. " + (e.message || "")); }
     finally { setGenBusy(""); }
   };
 
-  /* ---------------- Independent audit, the stress test ---------------- */
-  const [stressBusy, setStressBusy] = useState("");
-  const stressTest = async (id) => {
-    const c = contacts.find(x => x.id === id); const d = c && c.drafts; if (!c || !d) return;
-    setStressBusy(id);
+  /* ---------------- Fact audit ---------------- */
+  const [auditBusy, setAuditBusy] = useState("");
+  const runAudit = async (id) => {
+    const c = contacts.find(x => x.id === id); const d = c && c.draft; if (!c || !d) return;
+    setAuditBusy(id);
     try {
-      const system = [
-        "You are an independent fact checker. Use web search to test every checkable claim in the drafts below.",
-        "For each claim, return confirmed, nuanced or not_verifiable, a one line note, and a source where you found one.",
-        "Then return cleaned drafts with any weak or unsupported claim removed or softened. Keep the plain English standard, no em dashes, no arrows, sentence case. Email 150 to 170 words, LinkedIn 70 to 100 words. If every claim holds, return the drafts unchanged.",
-        "Return only valid JSON: {\"findings\":[{\"claim\":\"\",\"verdict\":\"confirmed|nuanced|not_verifiable\",\"note\":\"\",\"source\":\"\"}],\"emails\":[{\"angle\":\"\",\"subject\":\"\",\"body\":\"\"},{\"angle\":\"\",\"subject\":\"\",\"body\":\"\"}],\"inmails\":[{\"angle\":\"\",\"body\":\"\"},{\"angle\":\"\",\"body\":\"\"}]}",
-      ].join("\n");
-      const user = "Contact: " + c.name + ", " + (c.title || "") + ", " + c.division + ", Boston Scientific.\n\n" +
-        d.emails.map((e, i) => "Email " + (i + 1) + " subject: " + e.subject + "\n" + e.body).join("\n\n") + "\n\n" +
-        d.inmails.map((m, i) => "LinkedIn " + (i + 1) + ": " + m.body).join("\n\n");
-      const text = await callClaude({ system, user, model: settings.model, apiKey: settings.apiKey, useSearch: true, maxTokens: 4000 });
-      const p = extractJSON(text);
-      if (p) {
-        setContact(id, prev => ({
-          drafts: {
-            ...prev.drafts,
-            emails: p.emails ? p.emails.slice(0, 2).map(e => ({ angle: sanitize(e.angle || ""), subject: sanitize(e.subject || ""), body: sanitize(e.body || "") })) : prev.drafts.emails,
-            inmails: p.inmails ? p.inmails.slice(0, 2).map(m => ({ angle: sanitize(m.angle || ""), body: sanitize(m.body || "") })) : prev.drafts.inmails,
-            findings: (p.findings || []).map(f => ({ claim: sanitize(f.claim), verdict: f.verdict, note: sanitize(f.note || ""), source: f.source || "" })),
-          },
-        }));
-        logAudit("Independent audit", c.name + ", " + (p.findings ? p.findings.length : 0) + " claims checked", (p.findings || []).map(f => f.source).filter(Boolean));
-        flash("Audit complete.");
-      } else flash("Audit returned an unexpected shape.");
+      const claims = "Email subject: " + d.email.subject + "\n" + d.email.body + "\n\nLinkedIn: " + d.inmail.body + (c.signals.length ? ("\n\nSupporting signals used in research:\n" + c.signals.map(s => s.text + " (" + (s.source || "no source") + ")").join("\n")) : "");
+      const r = await auditFacts({ claimsText: claims, contact: c.name + ", " + (c.title || "") + ", " + c.division + ", Boston Scientific", settings });
+      setContact(id, prev => ({ draft: { ...prev.draft, findings: (r.findings || []).map(f => ({ claim: sanitize(f.claim), verdict: f.verdict, confidence: Number(f.confidence) || 0, note: sanitize(f.note || ""), source: f.source || "" })), auditEngine: r.engine } }));
+      logAudit("Fact audit, " + r.engine, c.name + ", " + (r.findings ? r.findings.length : 0) + " claims checked", (r.findings || []).map(f => f.source).filter(Boolean));
+      flash("Audit complete with " + r.engine + ".");
     } catch (e) { flash("Audit failed. " + (e.message || "")); }
-    finally { setStressBusy(""); }
+    finally { setAuditBusy(""); }
   };
 
-  /* ---------------- Approve and export ---------------- */
-  const approve = (c, channel, variant, draft) => {
+  /* ---------------- Edit a draft ---------------- */
+  const saveEdit = (id, subject, body, inmailBody) => {
+    setContact(id, prev => ({ draft: { ...prev.draft, email: { subject: sanitize(subject), body: sanitize(body) }, inmail: { body: sanitize(inmailBody) }, edited: true } }));
+    const nm = contacts.find(c => c.id === id); logAudit("Draft edited by operator", nm ? nm.name : "", []);
+    flash("Changes saved.");
+  };
+
+  /* ---------------- Assistant ---------------- */
+  const [asstBusy, setAsstBusy] = useState(false);
+  const askAssistant = async (scope, text) => {
+    const c = scope === "global" ? null : contacts.find(x => x.id === scope);
+    const msg = { role: "user", text };
+    if (c) setContact(c.id, prev => ({ chat: [...(prev.chat || []), msg] }));
+    else setGlobalChat(prev => [...prev, msg]);
+    setAsstBusy(true);
+    try {
+      const ctx = c ? ("You are editing outreach for " + c.name + ", " + (c.title || "") + ", " + c.division + " at Boston Scientific.\nCurrent email subject: " + (c.draft ? c.draft.email.subject : "none") + "\nCurrent email body:\n" + (c.draft ? c.draft.email.body : "none") + "\nCurrent LinkedIn message:\n" + (c.draft ? c.draft.inmail.body : "none")) : "You help the operator steer the studio and answer questions about the account.";
+      const system = [
+        "You are the studio assistant inside a Boston Scientific outreach tool built for FutureBridge.",
+        "You can do three things. Answer a question plainly. Propose a standing instruction that should apply to every future draft. Rewrite the current email and LinkedIn message when asked, keeping the plain English standard, the greeting Hi <first name>, the closing Warm regards on the email only, no em dashes, no arrows, sentence case, email 150 to 175 words, LinkedIn 70 to 100 words.",
+        "You cannot change the application's own code or layout. If asked for that, say so plainly and suggest it be done in the chat that generated this file.",
+        ctx,
+        "Reply in plain English. Then return a single JSON object at the very end, on its own, no markdown: {\"reply\":\"your plain reply\",\"standingRule\":\"a one or two line rule to save, or empty\",\"emailEdit\":{\"subject\":\"\",\"body\":\"\",\"inmail\":\"\"}}. Set emailEdit to null unless you actually rewrote the email.",
+        direction ? ("Current standing direction:\n" + direction) : "No standing direction yet.",
+      ].join("\n");
+      const out = await callClaude({ system, user: text, model: settings.model, apiKey: settings.apiKey, maxTokens: 2000 });
+      const p = extractJSON(out) || { reply: out };
+      const reply = { role: "assistant", text: sanitize(p.reply || out), standingRule: sanitize(p.standingRule || ""), emailEdit: (p.emailEdit && p.emailEdit.body) ? { subject: sanitize(p.emailEdit.subject || (c && c.draft ? c.draft.email.subject : "")), body: sanitize(p.emailEdit.body), inmail: sanitize(p.emailEdit.inmail || (c && c.draft ? c.draft.inmail.body : "")) } : null, scope };
+      if (c) setContact(c.id, prev => ({ chat: [...(prev.chat || []), reply] }));
+      else setGlobalChat(prev => [...prev, reply]);
+    } catch (e) {
+      const err = { role: "assistant", text: "That did not go through. " + (e.message || "") };
+      if (c) setContact(c.id, prev => ({ chat: [...(prev.chat || []), err] })); else setGlobalChat(prev => [...prev, err]);
+    } finally { setAsstBusy(false); }
+  };
+  const saveStandingRule = (rule) => { setDirection(prev => prev ? (prev + "\n" + rule) : rule); logAudit("Standing instruction saved", rule, []); flash("Saved. Applied to every future draft."); };
+  const applyEmailEdit = (id, edit) => { setContact(id, prev => ({ draft: { ...prev.draft, email: { subject: edit.subject, body: edit.body }, inmail: { body: edit.inmail }, edited: true } })); const nm = contacts.find(c => c.id === id); logAudit("Email updated by assistant", nm ? nm.name : "", []); flash("Email updated."); };
+
+  /* ---------------- Approve, cloud save, export ---------------- */
+  const syncCloud = async (items) => {
+    if (!settings.githubToken) return;
+    try {
+      const savedAt = new Date().toISOString().slice(0, 16).replace("T", " ");
+      const content = JSON.stringify({ items, savedAt }, null, 2);
+      const files = { "approved.json": { content } };
+      if (settings.gistId) { await gistRequest(settings.githubToken, "PATCH", settings.gistId, { files }); }
+      else { const g = await gistRequest(settings.githubToken, "POST", null, { description: "FutureBridge approved outreach, Boston Scientific", public: false, files }); setSettings(s => ({ ...s, gistId: g.id })); }
+      setCloud({ lastSync: savedAt });
+      logAudit("Cloud save", items.length + " approved messages saved to private gist", []);
+    } catch (e) { flash("Cloud save failed. " + (e.message || "")); }
+  };
+
+  const approve = (c, channel, draftBit) => {
     const signer = SIGNERS[settings.signer] || SIGNERS[0];
-    setApproved(prev => [{
-      id: "a_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
-      name: c.name, email: c.email, title: c.title, division: c.division,
-      channel, variant, subject: draft.subject || "",
-      body: draft.body + "\n\n" + signer.name + "\n" + signer.title,
-      signedBy: signer.name, approvedAt: new Date().toISOString().slice(0, 16).replace("T", " "),
-    }, ...prev]);
-    logAudit("Approved for send", c.name + ", " + channel + " " + variant + ", signed by " + signer.name, []);
-    flash("Approved and saved.");
+    const body = channel === "Email" ? (draftBit.body + "\n" + signer.name + "\n" + signer.title) : draftBit.body;
+    const item = { id: "a_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6), name: c.name, email: c.email, title: c.title, division: c.division, channel, subject: draftBit.subject || "", body, signedBy: signer.name, approvedAt: new Date().toISOString().slice(0, 16).replace("T", " ") };
+    const next = [item, ...approved];
+    setApproved(next);
+    logAudit("Approved", c.name + ", " + channel + ", signed by " + signer.name, []);
+    flash("Approved." + (settings.githubToken ? " Saving to the cloud." : ""));
+    if (settings.githubToken) syncCloud(next);
   };
 
   const downloadCSV = () => {
     if (!approved.length) return;
-    const rows = approved.map(a => ({
-      "Contact name": a.name, "Email": a.email, "Title": a.title, "Division": a.division,
-      "Channel": a.channel, "Variant": a.variant, "Subject": a.subject, "Message": a.body,
-      "Signed by": a.signedBy, "Approved at": a.approvedAt,
-    }));
+    const rows = approved.map(a => ({ "Contact name": a.name, "Email": a.email, "Title": a.title, "Division": a.division, "Channel": a.channel, "Subject": a.subject, "Message": a.body, "Signed by": a.signedBy, "Approved at": a.approvedAt }));
     const blob = new Blob([Papa.unparse(rows)], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a"); a.href = url; a.download = "futurebridge_bsx_approved.csv"; a.click();
-    URL.revokeObjectURL(url);
+    const url = URL.createObjectURL(blob); const a = document.createElement("a"); a.href = url; a.download = "futurebridge_bsx_approved.csv"; a.click(); URL.revokeObjectURL(url);
   };
 
-  const copy = async (text, label) => {
-    try { await navigator.clipboard.writeText(text); }
-    catch (e) { const ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch (er) {} document.body.removeChild(ta); }
-    flash((label || "Copied") + ".");
-  };
+  const copy = async (text, label) => { try { await navigator.clipboard.writeText(text); } catch (e) { const ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch (er) {} document.body.removeChild(ta); } flash((label || "Copied") + "."); };
 
   const TABS = [["intel", "Intelligence"], ["contacts", "Contacts"], ["outreach", "Outreach"], ["approved", "Approved, " + approved.length], ["settings", "Settings"]];
-  const keySet = !!settings.apiKey;
 
   return (
     <div>
-      <header className="bar">
-        <div className="wrap inner">
-          <Mark size={34} />
-          <div>
-            <div className="eyebrow">FutureBridge, Life Sciences and MedTech</div>
-            <h1 className="title">Account Studio</h1>
-          </div>
-          <div className="acct">
-            <div className="k">Account</div>
-            <div className="v">Boston Scientific</div>
-          </div>
-        </div>
-      </header>
+      <header className="bar"><div className="wrap inner">
+        <Mark size={32} />
+        <div><div className="eyebrow">FutureBridge, Life Sciences and MedTech</div><h1 className="title">Account Studio</h1></div>
+        <div className="spacer" />
+        <div className="acct"><div className="k">Account</div><div className="v">Boston Scientific</div></div>
+        <button className="btn sm" onClick={() => setDrawer({ scope: "global", title: "Studio assistant" })}>Assistant</button>
+      </div></header>
 
-      <nav className="tabs">
-        <div className="wrap inner">
-          {TABS.map(([k, t]) => (
-            <button key={k} className={tab === k ? "on" : ""} onClick={() => setTab(k)}>{t}</button>
-          ))}
-        </div>
-      </nav>
+      <nav className="tabs"><div className="wrap inner">
+        {TABS.map(([k, t]) => <button key={k} className={tab === k ? "on" : ""} onClick={() => setTab(k)}>{t}</button>)}
+      </div></nav>
 
-      <main>
-        <div className="wrap">
-          {!keySet && tab !== "settings" ? (
-            <div className="card" style={{ borderLeft: "3px solid var(--red)" }}>
-              <div className="body">
-                <strong>Set your Anthropic key to start.</strong>
-                <p className="note" style={{ margin: "6px 0 10px" }}>Research, drafting and the audit reach the model directly from this page. The key stays in your browser. Open Settings to add it.</p>
-                <button className="btn red sm" onClick={() => setTab("settings")}>Open Settings</button>
-              </div>
-            </div>
-          ) : null}
+      <main><div className="wrap">
+        {!keySet && tab !== "settings" ? (
+          <div className="card" style={{ borderLeft: "3px solid var(--red)" }}><div className="body">
+            <strong>Add your Anthropic key to start.</strong>
+            <p className="note" style={{ margin: "6px 0 10px" }}>Research, drafting and the audit run from this page. The key stays in your browser.</p>
+            <button className="btn red sm" onClick={() => setTab("settings")}>Open Settings</button>
+          </div></div>
+        ) : null}
 
-          {tab === "intel" ? (
-            <IntelView intel={intel} stamp={intelStamp} refreshing={refreshing} onRefresh={refreshIntel} keySet={keySet} />
-          ) : null}
+        {tab === "intel" ? <IntelView intel={intel} refreshing={refreshing} onRefresh={refreshIntel} keySet={keySet} /> : null}
+        {tab === "contacts" ? <ContactsView contacts={contacts} setContact={setContact} setContacts={setContacts} onUpload={() => fileRef.current && fileRef.current.click()} onAddManual={addManual} onPullHs={pullFromHubSpot} hsPulling={hsPulling} onResearch={research} onGenerate={generate} genBusy={genBusy} keySet={keySet} goOutreach={() => setTab("outreach")} /> : null}
+        {tab === "outreach" ? <OutreachView contacts={contacts} signer={SIGNERS[settings.signer] || SIGNERS[0]} onGenerate={generate} genBusy={genBusy} onAudit={runAudit} auditBusy={auditBusy} onApprove={approve} onCopy={copy} onSaveEdit={saveEdit} onAsk={(id) => setDrawer({ scope: id, title: "Editing " + ((contacts.find(c => c.id === id) || {}).name || "") })} keySet={keySet} goContacts={() => setTab("contacts")} /> : null}
+        {tab === "approved" ? <ApprovedView approved={approved} setApproved={setApproved} onDownload={downloadCSV} onCopy={copy} cloud={cloud} onSync={() => syncCloud(approved)} cloudOn={!!settings.githubToken} settings={settings} flash={flash} logAudit={logAudit} /> : null}
+        {tab === "settings" ? <SettingsView settings={settings} setSettings={setSettings} direction={direction} setDirection={setDirection} audit={audit} setAudit={setAudit} /> : null}
+      </div></main>
 
-          {tab === "contacts" ? (
-            <ContactsView
-              contacts={contacts} setContact={setContact} setContacts={setContacts}
-              onUpload={() => fileRef.current && fileRef.current.click()} onAddManual={addManual}
-              onResearch={research} onGenerate={generate} genBusy={genBusy} keySet={keySet}
-              goOutreach={() => setTab("outreach")}
-            />
-          ) : null}
+      <input ref={fileRef} type="file" accept=".csv,.xlsx,.xls" style={{ display: "none" }} onChange={e => { if (e.target.files && e.target.files[0]) handleFile(e.target.files[0]); e.target.value = ""; }} />
 
-          {tab === "outreach" ? (
-            <OutreachView
-              contacts={contacts} signer={SIGNERS[settings.signer]} onGenerate={generate} genBusy={genBusy}
-              onStress={stressTest} stressBusy={stressBusy} onApprove={approve} onCopy={copy} keySet={keySet}
-              goContacts={() => setTab("contacts")}
-            />
-          ) : null}
-
-          {tab === "approved" ? (
-            <ApprovedView approved={approved} setApproved={setApproved} onDownload={downloadCSV} onCopy={copy} />
-          ) : null}
-
-          {tab === "settings" ? (
-            <SettingsView settings={settings} setSettings={setSettings} direction={direction} setDirection={setDirection} audit={audit} setAudit={setAudit} />
-          ) : null}
-        </div>
-      </main>
-
-      <input ref={fileRef} type="file" accept=".csv,.xlsx,.xls" style={{ display: "none" }}
-        onChange={e => { if (e.target.files && e.target.files[0]) handleFile(e.target.files[0]); e.target.value = ""; }} />
+      {drawer ? (
+        <Assistant drawer={drawer} onClose={() => setDrawer(null)} busy={asstBusy} onSend={(t) => askAssistant(drawer.scope, t)}
+          messages={drawer.scope === "global" ? globalChat : ((contacts.find(c => c.id === drawer.scope) || {}).chat || [])}
+          onSaveRule={saveStandingRule} onApplyEdit={(edit) => applyEmailEdit(drawer.scope, edit)} keySet={keySet} />
+      ) : null}
 
       {toast ? <div className="toast">{toast}</div> : null}
     </div>
   );
 }
 
+/* ---------------- Expandable bullet ---------------- */
+function Expand({ title, summary, detail, source }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="exp">
+      <div className="head" onClick={() => setOpen(!open)}>
+        <span className="dot" style={{ width: 7, height: 7, background: "var(--red)", marginTop: 8, flex: "0 0 auto", borderRadius: 1 }} />
+        <div><div style={{ fontWeight: 700, fontSize: 14 }}>{title}</div><div style={{ fontSize: 13, color: "var(--ink-2)", marginTop: 2 }}>{summary}</div></div>
+        <span className="chev">{open ? "Hide detail" : "Detail"}</span>
+      </div>
+      {open ? <div className="detail">{detail || "No further detail recorded yet. Run a refresh to add sourced depth."}{source ? <a className="src" href={source} target="_blank" rel="noreferrer">source</a> : null}</div> : null}
+    </div>
+  );
+}
+
 /* ---------------- Intelligence ---------------- */
-function IntelView({ intel, stamp, refreshing, onRefresh, keySet }) {
+function IntelView({ intel, refreshing, onRefresh, keySet }) {
   return (
     <div>
-      <p className="lead">A working read on the account. The figures are a baseline. Refresh them from live sources, with a citation on each, before anything goes into a message.</p>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap", marginBottom: 16 }}>
-        <span className="tiny">{stamp}</span>
-        <button className="btn primary" disabled={refreshing || !keySet} onClick={onRefresh}>{refreshing ? "Pulling live sources" : "Refresh from live sources"}</button>
+      <p className="lead">A working read on the account. The numbers are an indicative baseline. Refresh them from live sources, with a citation on each, before anything goes into a message.</p>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap", marginBottom: 14 }}>
+        <span className="tiny">{intel.stamp}</span>
+        <button className="btn primary" disabled={refreshing || !keySet} onClick={onRefresh}>{refreshing ? <span><span className="spin" />Pulling live sources</span> : "Refresh from live sources"}</button>
       </div>
-      {intel.map(s => (
-        <div className="card" key={s.id}>
-          <div className="cap">{s.title}</div>
-          <div className="body">
-            {s.bullets.map((b, i) => (
-              <div className="ibul" key={i}>
-                <span className="dot" />
-                <p>{b.text}{b.source ? <a className="src" href={b.source} target="_blank" rel="noreferrer">source</a> : null}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      ))}
-      <div className="builton">
-        <p className="k">Division playbook in force</p>
-        {Object.entries(DIVISIONS).map(([k, v]) => (
-          <p key={k} style={{ margin: "0 0 6px", fontSize: 13 }}>
-            <strong>{k}</strong> <span className={"pri " + (v.priority === "P2" ? "p2" : v.priority.indexOf("P3") > -1 ? "p3" : "")}>({v.priority})</span>. {v.wedge}
-          </p>
+
+      <div className="card"><div className="cap">What is really going on, click any line for the detail</div><div className="body">
+        {intel.narrative.map(s => <Expand key={s.id} title={s.title} summary={s.summary} detail={s.detail} source={s.source} />)}
+      </div></div>
+
+      <div className="card"><div className="cap">Company financial performance</div><div className="body">
+        <p className="note" style={{ margin: "0 0 10px" }}>{intel.financials.note}</p>
+        <div className="tblwrap"><table className="tbl"><thead><tr><th>Metric</th>{intel.financials.columns.map((c, i) => <th key={i} className="num">{c}</th>)}</tr></thead>
+          <tbody>{intel.financials.rows.map((r, i) => <tr key={i}><td>{r.metric}</td>{r.cells.map((c, j) => <td key={j} className="num">{c}</td>)}</tr>)}</tbody></table></div>
+      </div></div>
+
+      <div className="card"><div className="cap">Revenue and research by business unit</div><div className="body">
+        <p className="note" style={{ margin: "0 0 10px" }}>{intel.units.note}</p>
+        <div className="tblwrap"><table className="tbl"><thead><tr>{intel.units.columns.map((c, i) => <th key={i} className={i ? "num" : ""}>{c}</th>)}</tr></thead>
+          <tbody>{intel.units.rows.map((r, i) => <tr key={i}><td>{r.name}</td><td className="num">{r.rev}</td><td className="num">{r.rd}</td></tr>)}</tbody></table></div>
+      </div></div>
+
+      <div className="card"><div className="cap">Deals, where the company is buying back ground</div><div className="body">
+        <p className="note" style={{ margin: "0 0 10px" }}>{intel.ma.note}</p>
+        <div className="tblwrap"><table className="tbl"><thead><tr><th>When</th><th>Target</th><th>Area</th><th className="num">Value, USD m</th><th>Why it matters</th></tr></thead>
+          <tbody>{intel.ma.rows.map((r, i) => <tr key={i}><td>{r.date}</td><td>{r.target}</td><td>{r.area}</td><td className="num">{r.value}</td><td>{r.why}</td></tr>)}</tbody></table></div>
+      </div></div>
+
+      <div className="card"><div className="cap">Where the company leads, and where it lags</div><div className="body">
+        <p className="note" style={{ margin: "0 0 10px" }}>{intel.market.note}</p>
+        <p className="tiny" style={{ textTransform: "uppercase", letterSpacing: ".8px", margin: "0 0 6px" }}>Leads</p>
+        <div className="tblwrap" style={{ marginBottom: 14 }}><table className="tbl"><thead><tr><th>Area</th><th>Boston Scientific</th><th>The other main players</th></tr></thead>
+          <tbody>{intel.market.leader.map((r, i) => <tr key={i}><td>{r.area}</td><td>{r.bsx}</td><td>{r.next}</td></tr>)}</tbody></table></div>
+        <p className="tiny" style={{ textTransform: "uppercase", letterSpacing: ".8px", margin: "0 0 6px" }}>Lags</p>
+        <div className="tblwrap"><table className="tbl"><thead><tr><th>Area</th><th>Who leads</th><th>Boston Scientific</th><th>Note</th></tr></thead>
+          <tbody>{intel.market.laggard.map((r, i) => <tr key={i}><td>{r.area}</td><td>{r.leaders}</td><td>{r.bsx}</td><td>{r.note}</td></tr>)}</tbody></table></div>
+      </div></div>
+
+      <div className="card"><div className="cap">Strategic direction and ambition</div><div className="body">
+        <p className="tiny" style={{ textTransform: "uppercase", letterSpacing: ".8px", margin: "0 0 8px" }}>At the company level</p>
+        {intel.strategy.corporate.map((s, i) => <div className="ibul" key={i}><span className="dot" /><p>{s}</p></div>)}
+        <div style={{ height: 14 }} />
+        <p className="tiny" style={{ textTransform: "uppercase", letterSpacing: ".8px", margin: "0 0 8px" }}>At the division level</p>
+        {Object.entries(DIVISIONS).filter(([k, v]) => v.priority.indexOf("P3") === -1).map(([k, v]) => (
+          <p key={k} style={{ margin: "0 0 6px", fontSize: 13 }}><strong>{k}</strong> <span className={"pri " + (v.priority === "P2" ? "p2" : "")}>({v.priority})</span>. {v.ambition}</p>
         ))}
-      </div>
+      </div></div>
     </div>
   );
 }
 
 /* ---------------- Contacts ---------------- */
 function StatusPill({ status }) {
-  const m = {
-    new: ["Not researched", ""], researching: ["Researching", "warn"],
-    verified: ["Verified, current", "ok"], left: ["Left the company", "bad"], unclear: ["Could not confirm", "warn"],
-  }[status] || ["Not researched", ""];
+  const m = { new: ["Not researched", ""], researching: ["Researching", "warn"], verified: ["Verified, current", "ok"], left: ["Left the company", "bad"], unclear: ["Could not confirm", "warn"] }[status] || ["Not researched", ""];
   return <span className={"pill " + m[1]}>{m[0]}</span>;
 }
-
-function ContactsView({ contacts, setContact, setContacts, onUpload, onAddManual, onResearch, onGenerate, genBusy, keySet, goOutreach }) {
+function ContactsView({ contacts, setContact, setContacts, onUpload, onAddManual, onPullHs, hsPulling, onResearch, onGenerate, genBusy, keySet, goOutreach }) {
   return (
     <div>
-      <p className="lead">Load your target list, then research each person. Research checks they still hold the role before anything else, then gathers recent public signals and scores their likely pressures.</p>
+      <p className="lead">Load your target list, then research each person. Research checks they still hold the role before anything else, then gathers recent public signals and scores their likely pressures, most pressing first.</p>
       <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 18 }}>
         <button className="btn primary" onClick={onUpload}>Upload list, CSV or Excel</button>
+        <button className="btn" onClick={onPullHs} disabled={hsPulling}>{hsPulling ? <span><span className="spin" />Pulling</span> : "Pull contacts from HubSpot"}</button>
         <button className="btn" onClick={onAddManual}>Add one by hand</button>
       </div>
       {!contacts.length ? (
-        <div className="empty">No contacts yet. Upload the target list to begin. Columns are matched by name, so name, title, division, email and LinkedIn are all picked up.</div>
+        <div className="empty">No contacts yet. Upload a list, pull from HubSpot, or add one by hand. Columns are matched by name, so name, title, division, email and LinkedIn are all picked up.</div>
       ) : contacts.map(c => (
         <div className="card" key={c.id}>
           <div className="crow">
             <div style={{ minWidth: 200 }}>
-              {c.name
-                ? <div className="cname">{c.name}</div>
-                : <input className="f" style={{ maxWidth: 220 }} placeholder="Full name" value={c.name} onChange={e => setContact(c.id, { name: e.target.value })} />}
+              {c.name ? <div className="cname">{c.name}</div> : <input className="f" style={{ maxWidth: 220 }} placeholder="Full name" value={c.name} onChange={e => setContact(c.id, { name: e.target.value })} />}
               <div className="ctitle">{c.title || "Title not set"}{c.region ? ", " + c.region : ""}</div>
             </div>
-            <select className="f" style={{ width: 240 }} value={c.division} onChange={e => setContact(c.id, { division: e.target.value })}>
-              {Object.keys(DIVISIONS).map(d => <option key={d}>{d}</option>)}
-            </select>
+            <select className="f" style={{ width: 240 }} value={c.division} onChange={e => setContact(c.id, { division: e.target.value })}>{Object.keys(DIVISIONS).map(d => <option key={d}>{d}</option>)}</select>
             <StatusPill status={c.status} />
             <div className="grow">
-              <button className="btn sm" disabled={c.status === "researching" || !keySet} onClick={() => onResearch(c.id)}>
-                {c.status === "researching" ? "Researching" : c.status === "new" ? "Verify and research" : "Re run research"}
-              </button>
-              <button className="btn sm" disabled={c.status === "left" || genBusy === c.id || !keySet} onClick={() => onGenerate(c.id)}>
-                {genBusy === c.id ? "Writing" : "Draft outreach"}
-              </button>
+              <button className="btn sm" disabled={c.status === "researching" || !keySet} onClick={() => onResearch(c.id)}>{c.status === "researching" ? <span><span className="spin" />Researching</span> : c.status === "new" ? "Verify and research" : "Re run research"}</button>
+              <button className="btn sm" disabled={c.status === "left" || genBusy === c.id || !keySet} onClick={() => onGenerate(c.id)}>{genBusy === c.id ? <span><span className="spin" />Writing</span> : "Draft outreach"}</button>
               <button className="btn sm" onClick={() => setContacts(prev => prev.filter(x => x.id !== c.id))}>Remove</button>
             </div>
           </div>
-
           {c.status === "left" ? (
-            <div className="body" style={{ borderTop: "1px solid var(--hair)", color: "var(--red)", fontSize: 13 }}>
-              Sources suggest this person has left Boston Scientific. Research stopped. Exclude from outreach.
-            </div>
+            <div className="body" style={{ borderTop: "1px solid var(--hair)", color: "var(--red)", fontSize: 13 }}>Sources suggest this person has left Boston Scientific. Research stopped. Exclude from outreach.</div>
           ) : (c.summary || c.signals.length || c.pains.length) ? (
             <div className="body" style={{ borderTop: "1px solid var(--hair)" }}>
               {c.summary ? <p style={{ margin: "0 0 10px", fontSize: 13.5 }}>{c.summary}</p> : null}
-              {c.signals.length ? (
-                <div style={{ marginBottom: 10 }}>
-                  <p className="tiny" style={{ margin: "0 0 5px", textTransform: "uppercase", letterSpacing: ".8px" }}>Recent signals</p>
-                  {c.signals.map((s, i) => (
-                    <p key={i} style={{ margin: "0 0 4px", fontSize: 13 }}>{s.text} <span className="tiny">{s.date}</span>{s.source ? <a className="src" href={s.source} target="_blank" rel="noreferrer">source</a> : null}</p>
-                  ))}
-                </div>
-              ) : null}
-              {c.pains.length ? (
-                <div>
-                  <p className="tiny" style={{ margin: "0 0 5px", textTransform: "uppercase", letterSpacing: ".8px" }}>Likely pressures</p>
-                  {c.pains.map((p, i) => (
-                    <p key={i} style={{ margin: "0 0 4px", fontSize: 13 }}><span className="pri">{p.score}/10</span> {p.pain}<span className="tiny"> {p.reason}</span></p>
-                  ))}
-                </div>
-              ) : null}
-              {c.drafts ? <p className="tiny" style={{ marginTop: 10 }}>Drafts ready. Open the Outreach tab to read and approve.</p> : null}
+              {c.signals.length ? (<div style={{ marginBottom: 10 }}><p className="tiny" style={{ margin: "0 0 5px", textTransform: "uppercase", letterSpacing: ".8px" }}>Recent signals</p>{c.signals.map((s, i) => <p key={i} style={{ margin: "0 0 4px", fontSize: 13 }}>{s.text} <span className="tiny">{s.date}</span>{s.source ? <a className="src" href={s.source} target="_blank" rel="noreferrer">source</a> : null}</p>)}</div>) : null}
+              {c.pains.length ? (<div><p className="tiny" style={{ margin: "0 0 5px", textTransform: "uppercase", letterSpacing: ".8px" }}>Likely pressures, most pressing first</p>{c.pains.map((p, i) => <p key={i} style={{ margin: "0 0 4px", fontSize: 13 }}><span className="pri">{p.score}/10</span> {p.pain}<span className="tiny"> {p.reason}</span></p>)}</div>) : null}
+              {c.draft ? <p className="tiny" style={{ marginTop: 10 }}>Draft ready. Open the Outreach tab to read, edit and approve.</p> : null}
             </div>
           ) : null}
         </div>
       ))}
-      {contacts.some(c => c.drafts) ? <button className="btn" onClick={goOutreach} style={{ marginTop: 4 }}>Go to Outreach</button> : null}
+      {contacts.some(c => c.draft) ? <button className="btn" onClick={goOutreach} style={{ marginTop: 4 }}>Go to Outreach</button> : null}
     </div>
   );
 }
 
 /* ---------------- Outreach ---------------- */
-function DraftCard({ channel, variant, angle, subject, body, signer, onApprove, onCopy }) {
-  const full = (subject ? "Subject: " + subject + "\n\n" : "") + body + "\n\n" + signer.name + "\n" + signer.title;
+function MailBlock({ channel, subject, body, signer, editing, onChange }) {
+  const showSign = channel === "Email";
   const count = wc(body);
-  const target = channel === "Email" ? "150 to 170" : "70 to 100";
+  const target = channel === "Email" ? "150 to 175" : "70 to 100";
+  if (editing) {
+    return (
+      <div className="inner2">
+        {channel === "Email" ? (<><label className="lab">Subject</label><input className="f" style={{ marginBottom: 10 }} value={subject} onChange={e => onChange({ subject: e.target.value, body })} /></>) : null}
+        <label className="lab">Message</label>
+        <textarea className="f" style={{ minHeight: channel === "Email" ? 220 : 130 }} value={body} onChange={e => onChange({ subject, body: e.target.value })} />
+      </div>
+    );
+  }
   return (
-    <div className="draft">
-      <div className="top">
-        <span className="angle">{channel}, {angle || variant}</span>
-        <span className="wc">{count} words, aim {target}</span>
+    <div className="inner2">
+      {channel === "Email" && subject ? <p className="subject">{subject}</p> : null}
+      <p className="text">{body}</p>
+      {showSign ? <p className="sign">{signer.name}<br />{signer.title}</p> : null}
+      <p className="tiny" style={{ marginTop: 10 }}>{count} words, aim {target}</p>
+    </div>
+  );
+}
+
+function OutreachCard({ c, signer, onGenerate, genBusy, onAudit, auditBusy, onApprove, onCopy, onSaveEdit, onAsk, keySet }) {
+  const d = c.draft;
+  const [editing, setEditing] = useState(false);
+  const [es, setEs] = useState(d.email.subject);
+  const [eb, setEb] = useState(d.email.body);
+  const [ib, setIb] = useState(d.inmail.body);
+  useEffect(() => { setEs(d.email.subject); setEb(d.email.body); setIb(d.inmail.body); }, [d.email.subject, d.email.body, d.inmail.body]);
+
+  const emailFull = (d.email.subject ? "Subject: " + es + "\n\n" : "") + eb + "\n" + signer.name + "\n" + signer.title;
+
+  return (
+    <div className="card">
+      <div className="cap" style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+        <span>{c.name}</span><span className="tiny" style={{ fontWeight: 400 }}>{c.title}, {c.division}</span>{d.edited ? <span className="flag">edited</span> : null}
+        <div style={{ marginLeft: "auto", display: "flex", gap: 8 }}>
+          <button className="btn sm" disabled={!keySet} onClick={() => onAsk(c.id)}>Ask the assistant</button>
+          <button className="btn sm" disabled={genBusy === c.id || !keySet} onClick={() => onGenerate(c.id)}>{genBusy === c.id ? <span><span className="spin" />Writing</span> : "Redraft"}</button>
+        </div>
       </div>
-      <div style={{ padding: "13px 14px", flex: 1 }}>
-        {subject ? <p className="subject">{subject}</p> : null}
-        <p className="text">{body}</p>
-        <p className="sign">{signer.name}<br />{signer.title}</p>
-      </div>
-      <div className="acts">
-        <button className="btn sm" onClick={() => onCopy(full, "Copied")}>Copy</button>
-        <button className="btn primary sm" onClick={onApprove}>Approve</button>
+      <div className="body">
+        {!d.fit ? <p style={{ margin: 0, color: "var(--warn)", fontSize: 14 }}>Marked as not a fit. {d.fitReason}</p> : (
+          <div>
+            <div className="builton">
+              <p className="k">Built on</p>
+              {d.insight ? <p className="insight">{d.insight}</p> : null}
+              {d.painsUsed.length ? (<><p className="k">The two pressures this is built around</p><ul>{d.painsUsed.map((s, i) => <li key={i}>{s}</li>)}</ul></>) : null}
+              {d.signalsUsed.length ? (<><p className="k">Signals used and why they matter to this person</p><ul>{d.signalsUsed.map((s, i) => <li key={i}>{s}</li>)}</ul></>) : null}
+            </div>
+
+            <p className="tiny" style={{ textTransform: "uppercase", letterSpacing: ".8px", margin: "6px 0 8px" }}>Email</p>
+            <div className="mail" style={{ marginBottom: 16 }}>
+              <div className="top"><span className="tiny" style={{ fontWeight: 700, color: "var(--ink-2)" }}>The single best version for this person</span>
+                <div className="wc" style={{ display: "flex", gap: 8 }}>
+                  {!editing ? <button className="btn sm" onClick={() => setEditing(true)}>Edit</button> : (<><button className="btn sm primary" onClick={() => { onSaveEdit(c.id, es, eb, ib); setEditing(false); }}>Save changes</button><button className="btn sm" onClick={() => { setEs(d.email.subject); setEb(d.email.body); setIb(d.inmail.body); setEditing(false); }}>Cancel</button></>)}
+                </div>
+              </div>
+              <MailBlock channel="Email" subject={es} body={eb} signer={signer} editing={editing} onChange={(v) => { setEs(v.subject); setEb(v.body); }} />
+              {!editing ? <div className="acts"><button className="btn sm" onClick={() => onCopy(emailFull, "Email copied")}>Copy</button><button className="btn primary sm" onClick={() => onApprove(c, "Email", { subject: es, body: eb })}>Approve email</button></div> : null}
+            </div>
+
+            <p className="tiny" style={{ textTransform: "uppercase", letterSpacing: ".8px", margin: "6px 0 8px" }}>LinkedIn message</p>
+            <div className="mail">
+              <MailBlock channel="LinkedIn" subject="" body={ib} signer={signer} editing={editing} onChange={(v) => setIb(v.body)} />
+              {!editing ? <div className="acts"><button className="btn sm" onClick={() => onCopy(ib, "Message copied")}>Copy</button><button className="btn primary sm" onClick={() => onApprove(c, "LinkedIn", { subject: "", body: ib })}>Approve message</button></div> : null}
+            </div>
+
+            <div style={{ marginTop: 16, display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+              <button className="btn sm" disabled={auditBusy === c.id || !keySet} onClick={() => onAudit(c.id)}>{auditBusy === c.id ? <span><span className="spin" />Checking the facts</span> : "Audit the facts"}</button>
+              {d.auditEngine ? <span className="tiny">Last checked with {d.auditEngine}</span> : <span className="tiny">An independent check of every claim, with a confidence score on each.</span>}
+            </div>
+            {d.findings && d.findings.length ? (
+              <div style={{ marginTop: 12 }}>
+                {d.findings.map((f, i) => (
+                  <div className="find" key={i}>
+                    <span className={"vc " + (f.verdict || "")}>{(f.verdict || "").replace("_", " ")}</span>
+                    <span className="conf" title={"confidence " + f.confidence}><i style={{ width: Math.max(0, Math.min(100, f.confidence)) + "%", background: f.confidence >= 70 ? "var(--ok)" : f.confidence >= 40 ? "var(--warn)" : "var(--red)" }} /></span>
+                    <span className="tiny">{f.confidence}</span>  {f.claim}. <span className="muted">{f.note}</span>{f.source ? <a className="src" href={f.source} target="_blank" rel="noreferrer">source</a> : null}
+                  </div>
+                ))}
+              </div>
+            ) : null}
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
-function OutreachView({ contacts, signer, onGenerate, genBusy, onStress, stressBusy, onApprove, onCopy, keySet, goContacts }) {
-  const ready = contacts.filter(c => c.drafts);
-  const researched = contacts.filter(c => c.status !== "new" && c.status !== "left" && !c.drafts);
-  if (!ready.length && !researched.length) {
-    return <div className="empty">Nothing to draft yet. Research a contact first, then draft their outreach.<div style={{ marginTop: 12 }}><button className="btn" onClick={goContacts}>Go to Contacts</button></div></div>;
-  }
+function OutreachView({ contacts, signer, onGenerate, genBusy, onAudit, auditBusy, onApprove, onCopy, onSaveEdit, onAsk, keySet, goContacts }) {
+  const ready = contacts.filter(c => c.draft);
+  const researched = contacts.filter(c => c.status !== "new" && c.status !== "left" && !c.draft);
+  if (!ready.length && !researched.length) return <div className="empty">Nothing to draft yet. Research a contact first, then draft their outreach.<div style={{ marginTop: 12 }}><button className="btn" onClick={goContacts}>Go to Contacts</button></div></div>;
   return (
     <div>
-      <p className="lead">Two emails and two LinkedIn messages per person, each taking a genuinely different angle. The panel above each set shows the one idea the message is built on and what the reader already knows, so nothing states the obvious.</p>
-
+      <p className="lead">One email and one LinkedIn message per person, the single best version for that reader. The panel above each one shows the uncommon insight it opens on and the two pressures it is built around. Edit anything, then approve.</p>
       {researched.map(c => (
-        <div className="card" key={c.id}>
-          <div className="crow">
-            <div><div className="cname">{c.name}</div><div className="ctitle">{c.title}, {c.division}</div></div>
-            <div className="grow"><button className="btn sm primary" disabled={genBusy === c.id || !keySet} onClick={() => onGenerate(c.id)}>{genBusy === c.id ? "Writing" : "Draft outreach"}</button></div>
-          </div>
-        </div>
+        <div className="card" key={c.id}><div className="crow">
+          <div><div className="cname">{c.name}</div><div className="ctitle">{c.title}, {c.division}</div></div>
+          <div className="grow"><button className="btn sm primary" disabled={genBusy === c.id || !keySet} onClick={() => onGenerate(c.id)}>{genBusy === c.id ? <span><span className="spin" />Writing</span> : "Draft outreach"}</button></div>
+        </div></div>
       ))}
-
-      {ready.map(c => {
-        const d = c.drafts;
-        return (
-          <div className="card" key={c.id}>
-            <div className="cap" style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-              <span>{c.name}</span><span className="tiny" style={{ fontWeight: 400 }}>{c.title}, {c.division}</span>
-              <div style={{ marginLeft: "auto", display: "flex", gap: 8 }}>
-                <button className="btn sm" disabled={stressBusy === c.id || !keySet} onClick={() => onStress(c.id)}>{stressBusy === c.id ? "Checking" : "Run independent audit"}</button>
-                <button className="btn sm" disabled={genBusy === c.id || !keySet} onClick={() => onGenerate(c.id)}>{genBusy === c.id ? "Writing" : "Redraft"}</button>
-              </div>
-            </div>
-            <div className="body">
-              {!d.fit ? (
-                <p style={{ margin: 0, color: "var(--warn)", fontSize: 14 }}>Marked as not a fit. {d.fitReason}</p>
-              ) : (
-                <div>
-                  <div className="builton">
-                    <p className="k">Built on</p>
-                    {d.resonanceLine ? <p className="reson">{d.resonanceLine}</p> : null}
-                    {d.soWhat.length ? (<><p className="k">What each signal means for them</p><ul>{d.soWhat.map((s, i) => <li key={i}>{s}</li>)}</ul></>) : null}
-                    {d.alreadyKnows.length ? (<><p className="k">What they already know</p><ul>{d.alreadyKnows.map((s, i) => <li key={i}>{s}</li>)}</ul></>) : null}
-                  </div>
-
-                  <p className="tiny" style={{ textTransform: "uppercase", letterSpacing: ".8px", margin: "6px 0 8px" }}>Emails</p>
-                  <div className="drafts" style={{ marginBottom: 16 }}>
-                    {d.emails.map((e, i) => (
-                      <DraftCard key={i} channel="Email" variant={"Email " + (i + 1)} angle={e.angle} subject={e.subject} body={e.body} signer={signer}
-                        onApprove={() => onApprove(c, "Email", "Email " + (i + 1), e)} onCopy={onCopy} />
-                    ))}
-                  </div>
-
-                  <p className="tiny" style={{ textTransform: "uppercase", letterSpacing: ".8px", margin: "6px 0 8px" }}>LinkedIn messages</p>
-                  <div className="drafts">
-                    {d.inmails.map((m, i) => (
-                      <DraftCard key={i} channel="LinkedIn" variant={"LinkedIn " + (i + 1)} angle={m.angle} subject="" body={m.body} signer={signer}
-                        onApprove={() => onApprove(c, "LinkedIn", "LinkedIn " + (i + 1), m)} onCopy={onCopy} />
-                    ))}
-                  </div>
-
-                  {d.findings && d.findings.length ? (
-                    <div style={{ marginTop: 16 }}>
-                      <p className="tiny" style={{ textTransform: "uppercase", letterSpacing: ".8px", margin: "0 0 8px" }}>Audit findings</p>
-                      {d.findings.map((f, i) => (
-                        <div className="find" key={i}>
-                          <span className={"vc " + (f.verdict || "")}>{(f.verdict || "").replace("_", " ")}</span>
-                          {f.claim}. <span className="muted">{f.note}</span>
-                          {f.source ? <a className="src" href={f.source} target="_blank" rel="noreferrer">source</a> : null}
-                        </div>
-                      ))}
-                    </div>
-                  ) : null}
-                </div>
-              )}
-            </div>
-          </div>
-        );
-      })}
+      {ready.map(c => <OutreachCard key={c.id} c={c} signer={signer} onGenerate={onGenerate} genBusy={genBusy} onAudit={onAudit} auditBusy={auditBusy} onApprove={onApprove} onCopy={onCopy} onSaveEdit={onSaveEdit} onAsk={onAsk} keySet={keySet} />)}
     </div>
   );
 }
 
 /* ---------------- Approved ---------------- */
-function ApprovedView({ approved, setApproved, onDownload, onCopy }) {
+function ApprovedView({ approved, setApproved, onDownload, onCopy, cloud, onSync, cloudOn, settings, flash, logAudit }) {
+  const [pushing, setPushing] = useState(false);
+  const pushToHubSpot = async () => {
+    if (!settings.hubspotToken) { flash("Add a HubSpot token in Settings."); return; }
+    if (!settings.proxyUrl) { flash("HubSpot blocks browser calls. Set a proxy URL in Settings, or use the CSV."); return; }
+    setPushing(true);
+    let ok = 0;
+    try {
+      for (const a of approved.filter(x => x.email)) {
+        try {
+          const search = await fetch(proxied(settings.proxyUrl, "https://api.hubapi.com/crm/v3/objects/contacts/search"), { method: "POST", headers: { "Authorization": "Bearer " + settings.hubspotToken, "content-type": "application/json" }, body: JSON.stringify({ filterGroups: [{ filters: [{ propertyName: "email", operator: "EQ", value: a.email }] }], properties: ["email"], limit: 1 }) });
+          const sj = await search.json();
+          const cid = sj.results && sj.results[0] && sj.results[0].id;
+          const noteBody = "FutureBridge approved outreach, awaiting send.\nChannel: " + a.channel + (a.subject ? "\nSubject: " + a.subject : "") + "\n\n" + a.body;
+          const note = await fetch(proxied(settings.proxyUrl, "https://api.hubapi.com/crm/v3/objects/notes"), { method: "POST", headers: { "Authorization": "Bearer " + settings.hubspotToken, "content-type": "application/json" }, body: JSON.stringify({ properties: { hs_note_body: noteBody, hs_timestamp: Date.now() }, associations: cid ? [{ to: { id: cid }, types: [{ associationCategory: "HUBSPOT_DEFINED", associationTypeId: 202 }] }] : [] }) });
+          if (note.ok) ok++;
+        } catch (e) {}
+      }
+      logAudit("HubSpot push", ok + " notes logged on contact records", []);
+      flash(ok + " logged to HubSpot as notes awaiting send.");
+    } catch (e) { flash("HubSpot push failed. " + (e.message || "")); }
+    finally { setPushing(false); }
+  };
   return (
     <div>
-      <p className="lead">Every approved message collects here with its signature. Nothing sends on its own. Download a file you can import to HubSpot, or copy a message to send by hand.</p>
-      <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 16 }}>
-        <button className="btn primary" disabled={!approved.length} onClick={onDownload}>Download HubSpot ready CSV</button>
-        {approved.length ? <button className="btn" onClick={() => { if (confirm("Clear all approved messages?")) setApproved([]); }}>Clear all</button> : null}
+      <p className="lead">Every approved message collects here with its signature. Nothing sends on its own. {cloudOn ? "Approved messages are saved to your private gist and load whenever you open this on any device, with the time of the last save." : "Connect cloud save in Settings to keep these across devices."}</p>
+      <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 8 }}>
+        <button className="btn primary" disabled={!approved.length} onClick={onDownload}>Download CSV</button>
+        <button className="btn" disabled={!approved.length || pushing} onClick={pushToHubSpot}>{pushing ? <span><span className="spin" />Pushing</span> : "Push to HubSpot"}</button>
+        {cloudOn ? <button className="btn" disabled={!approved.length} onClick={onSync}>Save to cloud now</button> : null}
+        {approved.length ? <button className="btn" onClick={() => { if (confirm("Clear the on screen list? The cloud copy stays until the next save.")) setApproved([]); }}>Clear list</button> : null}
       </div>
-      {!approved.length ? (
-        <div className="empty">Nothing approved yet. Approve a draft on the Outreach tab and it lands here.</div>
-      ) : approved.map(a => (
+      {cloud && cloud.lastSync ? <p className="tiny" style={{ margin: "0 0 16px" }}>Last cloud save, {cloud.lastSync}.</p> : <div style={{ height: 8 }} />}
+      {!approved.length ? <div className="empty">Nothing approved yet. Approve a draft on the Outreach tab and it lands here.</div> : approved.map(a => (
         <div className="card" key={a.id}>
           <div className="cap" style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap", fontWeight: 400 }}>
-            <strong style={{ fontSize: 14 }}>{a.name}</strong>
-            <span className="tiny">{a.channel}, {a.variant}, signed by {a.signedBy}, {a.approvedAt}</span>
+            <strong style={{ fontSize: 14 }}>{a.name}</strong><span className="tiny">{a.channel}, signed by {a.signedBy}, approved {a.approvedAt}</span>
             <div style={{ marginLeft: "auto", display: "flex", gap: 8 }}>
               <button className="btn sm" onClick={() => onCopy((a.subject ? "Subject: " + a.subject + "\n\n" : "") + a.body, "Copied")}>Copy</button>
               <button className="btn sm" onClick={() => setApproved(prev => prev.filter(x => x.id !== a.id))}>Remove</button>
             </div>
           </div>
-          <div className="body">
-            {a.subject ? <p className="subject" style={{ marginBottom: 8 }}>{a.subject}</p> : null}
-            <p className="text">{a.body}</p>
-          </div>
+          <div className="body">{a.subject ? <p className="subject" style={{ marginBottom: 8 }}>{a.subject}</p> : null}<p className="text">{a.body}</p></div>
         </div>
       ))}
     </div>
@@ -963,75 +1002,91 @@ function SettingsView({ settings, setSettings, direction, setDirection, audit, s
   const set = (patch) => setSettings(prev => ({ ...prev, ...patch }));
   return (
     <div>
-      <p className="lead">The studio runs from this page. The key, your edits, contacts and approvals live only in this browser. Nothing is held on a FutureBridge server.</p>
+      <p className="lead">The studio runs from this page. Keys, edits, contacts and approvals live in this browser. The only data that leaves is what you send to the model, the audit, HubSpot or your own private gist, on the calls you trigger.</p>
 
-      <div className="card">
-        <div className="cap">Connection</div>
-        <div className="body">
-          <label className="lab">Anthropic API key</label>
-          <input className="f" type="password" placeholder="sk-ant-..." value={settings.apiKey} onChange={e => set({ apiKey: e.target.value.trim() })} />
-          <p className="note" style={{ margin: "6px 0 16px" }}>Used to research, draft and audit directly from this page. Stored in this browser only. Get one at <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noreferrer">console.anthropic.com</a>.</p>
-
-          <div className="grid2">
-            <div>
-              <label className="lab">Model</label>
-              <select className="f" value={settings.model} onChange={e => set({ model: e.target.value })}>
-                {MODELS.map(m => <option key={m.id} value={m.id}>{m.label}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="lab">Default signer</label>
-              <select className="f" value={settings.signer} onChange={e => set({ signer: Number(e.target.value) })}>
-                {SIGNERS.map((s, i) => <option key={i} value={i}>{s.name}, {s.title}</option>)}
-              </select>
-            </div>
-          </div>
+      <div className="card"><div className="cap">Model</div><div className="body">
+        <label className="lab">Anthropic API key, required</label>
+        <input className="f" type="password" placeholder="sk-ant-..." value={settings.apiKey} onChange={e => set({ apiKey: e.target.value.trim() })} />
+        <p className="note" style={{ margin: "6px 0 16px" }}>Used to research, draft, edit and audit. Get one at <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noreferrer">console.anthropic.com</a>.</p>
+        <div className="grid2">
+          <div><label className="lab">Model</label><select className="f" value={settings.model} onChange={e => set({ model: e.target.value })}>{MODELS.map(m => <option key={m.id} value={m.id}>{m.label}</option>)}</select></div>
+          <div><label className="lab">Default signer</label><select className="f" value={settings.signer} onChange={e => set({ signer: Number(e.target.value) })}>{SIGNERS.map((s, i) => <option key={i} value={i}>{s.name}, {s.title}</option>)}</select></div>
         </div>
-      </div>
+      </div></div>
 
-      <div className="card">
-        <div className="cap">Standing direction</div>
-        <div className="body">
-          <p className="note" style={{ margin: "0 0 8px" }}>Plain instructions that apply to every future draft. For example, keep openings to one sentence, or push every Endoscopy message toward the weight loss drug angle. The plain English standard always applies underneath.</p>
-          <textarea className="f" style={{ minHeight: 110 }} value={direction} onChange={e => setDirection(e.target.value)} placeholder="Empty. Add standing rules here." />
+      <div className="card"><div className="cap">Cloud save for approved emails</div><div className="body">
+        <p className="note" style={{ margin: "0 0 10px" }}>Approved emails are saved to a private GitHub gist, so they load with the time of the last save whenever you open this on any device. Create a token with the gist permission at <a href="https://github.com/settings/tokens" target="_blank" rel="noreferrer">github.com settings tokens</a>. The gist is created on your first approval.</p>
+        <div className="grid2">
+          <div><label className="lab">GitHub token, gist permission</label><input className="f" type="password" placeholder="ghp_..." value={settings.githubToken} onChange={e => set({ githubToken: e.target.value.trim() })} /></div>
+          <div><label className="lab">Gist id, filled in automatically</label><input className="f" value={settings.gistId} onChange={e => set({ gistId: e.target.value.trim() })} placeholder="Created on first save" /></div>
         </div>
-      </div>
+      </div></div>
 
-      <div className="card">
-        <div className="cap">How the studio keeps its output trustworthy</div>
-        <div className="body">
-          <div className="ibul"><span className="dot" /><p>Every claim in the intelligence carries a source, pulled live on refresh.</p></div>
-          <div className="ibul"><span className="dot" /><p>A separate audit checks the facts in a draft before it is used, and returns a cleaned version.</p></div>
-          <div className="ibul"><span className="dot" /><p>No divisional financials are invented. Private figures are treated as questions, not stated as fact.</p></div>
-          <div className="ibul"><span className="dot" /><p>A person approves every message. Nothing sends on its own.</p></div>
-          <div className="ibul"><span className="dot" /><p>The plain English standard is built into the drafting, not left to the writer.</p></div>
-          <div className="ibul"><span className="dot" /><p>The audit log records what was checked, when, and against which sources.</p></div>
+      <div className="card"><div className="cap">HubSpot and the fact audit</div><div className="body">
+        <p className="note" style={{ margin: "0 0 10px" }}>HubSpot and Perplexity block calls made straight from a web page, so they need a small proxy. The README has a one file Cloudflare Worker you can deploy free in two minutes. Paste its address below. Without it, contacts still import by CSV, approved emails still export by CSV, and the fact audit runs through the model.</p>
+        <label className="lab">Proxy address, optional</label>
+        <input className="f" style={{ marginBottom: 12 }} placeholder="https://your-worker.workers.dev" value={settings.proxyUrl} onChange={e => set({ proxyUrl: e.target.value.trim() })} />
+        <div className="grid2">
+          <div><label className="lab">HubSpot private app token</label><input className="f" type="password" placeholder="pat-..." value={settings.hubspotToken} onChange={e => set({ hubspotToken: e.target.value.trim() })} /></div>
+          <div><label className="lab">Perplexity API key, for a second audit</label><input className="f" type="password" placeholder="pplx-..." value={settings.perplexityKey} onChange={e => set({ perplexityKey: e.target.value.trim() })} /></div>
         </div>
-      </div>
+      </div></div>
 
-      <div className="card">
-        <div className="cap" style={{ display: "flex", alignItems: "center" }}>
-          Audit log
-          {audit.length ? <button className="btn sm" style={{ marginLeft: "auto", fontWeight: 400 }} onClick={() => { if (confirm("Clear the audit log?")) setAudit([]); }}>Clear</button> : null}
-        </div>
-        <div className="body">
-          {!audit.length ? <p className="note" style={{ margin: 0 }}>Nothing logged yet. Research, drafting, audits and approvals are recorded here.</p> :
-            audit.map((e, i) => (
-              <div key={i} style={{ fontSize: 12.5, padding: "6px 0", borderBottom: i === audit.length - 1 ? "none" : "1px solid var(--hair)" }}>
-                <span className="tiny">{e.time}</span> <strong>{e.type}</strong>. {e.detail}
-                {e.sources && e.sources.length ? <span className="tiny"> {e.sources.length} source{e.sources.length > 1 ? "s" : ""}</span> : null}
-              </div>
-            ))}
-        </div>
-      </div>
+      <div className="card"><div className="cap">Standing direction</div><div className="body">
+        <p className="note" style={{ margin: "0 0 8px" }}>Plain instructions that apply to every future draft. The plain English standard always applies underneath. You can also add to this from the assistant.</p>
+        <textarea className="f" style={{ minHeight: 110 }} value={direction} onChange={e => setDirection(e.target.value)} placeholder="Empty. Add standing rules here, or save them from the assistant." />
+      </div></div>
 
-      <p className="note">Contact details are personal data. Handle them under your usual data protection practice. The audit log helps, because it records why a person is believed to hold the role attributed to them.</p>
+      <div className="card"><div className="cap" style={{ display: "flex", alignItems: "center" }}>Audit log{audit.length ? <button className="btn sm" style={{ marginLeft: "auto", fontWeight: 400 }} onClick={() => { if (confirm("Clear the audit log?")) setAudit([]); }}>Clear</button> : null}</div><div className="body">
+        {!audit.length ? <p className="note" style={{ margin: 0 }}>Nothing logged yet. Research, drafting, edits, audits, approvals and saves are recorded here.</p> : audit.map((e, i) => (
+          <div key={i} style={{ fontSize: 12.5, padding: "6px 0", borderBottom: i === audit.length - 1 ? "none" : "1px solid var(--hair)" }}><span className="tiny">{e.time}</span> <strong>{e.type}</strong>. {e.detail}{e.sources && e.sources.length ? <span className="tiny"> {e.sources.length} source{e.sources.length > 1 ? "s" : ""}</span> : null}</div>
+        ))}
+      </div></div>
+
+      <p className="note">Contact details are personal data. Handle them under your usual data protection practice. The audit log records why a person is believed to hold the role attributed to them, which is the evidence good practice asks for.</p>
     </div>
   );
 }
 
-const boot = document.getElementById("boot");
-if (boot) boot.remove();
+/* ---------------- Assistant drawer ---------------- */
+function Assistant({ drawer, onClose, busy, onSend, messages, onSaveRule, onApplyEdit, keySet }) {
+  const [text, setText] = useState("");
+  const bodyRef = useRef(null);
+  useEffect(() => { if (bodyRef.current) bodyRef.current.scrollTop = bodyRef.current.scrollHeight; }, [messages, busy]);
+  const send = () => { const t = text.trim(); if (!t || busy) return; onSend(t); setText(""); };
+  return (
+    <>
+      <div className="scrim" onClick={onClose} />
+      <div className="drawer">
+        <div className="dhead"><Mark size={22} /><div><div style={{ fontSize: 13, fontWeight: 700 }}>{drawer.title}</div><div className="dscope">{drawer.scope === "global" ? "Ask about the account or set a standing instruction" : "Edit this email without leaving the page"}</div></div><button className="btn sm" style={{ marginLeft: "auto" }} onClick={onClose}>Close</button></div>
+        <div className="dbody" ref={bodyRef}>
+          {!messages.length ? <p className="note">{drawer.scope === "global" ? "For example, ask what is driving electrophysiology right now, or say always open emails with one short sentence and save it as a standing instruction." : "For example, make this warmer, lead on the capacity point, or shorten the second paragraph. The assistant rewrites the email and you apply it here."}</p> : null}
+          {messages.map((m, i) => (
+            <div key={i}>
+              <div className={"msg " + (m.role === "user" ? "u" : "a")}><div className="bub">{m.text}</div></div>
+              {m.role === "assistant" && m.standingRule ? (
+                <div className="propose"><div className="lab2">Proposed standing instruction</div><p style={{ margin: "0 0 8px", fontSize: 13 }}>{m.standingRule}</p><button className="btn sm primary" onClick={() => onSaveRule(m.standingRule)}>Save as standing instruction</button></div>
+              ) : null}
+              {m.role === "assistant" && m.emailEdit ? (
+                <div className="propose"><div className="lab2">Rewritten email ready</div><p style={{ margin: "0 0 8px", fontSize: 13 }}>The assistant has rewritten the email and message. Apply it to the draft.</p><button className="btn sm primary" onClick={() => onApplyEdit(m.emailEdit)}>Apply to this email</button></div>
+              ) : null}
+            </div>
+          ))}
+          {busy ? <div className="msg a"><div className="bub"><span className="spin" />Working</div></div> : null}
+        </div>
+        <div className="dfoot">
+          {!keySet ? <p className="tiny" style={{ margin: "0 0 8px" }}>Add your Anthropic key in Settings to use the assistant.</p> : null}
+          <div style={{ display: "flex", gap: 8 }}>
+            <input className="f" placeholder="Type an instruction or a question" value={text} disabled={!keySet} onChange={e => setText(e.target.value)} onKeyDown={e => { if (e.key === "Enter") send(); }} />
+            <button className="btn primary" disabled={busy || !keySet} onClick={send}>Send</button>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+const boot = document.getElementById("boot"); if (boot) boot.remove();
 ReactDOM.createRoot(document.getElementById("root")).render(<App />);
 </script>
 </body>
