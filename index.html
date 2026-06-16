@@ -184,6 +184,35 @@ const LS = {
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
 };
 
+/* Resilient loaders. A saved copy from an older version can have a different
+   shape. Reading it blindly would crash the page, so each loader checks the
+   shape and falls back to a clean default when it does not match. */
+const isObj = (v) => v && typeof v === "object" && !Array.isArray(v);
+function loadSettings() {
+  const d = { apiKey: "", model: DEFAULT_MODEL, signer: 0, githubToken: "", gistId: "", proxyUrl: "", hubspotToken: "", perplexityKey: "" };
+  const v = LS.get("fb_settings", null);
+  return isObj(v) ? { ...d, ...v } : d;
+}
+function loadIntel() {
+  const v = LS.get("fb_intel", null);
+  const ok = isObj(v) && Array.isArray(v.narrative) && isObj(v.financials) && Array.isArray(v.financials.rows)
+    && isObj(v.units) && Array.isArray(v.ma) && isObj(v.market) && Array.isArray(v.market.leader)
+    && Array.isArray(v.market.laggard) && isObj(v.strategy) && Array.isArray(v.strategy.corporate);
+  return ok ? v : SEED_INTEL;
+}
+function loadContacts() {
+  const v = LS.get("fb_contacts", []);
+  if (!Array.isArray(v)) return [];
+  return v.map(c => ({
+    ...c,
+    signals: Array.isArray(c.signals) ? c.signals : [],
+    pains: Array.isArray(c.pains) ? c.pains : [],
+    chat: Array.isArray(c.chat) ? c.chat : [],
+    draft: isObj(c.draft) ? c.draft : null,
+  }));
+}
+function loadArray(k) { const v = LS.get(k, []); return Array.isArray(v) ? v : []; }
+
 /* ============================================================
    Division playbook. Divisions first. Corporate research second.
    ============================================================ */
@@ -392,12 +421,12 @@ async function gistRequest(token, method, id, payload) {
    ============================================================ */
 function App() {
   const [tab, setTab] = useState("intel");
-  const [settings, setSettings] = useState(() => LS.get("fb_settings", { apiKey: "", model: DEFAULT_MODEL, signer: 0, githubToken: "", gistId: "", proxyUrl: "", hubspotToken: "", perplexityKey: "" }));
-  const [direction, setDirection] = useState(() => LS.get("fb_direction", ""));
-  const [intel, setIntel] = useState(() => LS.get("fb_intel", SEED_INTEL));
-  const [contacts, setContacts] = useState(() => LS.get("fb_contacts", []));
-  const [approved, setApproved] = useState(() => LS.get("fb_approved", []));
-  const [audit, setAudit] = useState(() => LS.get("fb_audit", []));
+  const [settings, setSettings] = useState(loadSettings);
+  const [direction, setDirection] = useState(() => { const v = LS.get("fb_direction", ""); return typeof v === "string" ? v : ""; });
+  const [intel, setIntel] = useState(loadIntel);
+  const [contacts, setContacts] = useState(loadContacts);
+  const [approved, setApproved] = useState(() => loadArray("fb_approved"));
+  const [audit, setAudit] = useState(() => loadArray("fb_audit"));
   const [cloud, setCloud] = useState(() => LS.get("fb_cloud", { lastSync: "" }));
   const [toast, setToast] = useState("");
   const [drawer, setDrawer] = useState(null); // null or {scope:'global'|contactId, title}
@@ -1086,8 +1115,29 @@ function Assistant({ drawer, onClose, busy, onSend, messages, onSaveRule, onAppl
   );
 }
 
+class ErrorBoundary extends React.Component {
+  constructor(p) { super(p); this.state = { err: null }; }
+  static getDerivedStateFromError(err) { return { err }; }
+  reset() {
+    try { ["fb_intel", "fb_contacts", "fb_approved", "fb_audit", "fb_direction", "fb_cloud"].forEach(k => localStorage.removeItem(k)); } catch (e) {}
+    location.reload();
+  }
+  render() {
+    if (this.state.err) {
+      return (
+        <div style={{ maxWidth: 560, margin: "60px auto", padding: "0 24px", fontFamily: "Arial, sans-serif", color: "#1d2733" }}>
+          <h2 style={{ margin: "0 0 10px", fontSize: 20 }}>The studio could not open with the saved copy in this browser</h2>
+          <p style={{ lineHeight: 1.55, color: "#4a5763", margin: "0 0 18px" }}>This happens after an update, when an older saved copy in this browser no longer matches the new version. Clear that local copy and reload. Your settings are kept, and any approved emails saved to the cloud are not affected.</p>
+          <button onClick={() => this.reset()} style={{ background: "#172A3A", color: "#fff", border: "none", borderRadius: 6, padding: "10px 16px", fontSize: 14, cursor: "pointer", fontFamily: "Arial, sans-serif" }}>Clear local copy and reload</button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<ErrorBoundary><App /></ErrorBoundary>);
 const boot = document.getElementById("boot"); if (boot) boot.remove();
-ReactDOM.createRoot(document.getElementById("root")).render(<App />);
 </script>
 </body>
 </html>
