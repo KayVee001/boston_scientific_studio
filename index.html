@@ -25,8 +25,8 @@
   #boot .fade{color:var(--faint);font-size:13px}
   .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
 
-  header.bar{border-bottom:1px solid var(--hair);background:var(--surface)}
-  .bar .inner{display:flex;align-items:center;gap:14px;padding:14px 0}
+  header.bar{border-bottom:1px solid var(--hair);background:var(--surface);position:sticky;top:0;z-index:20}
+  .bar .inner{display:flex;align-items:center;gap:14px;padding:13px 26px}
   .eyebrow{font-size:10.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--red);font-weight:700}
   h1.title{font-size:17px;font-weight:700;margin:1px 0 0}
   .spacer{margin-left:auto}
@@ -34,14 +34,27 @@
   .acct .k{font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--faint)}
   .acct .v{font-size:13px;font-weight:700}
 
-  nav.tabs{border-bottom:1px solid var(--hair);background:var(--surface);position:sticky;top:0;z-index:5}
-  nav.tabs .inner{display:flex;gap:2px;overflow-x:auto}
-  nav.tabs button{appearance:none;background:transparent;border:none;cursor:pointer;white-space:nowrap;font:inherit;font-size:13.5px;color:var(--ink-2);padding:13px 14px;border-bottom:3px solid transparent;margin-bottom:-1px}
-  nav.tabs button.on{color:var(--ink);font-weight:700;border-bottom-color:var(--red)}
-  nav.tabs button:hover{color:var(--ink)}
-
-  main{padding:26px 0 96px}
-  .lead{color:var(--ink-2);font-size:14px;max-width:70ch;margin:0 0 20px}
+  .app{display:flex;align-items:flex-start}
+  .side{flex:0 0 232px;width:232px;border-right:1px solid var(--hair);background:var(--surface);padding:20px 14px;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto}
+  .side .snav{display:flex;flex-direction:column;gap:3px}
+  .side .snav button{appearance:none;text-align:left;background:transparent;border:none;cursor:pointer;font:inherit;font-size:14px;color:var(--ink-2);padding:10px 13px;border-radius:8px;display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;transition:background .12s}
+  .side .snav button:hover{background:#FCFBF9;color:var(--ink)}
+  .side .snav button.on{background:var(--panel);color:var(--ink);font-weight:700;box-shadow:inset 3px 0 0 var(--red)}
+  .side .snav .badge{font-size:11px;font-weight:700;color:#fff;background:var(--red);border-radius:100px;padding:1px 8px;min-width:20px;text-align:center}
+  .side .sgroup{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--faint);font-weight:700;padding:0 13px;margin:18px 0 8px}
+  .side .sfoot{margin-top:18px;padding-top:16px;border-top:1px solid var(--hair)}
+  .content{flex:1 1 auto;min-width:0;padding:28px 34px 100px}
+  .content-inner{max-width:1240px;margin:0 auto;width:100%}
+  @media(max-width:880px){
+    .side{position:static;height:auto;width:100%;flex-basis:auto;border-right:none;border-bottom:1px solid var(--hair);padding:10px 14px}
+    .side .snav{flex-direction:row;flex-wrap:wrap;gap:4px}
+    .side .snav button{width:auto}
+    .side .snav button.on{box-shadow:none;border-bottom:2px solid var(--red)}
+    .side .sgroup,.side .sfoot{display:none}
+    .app{flex-direction:column}
+    .content{padding:22px 18px 80px}
+  }
+  .lead{color:var(--ink-2);font-size:14px;max-width:74ch;margin:0 0 22px}
 
   .btn{appearance:none;font:inherit;font-size:13.5px;cursor:pointer;border-radius:var(--r);border:1px solid var(--hair);background:var(--surface);color:var(--ink);padding:8px 14px;transition:background .12s}
   .btn:hover{background:var(--panel)}
@@ -82,11 +95,26 @@
   .exp .detail{padding:0 13px 12px 33px;font-size:13px;color:var(--ink-2);line-height:1.6}
 
   .tbl{width:100%;border-collapse:collapse;font-size:13px}
-  .tbl th,.tbl td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--hair);vertical-align:top}
-  .tbl th{font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:var(--ink-2);font-weight:700;background:#FCFBF9}
-  .tbl td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .tbl th,.tbl td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--hair);vertical-align:middle;line-height:1.5}
+  .tbl th{font-size:10.5px;letter-spacing:.5px;text-transform:uppercase;color:var(--ink-2);font-weight:700;background:#FCFBF9;white-space:nowrap}
+  .tbl th.num,.tbl td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .tbl td:first-child{font-weight:600}
   .tbl tr:last-child td{border-bottom:none}
+  .tbl tr.tot td{font-weight:700;background:#FCFBF9}
+  .tbl.fin td:first-child{font-weight:400;color:var(--ink-2)}
   .tblwrap{overflow-x:auto;border:1px solid var(--hair);border-radius:var(--r)}
+
+  .tgt{border:1px solid var(--hair);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;background:#fff}
+  .tgt-h{display:flex;align-items:flex-start;gap:12px}
+  .tgt-h > div:first-child{flex:1}
+  .tgt-role{font-size:14.5px;font-weight:700}
+  .tgt-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:13px}
+  @media(max-width:760px){.tgt-grid{grid-template-columns:1fr;gap:10px}}
+  .tgt-grid > div{font-size:13px;line-height:1.55}
+  .tgt-k{display:block;font-size:10px;letter-spacing:.8px;text-transform:uppercase;color:var(--faint);margin-bottom:3px;font-weight:700}
+  .tgt-hit{margin-top:12px;padding:9px 12px;border-radius:var(--r);font-size:13px}
+  .tgt-hit.ok{background:var(--ok-soft);border:1px solid #CFE6D9;color:var(--ink)}
+  .tgt-hit.none{background:var(--panel);border:1px solid var(--hair);color:var(--ink-2)}
   .flag{display:inline-block;font-size:10.5px;color:var(--warn);background:var(--warn-soft);border:1px solid #EBDFC2;border-radius:4px;padding:0 6px;margin-left:6px}
 
   .crow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 16px}
@@ -167,11 +195,14 @@ const SIGNERS = [
 
 const FORBIDDEN = [
   "leverage","synergy","synergies","unlock","unleash","empower","holistic","robust","seamless",
-  "transformative","disrupt","disruptive","cutting edge","best in class","world class","game changer",
+  "transformative","transform","disrupt","disruptive","cutting edge","best in class","world class","game changer",
   "paradigm","ecosystem","landscape","journey","deep dive","circle back","value add","north star",
   "move the needle","thought leader","thought leadership","thought partner","at the intersection of",
-  "rapidly evolving","delve","navigate","elevate","bespoke","curated","supercharge","revolutionary",
-  "I hope this email finds you well","I wanted to reach out","passion","pivotal","testament","underscore"
+  "rapidly evolving","in today's rapidly evolving landscape","delve","navigate","elevate","bespoke","curated","supercharge","revolutionary",
+  "future proof","strategic imperative",
+  "I hope this email finds you well","I wanted to reach out","passion","pivotal","testament","underscore",
+  "you will already know","as you are aware","it is important to","leaders must","the winners will be",
+  "your hardest problem is","the real issue is","two things follow from that","not a sales call"
 ].join(", ");
 
 function Mark({ size = 32 }) {
@@ -189,15 +220,17 @@ const LS = {
    shape and falls back to a clean default when it does not match. */
 const isObj = (v) => v && typeof v === "object" && !Array.isArray(v);
 function loadSettings() {
-  const d = { apiKey: "", model: DEFAULT_MODEL, signer: 0, githubToken: "", gistId: "", proxyUrl: "", hubspotToken: "", perplexityKey: "" };
+  const d = { apiKey: "", model: DEFAULT_MODEL, signer: 0, githubToken: "", gistId: "", proxyUrl: "", hubspotToken: "", perplexityKey: "", pdlKey: "" };
   const v = LS.get("fb_settings", null);
   return isObj(v) ? { ...d, ...v } : d;
 }
 function loadIntel() {
   const v = LS.get("fb_intel", null);
-  const ok = isObj(v) && Array.isArray(v.narrative) && isObj(v.financials) && Array.isArray(v.financials.rows)
-    && isObj(v.units) && Array.isArray(v.ma) && isObj(v.market) && Array.isArray(v.market.leader)
-    && Array.isArray(v.market.laggard) && isObj(v.strategy) && Array.isArray(v.strategy.corporate);
+  const ok = isObj(v) && v.version === SEED_INTEL.version && Array.isArray(v.narrative)
+    && isObj(v.financials) && Array.isArray(v.financials.rows) && isObj(v.segments) && Array.isArray(v.segments.rows)
+    && isObj(v.units) && Array.isArray(v.units.rows) && Array.isArray(v.ma && v.ma.rows ? v.ma.rows : null)
+    && isObj(v.market) && Array.isArray(v.market.leader) && Array.isArray(v.market.laggard)
+    && isObj(v.strategy) && Array.isArray(v.strategy.corporate) && Array.isArray(v.targets);
   return ok ? v : SEED_INTEL;
 }
 function loadContacts() {
@@ -260,81 +293,122 @@ const DIVISIONS = {
    Where a figure is not publicly disclosed, it is marked as such.
    ============================================================ */
 const SEED_INTEL = {
-  stamp: "Baseline. Figures are indicative. Refresh to confirm every number with a source before any external use.",
+  version: 3,
+  stamp: "Verified against Boston Scientific full year 2025 results reported 4 February 2026, the 2025 annual report and the Q4 2025 highlights. Figures are company reported. Refresh to pull later updates with sources.",
   narrative: [
-    { id: "n1", title: "Growth sits in cardiovascular, and capacity is the real ceiling",
-      summary: "The growth and the senior attention sit in the much larger cardiovascular business. The honest read is that the limit on growth is how fast the company can build, prove and absorb, not how much the market wants.",
-      detail: "There are two main businesses, MedSurg and Cardiovascular. Cardiovascular is materially larger and carries most of the growth. A message into a MedSurg division lands better when it accepts those teams compete for money and attention inside the wider company. The investor day and the full year results point to manufacturing, clinical evidence and the queue of acquisitions to absorb as the things that cap the pipeline, more than demand does. That makes capacity, evidence throughput and integration the real subjects, not headline demand.",
-      source: "" },
-    { id: "n2", title: "The real decisions are made inside the eight divisions",
-      summary: "Research and product decisions are made at division level. The centre holds only the technologies that cut across divisions. So the divisions are the place to start, not the centre.",
-      detail: "Each of the eight divisions runs its own research leadership and owns its roadmap. Corporate research holds shared technologies only, historically areas such as 3D printing and manufacturing process. A second research centre in India makes India the largest research base outside the United States, which looks like a move to add capacity as much as to save cost. The company also builds, spins out and buys back, using outside ventures as a way to add research capacity without carrying all of it in house.",
-      source: "" },
-    { id: "n3", title: "The deals buy back ground the company once gave up",
-      summary: "The pattern across recent deals is a return to fields the company sold earlier. The deal list reads as a map of where leadership now thinks it gave up value too soon.",
-      detail: "The Penumbra agreement, announced in January 2026, takes the company back into the brain blood vessel field it left in 2011, against the rival that bought the original business. SoniVie brings a way to treat high blood pressure using sound energy on the nerves near the kidneys, which opens a field between heart care and metabolic health. Read together with earlier deals in urology, carotid care and back pain, the slate is a series of returns and adjacencies rather than a leap into something new.",
-      source: "" },
-    { id: "n4", title: "Four shifts are moving that the market has not yet named as one",
-      summary: "Energy is moving into metabolic disease. Radiation is moving into new cancers. Software and sensing are becoming the hard to copy advantage. And capacity, not demand, sets the ceiling.",
-      detail: "Energy delivered through the gut has been floated as a route into type 2 diabetes, which would put endoscopy up against the economics of the new weight loss drugs. The liver radiation therapy is being treated as a platform that can reach other tumours. In heart rhythm and nerve stimulation the contest has moved from the device to the data, the sensing and the workflow in the room. Underneath all of it, the India build, the buy back habit and the integration queue all say the same thing about capacity.",
-      source: "" },
+    { id: "n1", title: "The market punished a record year, which shows where the worry sits",
+      summary: "Full year sales reached 20 billion dollars, up 19.9 percent, yet the shares fell about 18 percent on results day. The concern was not the year. It was that electrophysiology and Watchman were flat from the third quarter to the fourth.",
+      detail: "Full year 2025 net sales were 20.074 billion dollars, up 19.9 percent reported. Cardiovascular grew 23.2 percent to 13.27 billion and MedSurg grew 13.9 percent to 6.83 billion. Despite this the stock fell about 18 percent on the day, because the two engines that carried the story, the Farapulse ablation platform and Watchman, did not grow from the third quarter to the fourth. The read is that the first wave of pulsed field ablation adoption may be maturing faster than expected as Medtronic, Johnson and Johnson and Abbott bring their own systems to market. The open question for electrophysiology leadership is what carries growth after the first Farapulse wave.",
+      source: "Boston Scientific Q4 and full year 2025 results, 4 February 2026" },
+    { id: "n2", title: "Capacity and integration are the ceiling, not demand",
+      summary: "The company absorbed roughly seven acquisitions in eighteen months. Urology missed its own plan on supply chain and low cost competition. The limit on a 10 percent plus growth rate is how fast the company can build, prove and integrate.",
+      detail: "Management guides to 10 percent plus growth and 150 basis points of margin expansion over the 2026 to 2028 plan. The risk to that is operational, not commercial. Urology grew 23.1 percent reported in 2025 but only 4.7 percent organic, and the company stated the unit came in below plan on supply chain issues and low cost competition. Across the group the integration queue of Bolt, SoniVie, Nalu, Cortex and the pending Penumbra and Valencia deals is large. Manufacturing capacity, clinical evidence throughput and integration are the real subjects for an operations or strategy conversation, more than end demand.",
+      source: "Q4 2025 highlights and earnings call, 4 February 2026" },
+    { id: "n3", title: "Penumbra takes the company back into the brain, where its recent knowledge is thinnest",
+      summary: "The pending Penumbra deal re enters neurovascular and thrombectomy, a field Boston Scientific left in 2011. It is the largest strategic bet and the one where internal knowledge is thinnest, which is where an outside market view is worth most.",
+      detail: "The agreement to acquire Penumbra adds peripheral thrombectomy, peripheral embolization and neurovascular tools for stroke and access. The company exited neurovascular in 2011, so it is buying back a position after fourteen years against rivals such as Medtronic and Stryker that built share in the interval. The questions that follow are about the stroke care pathway, the competitive set, reimbursement and where the next adjacent white space sits. These are external market questions where the internal team has the least recent experience.",
+      source: "Q4 2025 highlights, pending acquisitions, 4 February 2026" },
+    { id: "n4", title: "Endobariatrics quietly puts the company into the weight loss debate",
+      summary: "Reimbursement wins for endoscopic sleeve gastroplasty place an endoscopy device line directly into the obesity market now being redrawn by GLP-1 drugs. Where device and drug combine is an open and high value question.",
+      detail: "In late 2025 the endoscopic sleeve gastroplasty procedure, using the Apollo and OverStitch system, won coverage from Elevance Health and an endorsement from the American Society for Metabolic and Bariatric Surgery. That places a MedSurg device line inside the obesity market at the moment GLP-1 drugs are redrawing it. The question for Endoscopy and Endobariatrics leadership is how device and drug combine rather than compete, and which patient segments the device serves best. That is a consumer and adoption question as much as a clinical one.",
+      source: "Q4 2025 operational highlights, 4 February 2026" },
+    { id: "n5", title: "Two new platforms open the cardio metabolic and hypertension space",
+      summary: "SoniVie brings ultrasound renal denervation for high blood pressure and the THRIVE trial is running. Renal denervation is re emerging after two rivals won approval. It is a very large population play with an unsettled adoption path.",
+      detail: "The SoniVie acquisition adds an investigational ultrasound based renal denervation system for hypertension, now in the THRIVE trial. Renal denervation re emerged as a category after Medtronic and Recor secured United States approvals, so the market is forming rather than fixed. Hypertension is one of the largest patient populations in medicine, so even modest adoption is material. The open questions are sizing, the reimbursement pathway and which patients adopt first. This sits between cardiovascular and metabolic health, an adjacency the company is clearly building toward.",
+      source: "2025 annual report, SoniVie and THRIVE trial" },
   ],
   financials: {
-    note: "Company figures below are an indicative baseline drawn from prior public filings. Full year 2025 was reported on 4 February 2026 and is left to a live pull. Confirm every figure with a source on refresh before external use.",
-    columns: ["FY2022", "FY2023", "FY2024", "FY2025"],
+    note: "Company reported figures. Net sales, GAAP net income and adjusted EPS are from the full year 2025 release. R&D for 2025 is the company stated figure of about 2.0 billion dollars. Prior year R&D, operating margin and free cash flow should be confirmed in the 10-K on refresh.",
+    columns: ["FY2023", "FY2024", "FY2025"],
     rows: [
-      { metric: "Net sales, USD millions", cells: ["12,682", "14,240", "16,747", "Pull live"] },
-      { metric: "Research and development, USD millions", cells: ["1,302", "1,406", "1,646", "Pull live"] },
-      { metric: "R&D as percent of sales", cells: ["10.3", "9.9", "9.8", "Pull live"] },
-      { metric: "Gross margin, percent, approximate", cells: ["69", "69", "70", "Pull live"] },
-      { metric: "Operating margin, percent, indicative", cells: ["13", "15", "16", "Pull live"] },
+      { metric: "Net sales, USD m", cells: ["14,240", "16,747", "20,074"] },
+      { metric: "Reported growth, %", cells: ["12.3", "17.6", "19.9"] },
+      { metric: "GAAP net income, USD m", cells: ["1,570", "1,853", "2,898"] },
+      { metric: "Adjusted EPS, USD", cells: ["2.05", "2.51", "3.06"] },
+      { metric: "Adjusted operating margin, %", cells: ["26.0", "27.0", "28.0"] },
+      { metric: "R&D expense, USD m", cells: ["1,331", "1,461", "approx 2,000"] },
+      { metric: "Free cash flow, USD m", cells: ["approx 1,600", "2,650", "3,660"] },
+    ],
+  },
+  segments: {
+    note: "Full year 2025 net sales by reportable segment, company reported.",
+    rows: [
+      { name: "Cardiovascular", rev: "13,270", share: "66%", growth: "+23.2%" },
+      { name: "MedSurg", rev: "6,830", share: "34%", growth: "+13.9%" },
+      { name: "Total", rev: "20,074", share: "100%", growth: "+19.9%" },
     ],
   },
   units: {
-    note: "Business unit revenue, indicative FY2024 figures. Boston Scientific does not separately disclose research spend by division, so the R&D column is marked as not disclosed. Confirm on refresh.",
-    columns: ["Business unit", "Revenue FY2024, USD m, indicative", "R&D by unit"],
+    note: "Business unit detail. Net sales are fourth quarter 2025, the most recent the company breaks out by unit. Growth is full year 2025 reported. Boston Scientific does not disclose R&D by unit, so research sits at company level in the table above.",
     rows: [
-      { name: "Cardiology, includes WATCHMAN", rev: "6,400", rd: "Not disclosed" },
-      { name: "Peripheral Interventions", rev: "2,300", rd: "Not disclosed" },
-      { name: "Electrophysiology", rev: "1,900", rd: "Not disclosed" },
-      { name: "Endoscopy", rev: "2,600", rd: "Not disclosed" },
-      { name: "Urology", rev: "2,200", rd: "Not disclosed" },
-      { name: "Neuromodulation", rev: "950", rd: "Not disclosed" },
+      { name: "Interventional Cardiology and Vascular Therapies", seg: "Cardiovascular", q4: "1,202", growth: "+10.5%" },
+      { name: "Cardiac Rhythm Management", seg: "Cardiovascular", q4: "890", growth: "+2.3%" },
+      { name: "Electrophysiology", seg: "Cardiovascular", q4: "587", growth: "+74.6%" },
+      { name: "Watchman", seg: "Cardiovascular", q4: "535", growth: "+29.1%" },
+      { name: "Interventional Oncology and Embolization", seg: "Cardiovascular", q4: "263", growth: "+18.6%" },
+      { name: "Endoscopy", seg: "MedSurg", q4: "760", growth: "+8.6%" },
+      { name: "Urology", seg: "MedSurg", q4: "717", growth: "+23.1%" },
+      { name: "Neuromodulation", seg: "MedSurg", q4: "332", growth: "+8.4%" },
     ],
   },
   ma: {
-    note: "Recent and pending deals. Values are indicative and should be confirmed on refresh.",
+    note: "Recent and pending deals, full year 2025 and early 2026.",
     rows: [
-      { date: "Jan 2026", target: "Penumbra, agreement", area: "Brain blood vessel care", value: "Pull live", why: "Return to a field exited in 2011, against the rival that bought the old business" },
-      { date: "2025", target: "SoniVie", area: "High blood pressure, sound energy on kidney nerves", value: "Pull live", why: "Opens a field between heart care and metabolic health" },
-      { date: "2025 to 2026", target: "Bolt Medical, buyback", area: "Breaking up hardened artery deposits", value: "Pull live", why: "Built inside, spun out, bought back once the risk was lower" },
-      { date: "2024", target: "Axonics", area: "Urology and nerve stimulation for the bladder", value: "approx 3,700", why: "Adds a fast growing position in urology" },
-      { date: "2024", target: "Silk Road Medical", area: "Carotid artery care", value: "approx 1,160", why: "Adds a less invasive route to treat the carotid artery" },
-      { date: "2023", target: "Relievant Medsystems", area: "Vertebrogenic back pain", value: "approx 850", why: "Adds a treatment for a common, underserved source of back pain" },
+      { date: "Pending", target: "Penumbra", area: "Thrombectomy and neurovascular, stroke", value: "Announced", why: "Re enters the brain blood vessel field exited in 2011, the largest strategic bet" },
+      { date: "Pending", target: "Valencia Technologies", area: "Tibial nerve stimulation for urge incontinence", value: "Announced", why: "Strengthens urology after a year the unit missed plan" },
+      { date: "2025", target: "Nalu Medical", area: "Peripheral nerve stimulation for chronic pain", value: "Completed", why: "Adds to the neuromodulation pain franchise" },
+      { date: "2025", target: "SoniVie", area: "Ultrasound renal denervation for hypertension", value: "Completed", why: "Opens the cardio metabolic and hypertension adjacency" },
+      { date: "2025", target: "Bolt Medical", area: "Intravascular lithotripsy, SEISMIQ system", value: "Completed", why: "Enters a fast growing way to open calcified vessels" },
+      { date: "2025", target: "Cortex", area: "Cardiac mapping for atrial fibrillation", value: "Completed", why: "Adds a differentiated mapping tool to the ablation ecosystem" },
+      { date: "2025", target: "ACURATE valve line", area: "Aortic valve replacement, TAVR", value: "Discontinued", why: "Withdrew the valve line, leaving the United States TAVR market" },
     ],
   },
   market: {
-    note: "Positioning is stable and defensible. The share numbers are indicative ranges and must be confirmed with a source on refresh.",
+    note: "Positioning from company reporting and analyst coverage. Confirm specific share figures with a source before external use.",
     leader: [
-      { area: "Heart appendage closure, WATCHMAN", bsx: "Clear market leader", next: "Abbott, with the Amulet device, is the main other player" },
-      { area: "The new heartbeat ablation method, Farapulse", bsx: "Strong early leader on adoption", next: "Johnson and Johnson, Medtronic and Abbott are all moving onto the same method" },
-      { area: "Single use devices used in gut endoscopy", bsx: "Among the leaders", next: "Olympus leads the scopes themselves, then Cook Medical, ConMed and Medtronic" },
+      { area: "Left atrial appendage closure, Watchman", bsx: "Clear market leader, 600,000 patients treated, ten years on market", next: "Abbott, with the Amulet device, is the main other player" },
+      { area: "Pulsed field ablation, Farapulse", bsx: "Early leader on adoption, over 500,000 patients treated", next: "Medtronic, Johnson and Johnson and Abbott are all now in the same method" },
+      { area: "Single use devices in gut endoscopy", bsx: "Among the leaders", next: "Olympus leads the scopes, then Cook Medical, ConMed and Medtronic" },
     ],
     laggard: [
-      { area: "Pacemakers and implantable defibrillators", leaders: "Medtronic and Abbott lead by a wide margin", bsx: "Much smaller position", note: "A field the company has chosen not to chase hard" },
-      { area: "Replacement heart valves through a catheter, TAVR", leaders: "Edwards Lifesciences and Medtronic lead, Abbott is third", bsx: "Effectively out of the United States market after discontinuing its valve", note: "A large market the company is not currently in" },
-      { area: "Soft tissue surgical robots", leaders: "Intuitive Surgical dominates, Medtronic and Johnson and Johnson are entering", bsx: "Not present", note: "A field the company has so far left to others" },
+      { area: "Pacemakers and implantable defibrillators", leaders: "Medtronic and Abbott lead by a wide margin", bsx: "Cardiac Rhythm Management grew only 2.3 percent in 2025", note: "A mature unit the company has not chased hard" },
+      { area: "Aortic valve replacement, TAVR", leaders: "Edwards Lifesciences and Medtronic lead, Abbott third", bsx: "Out of the United States market after discontinuing the ACURATE valve in 2025", note: "A large market the company has now left" },
+      { area: "Soft tissue surgical robots", leaders: "Intuitive Surgical dominates, Medtronic and Johnson and Johnson entering", bsx: "Not present", note: "A field left to others" },
     ],
   },
   strategy: {
+    note: "Corporate direction from the 2025 annual report and the 2026 to 2028 plan.",
     corporate: [
-      "Grow well above the medical device market by leading in cardiovascular.",
-      "Use steady, mid sized deals to enter or re enter fast growing areas, often buying back ground sold earlier.",
-      "Lift profit margins each year while still funding research.",
-      "Add capacity, including the second research base in India, because the limit on growth is how fast the company can build, prove and absorb.",
+      "Be the highest performing large cap company in medical technology, with above market revenue growth.",
+      "Guide to 10 to 11.5 percent reported growth for 2026, with adjusted EPS of 3.43 to 3.49 dollars.",
+      "Expand adjusted operating margin by about 150 basis points over the 2026 to 2028 plan.",
+      "Use steady mid sized deals to enter or re enter fast growing areas, often buying back ground sold earlier.",
+      "Build capacity, including the second research base in India, since the limit on growth is how fast the company can build, prove and integrate.",
       "Shift the source of advantage from the device toward data, sensing and software.",
     ],
   },
+  targets: [
+    { role: "President or General Manager, Electrophysiology", division: "Electrophysiology", seniority: "President or GM",
+      why: "The unit grew 74.6 percent in 2025 but went flat from the third to the fourth quarter, and the market reacted hard.",
+      opportunity: "An outside scan of the pulsed field ablation competitive field and the next adjacent technologies after the first Farapulse wave.",
+      soWhat: "If first wave PFA adoption is maturing, the growth case rests on what comes next. That is a foresight question, not an internal one." },
+    { role: "Head of Strategy or Business Development, Cardiovascular", division: "Interventional Cardiology", seniority: "VP or Head",
+      why: "The pending Penumbra deal re enters neurovascular after a fourteen year absence, where recent internal knowledge is thin.",
+      opportunity: "A market and competitive assessment of the stroke and thrombectomy pathway and the adjacent white space.",
+      soWhat: "The largest strategic bet sits in the field where the team has the least recent experience, so external perspective carries the most value." },
+    { role: "Head of Endoscopy or Endobariatrics", division: "Endoscopy", seniority: "VP or Head",
+      why: "Endoscopic sleeve gastroplasty just won coverage and an endorsement, placing a device line inside the GLP-1 era obesity market.",
+      opportunity: "Consumer and adoption insight on how device and drug combine, and which patient segments the device serves best.",
+      soWhat: "The obesity market is being redrawn by drugs. Where the device fits is an open question worth a serious external read." },
+    { role: "Head of Supply Chain or Operations, MedSurg or group", division: "Urology", seniority: "VP or Head",
+      why: "Urology grew only 4.7 percent organic in 2025 and the company named supply chain and low cost competition as the cause.",
+      opportunity: "A scan of low cost competitors and a view on supply chain resilience across the integration queue.",
+      soWhat: "If capacity and competition, not demand, are the ceiling, the operations agenda is where the growth rate is won or lost." },
+    { role: "Head of Cardiac Rhythm Management", division: "Cardiac Rhythm Management", seniority: "President or GM",
+      why: "The unit grew only 2.3 percent in 2025, the slowest in the cardiovascular segment, and leans on envelope acquisitions to add value.",
+      opportunity: "White space and adjacency scanning to reposition a mature franchise.",
+      soWhat: "A near flat unit inside a fast growing segment is the clearest place to ask what reinvention looks like." },
+  ],
 };
 
 /* ============================================================
@@ -386,6 +460,37 @@ async function callClaude({ system, user, model, apiKey, useSearch = false, maxT
 
 function proxied(proxyUrl, target) { return proxyUrl ? (proxyUrl.replace(/\/$/, "") + "?url=" + encodeURIComponent(target)) : target; }
 
+/* People Data Labs, through the proxy. Used to find and verify the person in a
+   role, and to confirm a known contact's current title. Returns a plain object. */
+async function pdlSearchRole({ keywords, settings }) {
+  if (!settings.pdlKey) return { found: false, message: "Add a People Data Labs key in Settings." };
+  if (!settings.proxyUrl) return { found: false, message: "People Data Labs needs a proxy address in Settings. It cannot be called straight from a browser. The README has a one file proxy you can deploy free." };
+  const sql = "SELECT * FROM person WHERE job_company_name='boston scientific' AND job_title LIKE '%" + String(keywords).replace(/'/g, "") + "%'";
+  const url = proxied(settings.proxyUrl, "https://api.peopledatalabs.com/v5/person/search");
+  let res;
+  try { res = await fetch(url, { method: "POST", headers: { "content-type": "application/json", "x-api-key": settings.pdlKey }, body: JSON.stringify({ sql, size: 1, pretty: false }) }); }
+  catch (e) { return { found: false, message: "Could not reach People Data Labs. Check the proxy address." }; }
+  let data; try { data = await res.json(); } catch (e) { return { found: false, message: "People Data Labs returned an unreadable response." }; }
+  if (res.status === 401 || res.status === 403) return { found: false, message: "The People Data Labs key was rejected. Check it in Settings." };
+  const rec = data && data.data && data.data[0];
+  if (!rec) return { found: false, message: "No confident match found for this role. Try a HubSpot pull or refine the role." };
+  return { found: true, name: rec.full_name ? rec.full_name.replace(/\b\w/g, c => c.toUpperCase()) : "Name withheld", title: rec.job_title || "", linkedin: rec.linkedin_url ? ("https://" + rec.linkedin_url.replace(/^https?:\/\//, "")) : "", confidence: data.likelihood || "" };
+}
+async function pdlEnrichPerson({ name, settings }) {
+  if (!settings.pdlKey) return { found: false, message: "Add a People Data Labs key in Settings." };
+  if (!settings.proxyUrl) return { found: false, message: "People Data Labs needs a proxy address in Settings. It cannot be called straight from a browser. The README has a one file proxy you can deploy free." };
+  const target = "https://api.peopledatalabs.com/v5/person/enrich?name=" + encodeURIComponent(name) + "&company=boston%20scientific&min_likelihood=4";
+  const url = proxied(settings.proxyUrl, target);
+  let res;
+  try { res = await fetch(url, { method: "GET", headers: { "x-api-key": settings.pdlKey } }); }
+  catch (e) { return { found: false, message: "Could not reach People Data Labs." }; }
+  let data; try { data = await res.json(); } catch (e) { return { found: false, message: "People Data Labs returned an unreadable response." }; }
+  if (res.status === 401 || res.status === 403) return { found: false, message: "The People Data Labs key was rejected." };
+  if (res.status === 404 || !data || !data.data) return { found: false, message: "No confident match found." };
+  const rec = data.data;
+  return { found: true, name: rec.full_name ? rec.full_name.replace(/\b\w/g, c => c.toUpperCase()) : name, title: rec.job_title || "", company: rec.job_company_name || "", linkedin: rec.linkedin_url ? ("https://" + rec.linkedin_url.replace(/^https?:\/\//, "")) : "", confidence: data.likelihood || "" };
+}
+
 /* Perplexity audit through the proxy, falls back to Claude when no proxy or key */
 async function auditFacts({ claimsText, contact, settings }) {
   const ask = "You are an independent fact checker for a MedTech advisory firm. Check every checkable claim in the text below about " + contact + ". For each claim return a verdict of confirmed, nuanced or unsupported, a confidence from 0 to 100, a one line note, and a source URL where you have one. Return only valid JSON, no markdown: {\"engine\":\"\",\"findings\":[{\"claim\":\"\",\"verdict\":\"confirmed|nuanced|unsupported\",\"confidence\":0,\"note\":\"\",\"source\":\"\"}]}\n\nTEXT:\n" + claimsText;
@@ -431,6 +536,8 @@ function App() {
   const [toast, setToast] = useState("");
   const [drawer, setDrawer] = useState(null); // null or {scope:'global'|contactId, title}
   const [globalChat, setGlobalChat] = useState([]);
+  const [targetHits, setTargetHits] = useState({});
+  const [pdlBusy, setPdlBusy] = useState("");
 
   useEffect(() => LS.set("fb_settings", settings), [settings]);
   useEffect(() => LS.set("fb_direction", direction), [direction]);
@@ -444,6 +551,36 @@ function App() {
   const logAudit = (type, detail, sources) => setAudit(prev => [{ time: new Date().toISOString().slice(0, 16).replace("T", " "), type, detail, sources: sources || [] }, ...prev].slice(0, 250));
   const setContact = (id, patch) => setContacts(prev => prev.map(c => c.id === id ? { ...c, ...(typeof patch === "function" ? patch(c) : patch) } : c));
   const keySet = !!settings.apiKey;
+  const pdlReady = !!(settings.proxyUrl && settings.pdlKey);
+  const pdlKeySet = !!settings.pdlKey;
+
+  const verifyTarget = async (i) => {
+    const t = intel.targets[i]; if (!t) return;
+    setPdlBusy("t" + i);
+    try {
+      const kw = (t.division || t.role || "").toLowerCase();
+      const res = await pdlSearchRole({ keywords: kw, settings });
+      setTargetHits(prev => ({ ...prev, [i]: res }));
+      logAudit("PDL role lookup", t.role + (res.found ? ", matched " + res.name : ", no confident match"), []);
+      if (!res.found && res.message) flash(res.message);
+    } catch (e) { flash("Verify failed. " + (e.message || "")); }
+    finally { setPdlBusy(""); }
+  };
+
+  const verifyContact = async (id) => {
+    const c = contacts.find(x => x.id === id); if (!c || !c.name) { flash("Add a name first."); return; }
+    setPdlBusy("c" + id);
+    try {
+      const res = await pdlEnrichPerson({ name: c.name, settings });
+      if (res.found) {
+        const stillHere = (res.company || "").toLowerCase().indexOf("boston scientific") !== -1;
+        setContact(id, { title: res.title || c.title, status: stillHere ? "verified" : "unclear", pdl: { title: res.title, company: res.company, linkedin: res.linkedin, confidence: res.confidence } });
+        logAudit("PDL contact verify", c.name + ", " + (res.title || "no title") + (stillHere ? "" : ", company differs"), []);
+        flash(stillHere ? "Verified against People Data Labs." : "Found, but the company on file differs. Marked for review.");
+      } else { flash(res.message || "No confident match found."); }
+    } catch (e) { flash("Verify failed. " + (e.message || "")); }
+    finally { setPdlBusy(""); }
+  };
 
   /* pull approved from the cloud on first load if configured */
   useEffect(() => {
@@ -571,37 +708,49 @@ function App() {
       const div = DIVISIONS[c.division] || DIVISIONS["Electrophysiology"];
       const fn = firstNameOf(c.name);
       const system = [
-        "You write first outreach for FutureBridge, a strategic foresight and innovation advisory firm, to a senior leader at Boston Scientific. You write like a sharp, well read peer who knows the field. You are not a salesperson and not a consultant performing. The only job is to earn a thirty minute conversation.",
+        "You write first outreach for FutureBridge, a strategic foresight and innovation advisory firm, to a senior leader at Boston Scientific. Write as a senior business development leader speaking naturally to another senior leader. Plain, human, respectful and confident. The only job is to earn a thirty minute conversation.",
         "",
-        "Write ONE email and ONE LinkedIn message. The single best version, the one most likely to earn a reply from this specific person. Do not produce options.",
+        "Write ONE email and ONE LinkedIn message. The single best version for this specific person. Do not produce options.",
         "",
-        "PLAIN ENGLISH IS THE FIRST RULE. Short, clear sentences. One idea per sentence. A bright fifteen year old should follow the logic even without knowing the products. Strip all consultant and marketing language. No selling. Not preachy.",
+        "PLAIN AND HUMAN. Short, clear sentences. One idea per sentence. It must read like a real person wrote it. No marketing language. No advertising style lines. No clever quips. No slogans.",
         "",
-        "LEAD WITH AN UNCOMMON INSIGHT. Open on something true and not obvious about this person's world, a way of seeing a signal that affects their function, product, category or division growth, that they are unlikely to have heard put this way. Grab attention by being interesting and specific, not by flattery and not by a clever line.",
+        "DO NOT TEACH OR DIAGNOSE. Never sound like you are teaching, advising, coaching or commenting from the outside. Do not write lines like your hardest problem is, or the real issue is, or two things follow from that. You are comparing notes as a peer, not assessing them.",
         "",
-        "DO NOT TELL THEM WHAT THEY ALREADY KNOW. Never restate facts they own about their own division. Assume deep expertise. Earn the reply by adding a view, not by reciting their world back to them.",
+        "DO NOT REPEAT WHAT THEY KNOW. Never restate facts they own about their own company, role, acquisitions, expansion plans, products, market position or internal priorities. Use those facts only as background, to work out where there may be an interesting signal, tension or opportunity worth raising.",
         "",
-        "USE THEIR TWO MOST PRESSING PRESSURES. Build the message around the top two pressures provided. Connect each to a concrete decision or risk they face. Keep it plain.",
+        "OPENING. Start direct and natural with one uncommon observation or signal relevant to their area of focus. It should feel like something useful has been noticed, not a compliment and not a summary of their business.",
+        "",
+        "OPPORTUNITY AREA. Then one or two whitespace areas or external market signals where an outside view could help. Frame them as areas that may be worth exploring, not as conclusions about their business. Use measured phrasing such as one area that may be worth looking at, or we are seeing similar questions emerge across. Do not overstate certainty.",
+        "",
+        "CREDIBILITY. Add one short line that FutureBridge works with their peers and leading players in adjacent spaces, and that this gives a view they may find useful for their own areas of focus. Be specific but do not name any company unless it is given to you as approved. Make no unsupported claims.",
+        "",
+        "MEETING ASK. Ask simply and confidently for thirty minutes to share what we are seeing and compare perspectives. Say we are confident the conversation will be worth their time. No weak or apologetic language.",
+        "",
+        "USE THEIR TWO MOST PRESSING AREAS only as the background for the opening signal and the opportunity area. Do not list them back. Let them shape what you choose to raise.",
         "",
         "SHAPE OF THE EMAIL. Start with the greeting on its own line, exactly: Hi " + fn + ",",
-        "Then the body. Open with the insight. Make two or three connected points tied to the two pressures, each saying what it means for a decision they face. Add one short plain line on how FutureBridge could help on exactly this, no list. Close with a confident, low pressure ask for a short conversation, specific and easy to say yes to, and clear it is not a sales call.",
-        "End the body with a closing line on its own, exactly: Warm regards,",
+        "Then the opening signal, the opportunity area, the credibility line and the meeting ask, in that order, as short natural paragraphs.",
+        "End with a closing line on its own, exactly: Warm regards,",
         "The app prints the sender name under that line, so do not add a name.",
-        "Email body length is 150 to 175 words including the greeting and the closing line.",
+        "Aim for about 180 words including the greeting and the closing line. Short, useful and easy to read.",
         "",
-        "SHAPE OF THE LINKEDIN MESSAGE. Start with Hi " + fn + ", then a tighter version of the same point, 70 to 100 words, no closing line and no signature.",
+        "SUBJECT LINE. Simple, specific and relevant. Not clever, not a headline, not campaign copy.",
         "",
-        "NEVER. No em dashes, no arrows, no semicolons stacking clauses, no exclamation marks, no special characters, sentence case. Never invent a quote, a number, a private financial figure or a recent statement. Use only the verified signals provided. Do not use any of these words or phrases: " + FORBIDDEN + ".",
+        "SHAPE OF THE LINKEDIN MESSAGE. Start with Hi " + fn + ", then a tighter version of the opening signal and one opportunity area, 70 to 100 words, no closing line and no signature.",
+        "",
+        "FINAL CHECK before you answer. Does it sound like a real person wrote it. Is any line clever, preachy or AI sounding. Are you repeating their own facts back to them. Are you bringing a view they may not already have. Is the ask clear and confident. Is the email close to 180 words. Fix anything that fails.",
+        "",
+        "NEVER. No em dashes, no arrows, no semicolons stacking clauses, no exclamation marks, no special characters, sentence case. Never invent a quote, a number, a private financial figure or a recent statement. Use only the verified signals provided. Avoid patronising lines such as you will already know or as you are aware. Do not use any of these words or phrases: " + FORBIDDEN + ".",
         "",
         "ACCOUNT CONTEXT, for your understanding only, do not parrot it back:",
         intelDigest(),
         "",
-        "WHAT MATTERS FOR THIS DIVISION (" + c.division + "): " + div.angle + " The non obvious way in: " + div.wedge + " The division's own ambition: " + div.ambition,
+        "WHAT MATTERS FOR THIS DIVISION (" + c.division + "): " + div.angle + " A non obvious way in: " + div.wedge + " The division's own ambition: " + div.ambition,
         direction ? ("\nSTANDING DIRECTION FROM THE OPERATOR, follow it:\n" + direction) : "",
         "",
         "If this person is not a sensible target, set fit to false and explain in one plain sentence.",
         "Return only valid JSON, no markdown:",
-        "{\"fit\":true,\"fitReason\":\"\",\"painsUsed\":[\"\",\"\"],\"insight\":\"the uncommon insight you led with, one plain sentence\",\"signalsUsed\":[\"signal, then in plain words why it matters to them\"],\"email\":{\"subject\":\"plain, states the point, not a teaser\",\"body\":\"\"},\"inmail\":{\"body\":\"\"}}",
+        "{\"fit\":true,\"fitReason\":\"\",\"painsUsed\":[\"\",\"\"],\"insight\":\"the uncommon observation you opened on, one plain sentence\",\"signalsUsed\":[\"signal, then in plain words why it may matter to them\"],\"email\":{\"subject\":\"simple and specific, not clever\",\"body\":\"\"},\"inmail\":{\"body\":\"\"}}",
         "Use \\n for line breaks inside a body.",
       ].join("\n");
       const user = ["READER", "Name: " + c.name, "First name for the greeting: " + fn, "Title: " + (c.title || "senior leader"), "Division: " + c.division, "Region: " + (c.region || "not stated"), "Verification: " + c.status, "Summary: " + (c.summary || "none"), "Verified recent signals: " + (c.signals.length ? c.signals.map(s => s.text + " (" + (s.date || "") + ")").join(" | ") : "none, so lead on a division level insight, not a personal hook"), "Pressures, most pressing first: " + (c.pains.length ? c.pains.map(p => p.pain + " (" + p.score + "/10)").join(" | ") : "infer the top two from the division")].join("\n");
@@ -650,7 +799,7 @@ function App() {
       const ctx = c ? ("You are editing outreach for " + c.name + ", " + (c.title || "") + ", " + c.division + " at Boston Scientific.\nCurrent email subject: " + (c.draft ? c.draft.email.subject : "none") + "\nCurrent email body:\n" + (c.draft ? c.draft.email.body : "none") + "\nCurrent LinkedIn message:\n" + (c.draft ? c.draft.inmail.body : "none")) : "You help the operator steer the studio and answer questions about the account.";
       const system = [
         "You are the studio assistant inside a Boston Scientific outreach tool built for FutureBridge.",
-        "You can do three things. Answer a question plainly. Propose a standing instruction that should apply to every future draft. Rewrite the current email and LinkedIn message when asked, keeping the plain English standard, the greeting Hi <first name>, the closing Warm regards on the email only, no em dashes, no arrows, sentence case, email 150 to 175 words, LinkedIn 70 to 100 words.",
+        "You can do three things. Answer a question plainly. Propose a standing instruction that should apply to every future draft. Rewrite the current email and LinkedIn message when asked, keeping the standard: written like a senior business development leader speaking to a peer, plain and human, no marketing or clever or preachy lines, do not repeat facts the reader already knows, open on one uncommon signal, raise one or two areas worth exploring with measured phrasing, one short credibility line on FutureBridge working with their peers and leading players, a confident thirty minute ask, the greeting Hi <first name>, the closing Warm regards on the email only, no em dashes, no arrows, sentence case, email about 180 words, LinkedIn 70 to 100 words. Do not use these words or phrases: " + FORBIDDEN + ".",
         "You cannot change the application's own code or layout. If asked for that, say so plainly and suggest it be done in the chat that generated this file.",
         ctx,
         "Reply in plain English. Then return a single JSON object at the very end, on its own, no markdown: {\"reply\":\"your plain reply\",\"standingRule\":\"a one or two line rule to save, or empty\",\"emailEdit\":{\"subject\":\"\",\"body\":\"\",\"inmail\":\"\"}}. Set emailEdit to null unless you actually rewrote the email.",
@@ -703,11 +852,11 @@ function App() {
 
   const copy = async (text, label) => { try { await navigator.clipboard.writeText(text); } catch (e) { const ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch (er) {} document.body.removeChild(ta); } flash((label || "Copied") + "."); };
 
-  const TABS = [["intel", "Intelligence"], ["contacts", "Contacts"], ["outreach", "Outreach"], ["approved", "Approved, " + approved.length], ["settings", "Settings"]];
+  const TABS = [["intel", "Intelligence"], ["contacts", "Contacts"], ["outreach", "Outreach"], ["approved", "Approved"], ["settings", "Settings"]];
 
   return (
     <div>
-      <header className="bar"><div className="wrap inner">
+      <header className="bar"><div className="inner">
         <Mark size={32} />
         <div><div className="eyebrow">FutureBridge, Life Sciences and MedTech</div><h1 className="title">Account Studio</h1></div>
         <div className="spacer" />
@@ -715,25 +864,40 @@ function App() {
         <button className="btn sm" onClick={() => setDrawer({ scope: "global", title: "Studio assistant" })}>Assistant</button>
       </div></header>
 
-      <nav className="tabs"><div className="wrap inner">
-        {TABS.map(([k, t]) => <button key={k} className={tab === k ? "on" : ""} onClick={() => setTab(k)}>{t}</button>)}
-      </div></nav>
+      <div className="app">
+        <aside className="side">
+          <div className="sgroup">Workflow</div>
+          <div className="snav">
+            {TABS.map(([k, t]) => (
+              <button key={k} className={tab === k ? "on" : ""} onClick={() => setTab(k)}>
+                <span>{t}</span>
+                {k === "approved" && approved.length ? <span className="badge">{approved.length}</span> : null}
+              </button>
+            ))}
+          </div>
+          <div className="sfoot">
+            <button className="btn sm" style={{ width: "100%" }} onClick={() => setDrawer({ scope: "global", title: "Studio assistant" })}>Open the assistant</button>
+            <p className="tiny" style={{ margin: "12px 4px 0", lineHeight: 1.5 }}>Verified against full year 2025 results. Keys stay in your browser.</p>
+          </div>
+        </aside>
 
-      <main><div className="wrap">
-        {!keySet && tab !== "settings" ? (
-          <div className="card" style={{ borderLeft: "3px solid var(--red)" }}><div className="body">
-            <strong>Add your Anthropic key to start.</strong>
-            <p className="note" style={{ margin: "6px 0 10px" }}>Research, drafting and the audit run from this page. The key stays in your browser.</p>
-            <button className="btn red sm" onClick={() => setTab("settings")}>Open Settings</button>
-          </div></div>
-        ) : null}
+        <main className="content"><div className="content-inner">
+          {!keySet && tab !== "settings" ? (
+            <div className="card" style={{ borderLeft: "3px solid var(--red)" }}><div className="body">
+              <strong>Add your Anthropic key to start.</strong>
+              <p className="note" style={{ margin: "6px 0 10px" }}>Research, drafting and the audit run from this page. The key stays in your browser.</p>
+              <button className="btn red sm" onClick={() => setTab("settings")}>Open Settings</button>
+            </div></div>
+          ) : null}
 
-        {tab === "intel" ? <IntelView intel={intel} refreshing={refreshing} onRefresh={refreshIntel} keySet={keySet} /> : null}
-        {tab === "contacts" ? <ContactsView contacts={contacts} setContact={setContact} setContacts={setContacts} onUpload={() => fileRef.current && fileRef.current.click()} onAddManual={addManual} onPullHs={pullFromHubSpot} hsPulling={hsPulling} onResearch={research} onGenerate={generate} genBusy={genBusy} keySet={keySet} goOutreach={() => setTab("outreach")} /> : null}
-        {tab === "outreach" ? <OutreachView contacts={contacts} signer={SIGNERS[settings.signer] || SIGNERS[0]} onGenerate={generate} genBusy={genBusy} onAudit={runAudit} auditBusy={auditBusy} onApprove={approve} onCopy={copy} onSaveEdit={saveEdit} onAsk={(id) => setDrawer({ scope: id, title: "Editing " + ((contacts.find(c => c.id === id) || {}).name || "") })} keySet={keySet} goContacts={() => setTab("contacts")} /> : null}
-        {tab === "approved" ? <ApprovedView approved={approved} setApproved={setApproved} onDownload={downloadCSV} onCopy={copy} cloud={cloud} onSync={() => syncCloud(approved)} cloudOn={!!settings.githubToken} settings={settings} flash={flash} logAudit={logAudit} /> : null}
-        {tab === "settings" ? <SettingsView settings={settings} setSettings={setSettings} direction={direction} setDirection={setDirection} audit={audit} setAudit={setAudit} /> : null}
-      </div></main>
+          {tab === "intel" ? <IntelView intel={intel} refreshing={refreshing} onRefresh={refreshIntel} keySet={keySet} targetHits={targetHits} onVerifyTarget={verifyTarget} pdlBusy={pdlBusy} pdlReady={pdlReady} pdlKeySet={pdlKeySet} /> : null}
+          {tab === "contacts" ? <ContactsView contacts={contacts} setContact={setContact} setContacts={setContacts} onUpload={() => fileRef.current && fileRef.current.click()} onAddManual={addManual} onPullHs={pullFromHubSpot} hsPulling={hsPulling} onResearch={research} onGenerate={generate} genBusy={genBusy} keySet={keySet} goOutreach={() => setTab("outreach")} onVerifyPdl={verifyContact} pdlBusy={pdlBusy} pdlReady={pdlReady} pdlKeySet={pdlKeySet} /> : null}
+          {tab === "outreach" ? <OutreachView contacts={contacts} signer={SIGNERS[settings.signer] || SIGNERS[0]} onGenerate={generate} genBusy={genBusy} onAudit={runAudit} auditBusy={auditBusy} onApprove={approve} onCopy={copy} onSaveEdit={saveEdit} onAsk={(id) => setDrawer({ scope: id, title: "Editing " + ((contacts.find(c => c.id === id) || {}).name || "") })} keySet={keySet} goContacts={() => setTab("contacts")} /> : null}
+          {tab === "approved" ? <ApprovedView approved={approved} setApproved={setApproved} onDownload={downloadCSV} onCopy={copy} cloud={cloud} onSync={() => syncCloud(approved)} cloudOn={!!settings.githubToken} settings={settings} flash={flash} logAudit={logAudit} /> : null}
+          {tab === "settings" ? <SettingsView settings={settings} setSettings={setSettings} direction={direction} setDirection={setDirection} audit={audit} setAudit={setAudit} /> : null}
+        </div></main>
+      </div>
+
 
       <input ref={fileRef} type="file" accept=".csv,.xlsx,.xls" style={{ display: "none" }} onChange={e => { if (e.target.files && e.target.files[0]) handleFile(e.target.files[0]); e.target.value = ""; }} />
 
@@ -764,11 +928,11 @@ function Expand({ title, summary, detail, source }) {
 }
 
 /* ---------------- Intelligence ---------------- */
-function IntelView({ intel, refreshing, onRefresh, keySet }) {
+function IntelView({ intel, refreshing, onRefresh, keySet, targetHits, onVerifyTarget, pdlBusy, pdlReady, pdlKeySet }) {
   return (
     <div>
-      <p className="lead">A working read on the account. The numbers are an indicative baseline. Refresh them from live sources, with a citation on each, before anything goes into a message.</p>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap", marginBottom: 14 }}>
+      <p className="lead">A working read on the account, verified against the full year 2025 results, the 2025 annual report and the Q4 2025 highlights. Refresh to pull any later updates with a source on each.</p>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap", marginBottom: 16 }}>
         <span className="tiny">{intel.stamp}</span>
         <button className="btn primary" disabled={refreshing || !keySet} onClick={onRefresh}>{refreshing ? <span><span className="spin" />Pulling live sources</span> : "Refresh from live sources"}</button>
       </div>
@@ -777,32 +941,69 @@ function IntelView({ intel, refreshing, onRefresh, keySet }) {
         {intel.narrative.map(s => <Expand key={s.id} title={s.title} summary={s.summary} detail={s.detail} source={s.source} />)}
       </div></div>
 
-      <div className="card"><div className="cap">Company financial performance</div><div className="body">
-        <p className="note" style={{ margin: "0 0 10px" }}>{intel.financials.note}</p>
-        <div className="tblwrap"><table className="tbl"><thead><tr><th>Metric</th>{intel.financials.columns.map((c, i) => <th key={i} className="num">{c}</th>)}</tr></thead>
+      <div className="card"><div className="cap">Company financial performance, full year</div><div className="body">
+        <div className="tblwrap"><table className="tbl fin"><thead><tr><th>Metric</th>{intel.financials.columns.map((c, i) => <th key={i} className="num">{c}</th>)}</tr></thead>
           <tbody>{intel.financials.rows.map((r, i) => <tr key={i}><td>{r.metric}</td>{r.cells.map((c, j) => <td key={j} className="num">{c}</td>)}</tr>)}</tbody></table></div>
+        <p className="note" style={{ margin: "10px 0 0" }}>{intel.financials.note}</p>
       </div></div>
 
-      <div className="card"><div className="cap">Revenue and research by business unit</div><div className="body">
-        <p className="note" style={{ margin: "0 0 10px" }}>{intel.units.note}</p>
-        <div className="tblwrap"><table className="tbl"><thead><tr>{intel.units.columns.map((c, i) => <th key={i} className={i ? "num" : ""}>{c}</th>)}</tr></thead>
-          <tbody>{intel.units.rows.map((r, i) => <tr key={i}><td>{r.name}</td><td className="num">{r.rev}</td><td className="num">{r.rd}</td></tr>)}</tbody></table></div>
+      <div className="card"><div className="cap">Revenue by segment, full year 2025</div><div className="body">
+        <div className="tblwrap"><table className="tbl"><thead><tr><th>Segment</th><th className="num">Net sales, USD m</th><th className="num">Share</th><th className="num">Growth vs 2024</th></tr></thead>
+          <tbody>{intel.segments.rows.map((r, i) => <tr key={i} className={r.name === "Total" ? "tot" : ""}><td>{r.name}</td><td className="num">{r.rev}</td><td className="num">{r.share}</td><td className="num">{r.growth}</td></tr>)}</tbody></table></div>
+        <p className="note" style={{ margin: "10px 0 0" }}>{intel.segments.note}</p>
+      </div></div>
+
+      <div className="card"><div className="cap">Business unit detail</div><div className="body">
+        <div className="tblwrap"><table className="tbl"><thead><tr><th>Business unit</th><th>Segment</th><th className="num">Q4 2025 net sales, USD m</th><th className="num">FY2025 growth</th></tr></thead>
+          <tbody>{intel.units.rows.map((r, i) => <tr key={i}><td>{r.name}</td><td>{r.seg}</td><td className="num">{r.q4}</td><td className="num">{r.growth}</td></tr>)}</tbody></table></div>
+        <p className="note" style={{ margin: "10px 0 0" }}>{intel.units.note}</p>
       </div></div>
 
       <div className="card"><div className="cap">Deals, where the company is buying back ground</div><div className="body">
-        <p className="note" style={{ margin: "0 0 10px" }}>{intel.ma.note}</p>
-        <div className="tblwrap"><table className="tbl"><thead><tr><th>When</th><th>Target</th><th>Area</th><th className="num">Value, USD m</th><th>Why it matters</th></tr></thead>
-          <tbody>{intel.ma.rows.map((r, i) => <tr key={i}><td>{r.date}</td><td>{r.target}</td><td>{r.area}</td><td className="num">{r.value}</td><td>{r.why}</td></tr>)}</tbody></table></div>
+        <div className="tblwrap"><table className="tbl"><thead><tr><th>When</th><th>Target</th><th>Area</th><th>Status</th><th>Why it matters</th></tr></thead>
+          <tbody>{intel.ma.rows.map((r, i) => <tr key={i}><td style={{ whiteSpace: "nowrap" }}>{r.date}</td><td>{r.target}</td><td>{r.area}</td><td style={{ whiteSpace: "nowrap" }}>{r.value}</td><td>{r.why}</td></tr>)}</tbody></table></div>
+        <p className="note" style={{ margin: "10px 0 0" }}>{intel.ma.note}</p>
       </div></div>
 
       <div className="card"><div className="cap">Where the company leads, and where it lags</div><div className="body">
-        <p className="note" style={{ margin: "0 0 10px" }}>{intel.market.note}</p>
         <p className="tiny" style={{ textTransform: "uppercase", letterSpacing: ".8px", margin: "0 0 6px" }}>Leads</p>
-        <div className="tblwrap" style={{ marginBottom: 14 }}><table className="tbl"><thead><tr><th>Area</th><th>Boston Scientific</th><th>The other main players</th></tr></thead>
+        <div className="tblwrap" style={{ marginBottom: 16 }}><table className="tbl"><thead><tr><th>Area</th><th>Boston Scientific</th><th>The other main players</th></tr></thead>
           <tbody>{intel.market.leader.map((r, i) => <tr key={i}><td>{r.area}</td><td>{r.bsx}</td><td>{r.next}</td></tr>)}</tbody></table></div>
         <p className="tiny" style={{ textTransform: "uppercase", letterSpacing: ".8px", margin: "0 0 6px" }}>Lags</p>
         <div className="tblwrap"><table className="tbl"><thead><tr><th>Area</th><th>Who leads</th><th>Boston Scientific</th><th>Note</th></tr></thead>
           <tbody>{intel.market.laggard.map((r, i) => <tr key={i}><td>{r.area}</td><td>{r.leaders}</td><td>{r.bsx}</td><td>{r.note}</td></tr>)}</tbody></table></div>
+        <p className="note" style={{ margin: "10px 0 0" }}>{intel.market.note}</p>
+      </div></div>
+
+      <div className="card"><div className="cap">Where to aim, the hot targets and why</div><div className="body">
+        <p className="note" style={{ margin: "0 0 12px" }}>Roles mapped to the live signals above, each with the opportunity for an outside view and the so what. Use Verify with PDL to find and confirm the person currently in the role.</p>
+        {intel.targets.map((t, i) => {
+          const hit = targetHits[i];
+          return (
+            <div className="tgt" key={i}>
+              <div className="tgt-h">
+                <div>
+                  <div className="tgt-role">{t.role}</div>
+                  <span className="pill" style={{ marginTop: 4 }}>{t.division}</span>
+                </div>
+                <button className="btn sm" disabled={pdlBusy === ("t" + i) || !pdlKeySet} onClick={() => onVerifyTarget(i)} title={pdlKeySet ? (pdlReady ? "" : "People Data Labs also needs a proxy address in Settings") : "Add a People Data Labs key in Settings"}>
+                  {pdlBusy === ("t" + i) ? <span><span className="spin" />Verifying</span> : "Verify with PDL"}
+                </button>
+              </div>
+              <div className="tgt-grid">
+                <div><span className="tgt-k">Why now</span>{t.why}</div>
+                <div><span className="tgt-k">The opportunity</span>{t.opportunity}</div>
+                <div><span className="tgt-k">So what</span>{t.soWhat}</div>
+              </div>
+              {hit ? (
+                hit.found
+                  ? <div className="tgt-hit ok"><strong>{hit.name}</strong>{hit.title ? ", " + hit.title : ""}{hit.confidence ? <span className="tiny" style={{ marginLeft: 8 }}>PDL confidence {hit.confidence}</span> : null}{hit.linkedin ? <a className="src" href={hit.linkedin} target="_blank" rel="noreferrer">profile</a> : null}</div>
+                  : <div className="tgt-hit none">{hit.message || "No confident match found. Try a HubSpot pull or refine the role."}</div>
+              ) : null}
+            </div>
+          );
+        })}
+        {!pdlReady ? <p className="note" style={{ margin: "8px 0 0" }}>To verify, add a People Data Labs key and a proxy address in Settings. Without them the mapping still stands as a guide.</p> : null}
       </div></div>
 
       <div className="card"><div className="cap">Strategic direction and ambition</div><div className="body">
@@ -823,7 +1024,7 @@ function StatusPill({ status }) {
   const m = { new: ["Not researched", ""], researching: ["Researching", "warn"], verified: ["Verified, current", "ok"], left: ["Left the company", "bad"], unclear: ["Could not confirm", "warn"] }[status] || ["Not researched", ""];
   return <span className={"pill " + m[1]}>{m[0]}</span>;
 }
-function ContactsView({ contacts, setContact, setContacts, onUpload, onAddManual, onPullHs, hsPulling, onResearch, onGenerate, genBusy, keySet, goOutreach }) {
+function ContactsView({ contacts, setContact, setContacts, onUpload, onAddManual, onPullHs, hsPulling, onResearch, onGenerate, genBusy, keySet, goOutreach, onVerifyPdl, pdlBusy, pdlReady, pdlKeySet }) {
   return (
     <div>
       <p className="lead">Load your target list, then research each person. Research checks they still hold the role before anything else, then gathers recent public signals and scores their likely pressures, most pressing first.</p>
@@ -845,14 +1046,16 @@ function ContactsView({ contacts, setContact, setContacts, onUpload, onAddManual
             <StatusPill status={c.status} />
             <div className="grow">
               <button className="btn sm" disabled={c.status === "researching" || !keySet} onClick={() => onResearch(c.id)}>{c.status === "researching" ? <span><span className="spin" />Researching</span> : c.status === "new" ? "Verify and research" : "Re run research"}</button>
+              <button className="btn sm" disabled={!pdlKeySet || !c.name || pdlBusy === ("c" + c.id)} onClick={() => onVerifyPdl(c.id)} title={pdlKeySet ? "Confirm title and current employer with People Data Labs" : "Add a People Data Labs key in Settings"}>{pdlBusy === ("c" + c.id) ? <span><span className="spin" />Checking</span> : "Verify with PDL"}</button>
               <button className="btn sm" disabled={c.status === "left" || genBusy === c.id || !keySet} onClick={() => onGenerate(c.id)}>{genBusy === c.id ? <span><span className="spin" />Writing</span> : "Draft outreach"}</button>
               <button className="btn sm" onClick={() => setContacts(prev => prev.filter(x => x.id !== c.id))}>Remove</button>
             </div>
           </div>
           {c.status === "left" ? (
             <div className="body" style={{ borderTop: "1px solid var(--hair)", color: "var(--red)", fontSize: 13 }}>Sources suggest this person has left Boston Scientific. Research stopped. Exclude from outreach.</div>
-          ) : (c.summary || c.signals.length || c.pains.length) ? (
+          ) : (c.summary || c.signals.length || c.pains.length || c.pdl) ? (
             <div className="body" style={{ borderTop: "1px solid var(--hair)" }}>
+              {c.pdl ? <p style={{ margin: "0 0 10px", fontSize: 13 }}><span className="vc confirmed">PDL</span>{c.pdl.title || "title not returned"}{c.pdl.company ? ", " + c.pdl.company : ""}{c.pdl.confidence ? <span className="tiny" style={{ marginLeft: 6 }}>confidence {c.pdl.confidence}</span> : null}{c.pdl.linkedin ? <a className="src" href={c.pdl.linkedin} target="_blank" rel="noreferrer">profile</a> : null}</p> : null}
               {c.summary ? <p style={{ margin: "0 0 10px", fontSize: 13.5 }}>{c.summary}</p> : null}
               {c.signals.length ? (<div style={{ marginBottom: 10 }}><p className="tiny" style={{ margin: "0 0 5px", textTransform: "uppercase", letterSpacing: ".8px" }}>Recent signals</p>{c.signals.map((s, i) => <p key={i} style={{ margin: "0 0 4px", fontSize: 13 }}>{s.text} <span className="tiny">{s.date}</span>{s.source ? <a className="src" href={s.source} target="_blank" rel="noreferrer">source</a> : null}</p>)}</div>) : null}
               {c.pains.length ? (<div><p className="tiny" style={{ margin: "0 0 5px", textTransform: "uppercase", letterSpacing: ".8px" }}>Likely pressures, most pressing first</p>{c.pains.map((p, i) => <p key={i} style={{ margin: "0 0 4px", fontSize: 13 }}><span className="pri">{p.score}/10</span> {p.pain}<span className="tiny"> {p.reason}</span></p>)}</div>) : null}
@@ -870,7 +1073,7 @@ function ContactsView({ contacts, setContact, setContacts, onUpload, onAddManual
 function MailBlock({ channel, subject, body, signer, editing, onChange }) {
   const showSign = channel === "Email";
   const count = wc(body);
-  const target = channel === "Email" ? "150 to 175" : "70 to 100";
+  const target = channel === "Email" ? "about 180" : "70 to 100";
   if (editing) {
     return (
       <div className="inner2">
@@ -915,7 +1118,7 @@ function OutreachCard({ c, signer, onGenerate, genBusy, onAudit, auditBusy, onAp
             <div className="builton">
               <p className="k">Built on</p>
               {d.insight ? <p className="insight">{d.insight}</p> : null}
-              {d.painsUsed.length ? (<><p className="k">The two pressures this is built around</p><ul>{d.painsUsed.map((s, i) => <li key={i}>{s}</li>)}</ul></>) : null}
+              {d.painsUsed.length ? (<><p className="k">The two areas this is built around</p><ul>{d.painsUsed.map((s, i) => <li key={i}>{s}</li>)}</ul></>) : null}
               {d.signalsUsed.length ? (<><p className="k">Signals used and why they matter to this person</p><ul>{d.signalsUsed.map((s, i) => <li key={i}>{s}</li>)}</ul></>) : null}
             </div>
 
@@ -923,6 +1126,7 @@ function OutreachCard({ c, signer, onGenerate, genBusy, onAudit, auditBusy, onAp
             <div className="mail" style={{ marginBottom: 16 }}>
               <div className="top"><span className="tiny" style={{ fontWeight: 700, color: "var(--ink-2)" }}>The single best version for this person</span>
                 <div className="wc" style={{ display: "flex", gap: 8 }}>
+                  <button className="btn sm" disabled={!keySet} onClick={() => onAsk(c.id)}>Ask the assistant</button>
                   {!editing ? <button className="btn sm" onClick={() => setEditing(true)}>Edit</button> : (<><button className="btn sm primary" onClick={() => { onSaveEdit(c.id, es, eb, ib); setEditing(false); }}>Save changes</button><button className="btn sm" onClick={() => { setEs(d.email.subject); setEb(d.email.body); setIb(d.inmail.body); setEditing(false); }}>Cancel</button></>)}
                 </div>
               </div>
@@ -932,6 +1136,12 @@ function OutreachCard({ c, signer, onGenerate, genBusy, onAudit, auditBusy, onAp
 
             <p className="tiny" style={{ textTransform: "uppercase", letterSpacing: ".8px", margin: "6px 0 8px" }}>LinkedIn message</p>
             <div className="mail">
+              <div className="top"><span className="tiny" style={{ fontWeight: 700, color: "var(--ink-2)" }}>A tighter version for LinkedIn</span>
+                <div className="wc" style={{ display: "flex", gap: 8 }}>
+                  <button className="btn sm" disabled={!keySet} onClick={() => onAsk(c.id)}>Ask the assistant</button>
+                  {!editing ? <button className="btn sm" onClick={() => setEditing(true)}>Edit</button> : (<><button className="btn sm primary" onClick={() => { onSaveEdit(c.id, es, eb, ib); setEditing(false); }}>Save changes</button><button className="btn sm" onClick={() => { setEs(d.email.subject); setEb(d.email.body); setIb(d.inmail.body); setEditing(false); }}>Cancel</button></>)}
+                </div>
+              </div>
               <MailBlock channel="LinkedIn" subject="" body={ib} signer={signer} editing={editing} onChange={(v) => setIb(v.body)} />
               {!editing ? <div className="acts"><button className="btn sm" onClick={() => onCopy(ib, "Message copied")}>Copy</button><button className="btn primary sm" onClick={() => onApprove(c, "LinkedIn", { subject: "", body: ib })}>Approve message</button></div> : null}
             </div>
@@ -964,7 +1174,7 @@ function OutreachView({ contacts, signer, onGenerate, genBusy, onAudit, auditBus
   if (!ready.length && !researched.length) return <div className="empty">Nothing to draft yet. Research a contact first, then draft their outreach.<div style={{ marginTop: 12 }}><button className="btn" onClick={goContacts}>Go to Contacts</button></div></div>;
   return (
     <div>
-      <p className="lead">One email and one LinkedIn message per person, the single best version for that reader. The panel above each one shows the uncommon insight it opens on and the two pressures it is built around. Edit anything, then approve.</p>
+      <p className="lead">One email and one LinkedIn message per person, the single best version for that reader. The panel above each one shows the uncommon observation it opens on and the two areas it is built around. Edit anything, then approve.</p>
       {researched.map(c => (
         <div className="card" key={c.id}><div className="crow">
           <div><div className="cname">{c.name}</div><div className="ctitle">{c.title}, {c.division}</div></div>
@@ -1029,13 +1239,24 @@ function ApprovedView({ approved, setApproved, onDownload, onCopy, cloud, onSync
 /* ---------------- Settings ---------------- */
 function SettingsView({ settings, setSettings, direction, setDirection, audit, setAudit }) {
   const set = (patch) => setSettings(prev => ({ ...prev, ...patch }));
+  const chip = (ok, yes, no) => <span className={"pill " + (ok ? "ok" : "warn")} style={{ marginLeft: 6 }}>{ok ? yes : no}</span>;
   return (
     <div>
       <p className="lead">The studio runs from this page. Keys, edits, contacts and approvals live in this browser. The only data that leaves is what you send to the model, the audit, HubSpot or your own private gist, on the calls you trigger.</p>
 
+      <div className="card"><div className="cap">Connections detected</div><div className="body">
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 14, alignItems: "center", fontSize: 13.5 }}>
+          <span>Anthropic key{chip(!!settings.apiKey, "detected", "missing")}</span>
+          <span>Proxy address{chip(!!settings.proxyUrl, "set", "missing")}</span>
+          <span>People Data Labs key{chip(!!settings.pdlKey, "detected", "missing")}</span>
+          <span>Verify with PDL{chip(!!(settings.proxyUrl && settings.pdlKey), "ready", "needs proxy and key")}</span>
+        </div>
+        <p className="note" style={{ margin: "12px 0 0" }}>Verify and research and Draft outreach need the Anthropic key only. Verify with PDL needs both a proxy address and a People Data Labs key, because People Data Labs does not accept calls straight from a web page. If a key you just pasted still shows as missing, click into the field, paste again and press the space bar once then delete it, so the field registers the value. If it still shows missing after a page reload, your browser may be blocking local storage, which happens in private windows.</p>
+      </div></div>
+
       <div className="card"><div className="cap">Model</div><div className="body">
         <label className="lab">Anthropic API key, required</label>
-        <input className="f" type="password" placeholder="sk-ant-..." value={settings.apiKey} onChange={e => set({ apiKey: e.target.value.trim() })} />
+        <input className="f" type="password" placeholder="sk-ant-..." value={settings.apiKey} onChange={e => set({ apiKey: e.target.value.trim() })} onInput={e => set({ apiKey: e.target.value.trim() })} />
         <p className="note" style={{ margin: "6px 0 16px" }}>Used to research, draft, edit and audit. Get one at <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noreferrer">console.anthropic.com</a>.</p>
         <div className="grid2">
           <div><label className="lab">Model</label><select className="f" value={settings.model} onChange={e => set({ model: e.target.value })}>{MODELS.map(m => <option key={m.id} value={m.id}>{m.label}</option>)}</select></div>
@@ -1054,10 +1275,11 @@ function SettingsView({ settings, setSettings, direction, setDirection, audit, s
       <div className="card"><div className="cap">HubSpot and the fact audit</div><div className="body">
         <p className="note" style={{ margin: "0 0 10px" }}>HubSpot and Perplexity block calls made straight from a web page, so they need a small proxy. The README has a one file Cloudflare Worker you can deploy free in two minutes. Paste its address below. Without it, contacts still import by CSV, approved emails still export by CSV, and the fact audit runs through the model.</p>
         <label className="lab">Proxy address, optional</label>
-        <input className="f" style={{ marginBottom: 12 }} placeholder="https://your-worker.workers.dev" value={settings.proxyUrl} onChange={e => set({ proxyUrl: e.target.value.trim() })} />
+        <input className="f" style={{ marginBottom: 12 }} placeholder="https://your-worker.workers.dev" value={settings.proxyUrl} onChange={e => set({ proxyUrl: e.target.value.trim() })} onInput={e => set({ proxyUrl: e.target.value.trim() })} />
         <div className="grid2">
           <div><label className="lab">HubSpot private app token</label><input className="f" type="password" placeholder="pat-..." value={settings.hubspotToken} onChange={e => set({ hubspotToken: e.target.value.trim() })} /></div>
           <div><label className="lab">Perplexity API key, for a second audit</label><input className="f" type="password" placeholder="pplx-..." value={settings.perplexityKey} onChange={e => set({ perplexityKey: e.target.value.trim() })} /></div>
+          <div><label className="lab">People Data Labs key, to verify titles and roles</label><input className="f" type="password" placeholder="pdl key" value={settings.pdlKey} onChange={e => set({ pdlKey: e.target.value.trim() })} onInput={e => set({ pdlKey: e.target.value.trim() })} /></div>
         </div>
       </div></div>
 
