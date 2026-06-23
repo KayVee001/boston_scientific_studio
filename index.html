@@ -421,12 +421,16 @@ function firstNameOf(name) {
 }
 function sanitize(t) {
   if (t == null) return "";
-  return String(t)
+  const NUM_WORDS = { "thirty": "30", "sixty": "60", "ninety": "90", "seventy-four": "74", "seventy four": "74", "one hundred and eighty": "180", "one hundred eighty": "180" };
+  let s = String(t)
     .replace(/\u2014/g, ", ").replace(/\u2013/g, "-")
     .replace(/[\u2192\u21d2\u2794\u2799\u279c\u2190\u2191\u2193]/g, " ").replace(/->|=>/g, " ")
     .replace(/[\u2018\u2019]/g, "'").replace(/[\u201c\u201d]/g, '"')
     .replace(/[\u2022\u25aa\u25cf\u2043]/g, "")
-    .replace(/[ \t]{2,}/g, " ").replace(/ +\n/g, "\n").trim();
+    .replace(/\bR\s+and\s+D\b/gi, "R&D")
+    .replace(/ {2,}/g, " ").replace(/ +\n/g, "\n").trim();
+  for (const [word, digit] of Object.entries(NUM_WORDS)) s = s.replace(new RegExp("\\b" + word + "\\b", "gi"), digit);
+  return s;
 }
 const wc = (t) => (t ? String(t).trim().split(/\s+/).filter(Boolean).length : 0);
 function extractJSON(text) {
@@ -538,6 +542,53 @@ function App() {
   const [globalChat, setGlobalChat] = useState([]);
   const [targetHits, setTargetHits] = useState({});
   const [pdlBusy, setPdlBusy] = useState("");
+  const [contextBusy, setContextBusy] = useState(false);
+
+  /* Push one or all targets from Intelligence to Contacts as Recommended */
+  const pushTargets = (indexOrAll) => {
+    const targets = intel.targets || [];
+    const toPush = typeof indexOrAll === "number" ? [targets[indexOrAll]].filter(Boolean) : targets;
+    if (!toPush.length) { flash("No targets to push."); return; }
+    setContacts(prev => {
+      const existing = new Set(prev.map(c => (c.name || "").toLowerCase().trim()));
+      const hit = typeof indexOrAll === "number" ? targetHits[indexOrAll] : null;
+      const newOnes = toPush.map((t, i) => {
+        const pdlHit = typeof indexOrAll === "number" ? hit : targetHits[i];
+        const name = pdlHit && pdlHit.found ? pdlHit.name : "";
+        const title = pdlHit && pdlHit.found ? (pdlHit.title || t.role) : t.role;
+        const key = name.toLowerCase().trim();
+        if (key && existing.has(key)) return null;
+        return { id: "tgt_" + Date.now() + "_" + i, name, title, division: t.division || "Electrophysiology", email: "", linkedin: pdlHit && pdlHit.found ? (pdlHit.linkedin || "") : "", region: "", status: "new", summary: t.opportunity || "", signals: [], pains: [], draft: null, chat: [], tag: "Recommended Contact", sourceRole: t.role };
+      }).filter(Boolean);
+      if (!newOnes.length) { flash("All selected targets are already in Contacts."); return prev; }
+      flash(newOnes.length + " target" + (newOnes.length > 1 ? "s" : "") + " added to Contacts as Recommended.");
+      return [...prev, ...newOnes];
+    });
+    setTab("contacts");
+  };
+
+  /* Add further context to the intel object (file or URL) */
+  const addContext = (action) => {
+    if (action.type === "remove") {
+      setIntel(prev => ({ ...prev, contextFiles: (prev.contextFiles || []).filter((_, i) => i !== action.index) }));
+      return;
+    }
+    if (action.type === "remove-url") {
+      setIntel(prev => ({ ...prev, contextUrls: (prev.contextUrls || []).filter((_, i) => i !== action.index) }));
+      return;
+    }
+    if (action.type === "file") {
+      setIntel(prev => ({ ...prev, contextFiles: [...(prev.contextFiles || []), { name: action.name, content: action.content }] }));
+      flash("Context file added. It will be used on the next refresh and in drafts.");
+      return;
+    }
+    if (action.type === "url") {
+      setContextBusy(true);
+      setIntel(prev => ({ ...prev, contextUrls: [...(prev.contextUrls || []), action.url] }));
+      flash("Link saved. It will be used on the next refresh and in drafts.");
+      setContextBusy(false);
+    }
+  };
 
   useEffect(() => LS.set("fb_settings", settings), [settings]);
   useEffect(() => LS.set("fb_direction", direction), [direction]);
@@ -671,7 +722,10 @@ function App() {
     finally { setHsPulling(false); }
   };
 
-  const addManual = () => setContacts(prev => [...prev, { id: "c_" + Date.now(), name: "", title: "", division: "Electrophysiology", email: "", linkedin: "", region: "", status: "new", summary: "", signals: [], pains: [], draft: null, chat: [] }]);
+  const addManual = (form) => {
+    const f = form || {};
+    setContacts(prev => [...prev, { id: "c_" + Date.now(), name: f.name || "", title: f.title || "", division: f.division || "Electrophysiology", email: f.email || "", linkedin: f.linkedin || "", region: f.region || "", company: f.company || "Boston Scientific", status: "new", summary: "", signals: [], pains: [], draft: null, chat: [] }]);
+  };
 
   /* ---------------- Verify and research ---------------- */
   const research = async (id) => {
@@ -740,7 +794,7 @@ function App() {
         "",
         "FINAL CHECK before you answer. Does it sound like a real person wrote it. Is any line clever, preachy or AI sounding. Are you repeating their own facts back to them. Are you bringing a view they may not already have. Is the ask clear and confident. Is the email close to 180 words. Fix anything that fails.",
         "",
-        "NEVER. No em dashes, no arrows, no semicolons stacking clauses, no exclamation marks, no special characters, sentence case. Never invent a quote, a number, a private financial figure or a recent statement. Use only the verified signals provided. Avoid patronising lines such as you will already know or as you are aware. Do not use any of these words or phrases: " + FORBIDDEN + ".",
+        "NEVER. No em dashes, no arrows, no semicolons stacking clauses, no exclamation marks, no special characters, sentence case. Never invent a quote, a number, a private financial figure or a recent statement. Use only the verified signals provided. Avoid patronising lines such as you will already know or as you are aware. Always write R&D with an ampersand, never write it as R and D. Always write numbers in digits, not in words: write 30 not thirty, write 74 not seventy four, write 180 not one hundred and eighty. Do not use any of these words or phrases: " + FORBIDDEN + ".",
         "",
         "ACCOUNT CONTEXT, for your understanding only, do not parrot it back:",
         intelDigest(),
@@ -890,7 +944,7 @@ function App() {
             </div></div>
           ) : null}
 
-          {tab === "intel" ? <IntelView intel={intel} refreshing={refreshing} onRefresh={refreshIntel} keySet={keySet} targetHits={targetHits} onVerifyTarget={verifyTarget} pdlBusy={pdlBusy} pdlReady={pdlReady} pdlKeySet={pdlKeySet} /> : null}
+          {tab === "intel" ? <IntelView intel={intel} refreshing={refreshing} onRefresh={refreshIntel} keySet={keySet} targetHits={targetHits} onVerifyTarget={verifyTarget} pdlBusy={pdlBusy} pdlReady={pdlReady} pdlKeySet={pdlKeySet} onPushTargets={pushTargets} onAddContext={addContext} contextBusy={contextBusy} /> : null}
           {tab === "contacts" ? <ContactsView contacts={contacts} setContact={setContact} setContacts={setContacts} onUpload={() => fileRef.current && fileRef.current.click()} onAddManual={addManual} onPullHs={pullFromHubSpot} hsPulling={hsPulling} onResearch={research} onGenerate={generate} genBusy={genBusy} keySet={keySet} goOutreach={() => setTab("outreach")} onVerifyPdl={verifyContact} pdlBusy={pdlBusy} pdlReady={pdlReady} pdlKeySet={pdlKeySet} /> : null}
           {tab === "outreach" ? <OutreachView contacts={contacts} signer={SIGNERS[settings.signer] || SIGNERS[0]} onGenerate={generate} genBusy={genBusy} onAudit={runAudit} auditBusy={auditBusy} onApprove={approve} onCopy={copy} onSaveEdit={saveEdit} onAsk={(id) => setDrawer({ scope: id, title: "Editing " + ((contacts.find(c => c.id === id) || {}).name || "") })} keySet={keySet} goContacts={() => setTab("contacts")} /> : null}
           {tab === "approved" ? <ApprovedView approved={approved} setApproved={setApproved} onDownload={downloadCSV} onCopy={copy} cloud={cloud} onSync={() => syncCloud(approved)} cloudOn={!!settings.githubToken} settings={settings} flash={flash} logAudit={logAudit} /> : null}
@@ -928,7 +982,20 @@ function Expand({ title, summary, detail, source }) {
 }
 
 /* ---------------- Intelligence ---------------- */
-function IntelView({ intel, refreshing, onRefresh, keySet, targetHits, onVerifyTarget, pdlBusy, pdlReady, pdlKeySet }) {
+function IntelView({ intel, refreshing, onRefresh, keySet, targetHits, onVerifyTarget, pdlBusy, pdlReady, pdlKeySet, onPushTargets, onAddContext, contextBusy }) {
+  const fileRef = React.useRef(null);
+  const [ctxUrl, setCtxUrl] = React.useState("");
+  const [ctxMode, setCtxMode] = React.useState("file"); // "file" | "url"
+
+  const handleCtxFile = (e) => {
+    const f = e.target.files && e.target.files[0]; if (!f) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => onAddContext({ type: "file", name: f.name, content: ev.target.result });
+    if (f.type === "application/pdf" || f.name.endsWith(".pdf")) reader.readAsDataURL(f);
+    else reader.readAsText(f);
+    e.target.value = "";
+  };
+
   return (
     <div>
       <p className="lead">A working read on the account, verified against the full year 2025 results, the 2025 annual report and the Q4 2025 highlights. Refresh to pull any later updates with a source on each.</p>
@@ -936,6 +1003,49 @@ function IntelView({ intel, refreshing, onRefresh, keySet, targetHits, onVerifyT
         <span className="tiny">{intel.stamp}</span>
         <button className="btn primary" disabled={refreshing || !keySet} onClick={onRefresh}>{refreshing ? <span><span className="spin" />Pulling live sources</span> : "Refresh from live sources"}</button>
       </div>
+
+      <div className="card" style={{ borderLeft: "3px solid var(--red)" }}><div className="cap">Add further context to enrich the intelligence</div><div className="body">
+        <p className="note" style={{ margin: "0 0 12px" }}>Upload a document or paste a link, for example an analyst report, an earnings call transcript or a news article. The studio will use it to sharpen the narrative and improve outreach relevance when you next refresh or draft.</p>
+        <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
+          <button className={"btn sm" + (ctxMode === "file" ? " primary" : "")} onClick={() => setCtxMode("file")}>Upload a file</button>
+          <button className={"btn sm" + (ctxMode === "url" ? " primary" : "")} onClick={() => setCtxMode("url")}>Add a link</button>
+        </div>
+        {ctxMode === "file" ? (
+          <div>
+            <input ref={fileRef} type="file" accept=".pdf,.txt,.docx,.md,.csv" style={{ display: "none" }} onChange={handleCtxFile} />
+            <button className="btn" onClick={() => fileRef.current && fileRef.current.click()} disabled={contextBusy}>
+              {contextBusy ? <span><span className="spin" />Processing</span> : "Choose file, PDF, Word, text or CSV"}
+            </button>
+            {intel.contextFiles && intel.contextFiles.length ? (
+              <div style={{ marginTop: 10 }}>
+                {intel.contextFiles.map((f, i) => (
+                  <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4, fontSize: 13 }}>
+                    <span className="pill ok">{f.name}</span>
+                    <button className="btn sm" onClick={() => onAddContext({ type: "remove", index: i })}>Remove</button>
+                  </div>
+                ))}
+              </div>
+            ) : null}
+          </div>
+        ) : (
+          <div style={{ display: "flex", gap: 8 }}>
+            <input className="f" style={{ flex: 1 }} placeholder="https://..." value={ctxUrl} onChange={e => setCtxUrl(e.target.value)} />
+            <button className="btn" disabled={!ctxUrl.trim() || contextBusy} onClick={() => { onAddContext({ type: "url", url: ctxUrl.trim() }); setCtxUrl(""); }}>
+              {contextBusy ? <span><span className="spin" />Fetching</span> : "Add link"}
+            </button>
+          </div>
+        )}
+        {intel.contextUrls && intel.contextUrls.length ? (
+          <div style={{ marginTop: 10 }}>
+            {intel.contextUrls.map((u, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4, fontSize: 13 }}>
+                <a className="src" href={u} target="_blank" rel="noreferrer">{u.length > 60 ? u.slice(0, 60) + "..." : u}</a>
+                <button className="btn sm" onClick={() => onAddContext({ type: "remove-url", index: i })}>Remove</button>
+              </div>
+            ))}
+          </div>
+        ) : null}
+      </div></div>
 
       <div className="card"><div className="cap">What is really going on, click any line for the detail</div><div className="body">
         {intel.narrative.map(s => <Expand key={s.id} title={s.title} summary={s.summary} detail={s.detail} source={s.source} />)}
@@ -976,7 +1086,10 @@ function IntelView({ intel, refreshing, onRefresh, keySet, targetHits, onVerifyT
       </div></div>
 
       <div className="card"><div className="cap">Where to aim, the hot targets and why</div><div className="body">
-        <p className="note" style={{ margin: "0 0 12px" }}>Roles mapped to the live signals above, each with the opportunity for an outside view and the so what. Use Verify with PDL to find and confirm the person currently in the role.</p>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap", marginBottom: 14 }}>
+          <p className="note" style={{ margin: 0 }}>Roles mapped to the live signals above, each with the opportunity for an outside view and the so what. Use Verify with PDL to find and confirm the person currently in the role, then push all targets to Contacts in one click.</p>
+          <button className="btn primary" onClick={onPushTargets}>Push all to Contacts</button>
+        </div>
         {intel.targets.map((t, i) => {
           const hit = targetHits[i];
           return (
@@ -986,9 +1099,12 @@ function IntelView({ intel, refreshing, onRefresh, keySet, targetHits, onVerifyT
                   <div className="tgt-role">{t.role}</div>
                   <span className="pill" style={{ marginTop: 4 }}>{t.division}</span>
                 </div>
-                <button className="btn sm" disabled={pdlBusy === ("t" + i) || !pdlKeySet} onClick={() => onVerifyTarget(i)} title={pdlKeySet ? (pdlReady ? "" : "People Data Labs also needs a proxy address in Settings") : "Add a People Data Labs key in Settings"}>
-                  {pdlBusy === ("t" + i) ? <span><span className="spin" />Verifying</span> : "Verify with PDL"}
-                </button>
+                <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
+                  <button className="btn sm" disabled={pdlBusy === ("t" + i) || !pdlKeySet} onClick={() => onVerifyTarget(i)} title={pdlKeySet ? (pdlReady ? "" : "People Data Labs also needs a proxy address in Settings") : "Add a People Data Labs key in Settings"}>
+                    {pdlBusy === ("t" + i) ? <span><span className="spin" />Verifying</span> : "Verify with PDL"}
+                  </button>
+                  <button className="btn sm primary" onClick={() => onPushTargets(i)}>Add to Contacts</button>
+                </div>
               </div>
               <div className="tgt-grid">
                 <div><span className="tgt-k">Why now</span>{t.why}</div>
@@ -1025,20 +1141,58 @@ function StatusPill({ status }) {
   return <span className={"pill " + m[1]}>{m[0]}</span>;
 }
 function ContactsView({ contacts, setContact, setContacts, onUpload, onAddManual, onPullHs, hsPulling, onResearch, onGenerate, genBusy, keySet, goOutreach, onVerifyPdl, pdlBusy, pdlReady, pdlKeySet }) {
+  const [showForm, setShowForm] = React.useState(false);
+  const blank = { name: "", title: "", division: "Electrophysiology", email: "", linkedin: "", region: "", company: "Boston Scientific" };
+  const [form, setForm] = React.useState(blank);
+  const fset = (patch) => setForm(prev => ({ ...prev, ...patch }));
+
+  const submit = () => {
+    if (!form.name.trim()) return;
+    onAddManual(form);
+    setForm(blank);
+    setShowForm(false);
+  };
+
   return (
     <div>
-      <p className="lead">Load your target list, then research each person. Research checks they still hold the role before anything else, then gathers recent public signals and scores their likely pressures, most pressing first.</p>
+      <p className="lead">Load your target list, then research each person. Research checks they still hold the role before anything else, then gathers recent public signals and scores their likely areas, most pressing first.</p>
       <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 18 }}>
         <button className="btn primary" onClick={onUpload}>Upload list, CSV or Excel</button>
         <button className="btn" onClick={onPullHs} disabled={hsPulling}>{hsPulling ? <span><span className="spin" />Pulling</span> : "Pull contacts from HubSpot"}</button>
-        <button className="btn" onClick={onAddManual}>Add one by hand</button>
+        <button className="btn" onClick={() => setShowForm(s => !s)}>{showForm ? "Cancel" : "Add one by hand"}</button>
       </div>
+
+      {showForm ? (
+        <div className="card" style={{ borderLeft: "3px solid var(--red)", marginBottom: 18 }}><div className="body">
+          <p className="tiny" style={{ textTransform: "uppercase", letterSpacing: ".8px", margin: "0 0 14px", fontWeight: 700 }}>Add a contact manually</p>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            <div><label className="lab">Full name *</label><input className="f" placeholder="Jane Smith" value={form.name} onChange={e => fset({ name: e.target.value })} /></div>
+            <div><label className="lab">Job title</label><input className="f" placeholder="VP, Electrophysiology" value={form.title} onChange={e => fset({ title: e.target.value })} /></div>
+            <div><label className="lab">Email address</label><input className="f" type="email" placeholder="jane.smith@bsci.com" value={form.email} onChange={e => fset({ email: e.target.value })} /></div>
+            <div><label className="lab">LinkedIn URL</label><input className="f" placeholder="https://linkedin.com/in/..." value={form.linkedin} onChange={e => fset({ linkedin: e.target.value })} /></div>
+            <div><label className="lab">Division</label>
+              <select className="f" value={form.division} onChange={e => fset({ division: e.target.value })}>
+                {Object.keys(DIVISIONS).map(d => <option key={d}>{d}</option>)}
+              </select>
+            </div>
+            <div><label className="lab">Region or location</label><input className="f" placeholder="e.g. United States, EMEA" value={form.region} onChange={e => fset({ region: e.target.value })} /></div>
+            <div><label className="lab">Company</label><input className="f" value={form.company} onChange={e => fset({ company: e.target.value })} /></div>
+          </div>
+          <div style={{ display: "flex", gap: 8, marginTop: 16 }}>
+            <button className="btn primary" disabled={!form.name.trim()} onClick={submit}>Add contact</button>
+            <button className="btn" onClick={() => { setShowForm(false); setForm(blank); }}>Cancel</button>
+          </div>
+        </div></div>
+      ) : null}
+
       {!contacts.length ? (
-        <div className="empty">No contacts yet. Upload a list, pull from HubSpot, or add one by hand. Columns are matched by name, so name, title, division, email and LinkedIn are all picked up.</div>
+        <div className="empty">No contacts yet. Upload a list, pull from HubSpot, add one by hand, or push recommended contacts from the Intelligence tab.</div>
       ) : contacts.map(c => (
         <div className="card" key={c.id}>
           <div className="crow">
             <div style={{ minWidth: 200 }}>
+              {c.tag === "Recommended Contact" ? <span className="pill" style={{ marginBottom: 4, display: "inline-block", background: "#EAF0FB", color: "#2A52A0" }}>Recommended Contact</span> : null}
+              {c.sourceRole ? <div className="tiny" style={{ color: "var(--faint)", marginBottom: 3 }}>From hot targets: {c.sourceRole}</div> : null}
               {c.name ? <div className="cname">{c.name}</div> : <input className="f" style={{ maxWidth: 220 }} placeholder="Full name" value={c.name} onChange={e => setContact(c.id, { name: e.target.value })} />}
               <div className="ctitle">{c.title || "Title not set"}{c.region ? ", " + c.region : ""}</div>
             </div>
@@ -1058,7 +1212,7 @@ function ContactsView({ contacts, setContact, setContacts, onUpload, onAddManual
               {c.pdl ? <p style={{ margin: "0 0 10px", fontSize: 13 }}><span className="vc confirmed">PDL</span>{c.pdl.title || "title not returned"}{c.pdl.company ? ", " + c.pdl.company : ""}{c.pdl.confidence ? <span className="tiny" style={{ marginLeft: 6 }}>confidence {c.pdl.confidence}</span> : null}{c.pdl.linkedin ? <a className="src" href={c.pdl.linkedin} target="_blank" rel="noreferrer">profile</a> : null}</p> : null}
               {c.summary ? <p style={{ margin: "0 0 10px", fontSize: 13.5 }}>{c.summary}</p> : null}
               {c.signals.length ? (<div style={{ marginBottom: 10 }}><p className="tiny" style={{ margin: "0 0 5px", textTransform: "uppercase", letterSpacing: ".8px" }}>Recent signals</p>{c.signals.map((s, i) => <p key={i} style={{ margin: "0 0 4px", fontSize: 13 }}>{s.text} <span className="tiny">{s.date}</span>{s.source ? <a className="src" href={s.source} target="_blank" rel="noreferrer">source</a> : null}</p>)}</div>) : null}
-              {c.pains.length ? (<div><p className="tiny" style={{ margin: "0 0 5px", textTransform: "uppercase", letterSpacing: ".8px" }}>Likely pressures, most pressing first</p>{c.pains.map((p, i) => <p key={i} style={{ margin: "0 0 4px", fontSize: 13 }}><span className="pri">{p.score}/10</span> {p.pain}<span className="tiny"> {p.reason}</span></p>)}</div>) : null}
+              {c.pains.length ? (<div><p className="tiny" style={{ margin: "0 0 5px", textTransform: "uppercase", letterSpacing: ".8px" }}>Likely areas, most pressing first</p>{c.pains.map((p, i) => <p key={i} style={{ margin: "0 0 4px", fontSize: 13 }}><span className="pri">{p.score}/10</span> {p.pain}<span className="tiny"> {p.reason}</span></p>)}</div>) : null}
               {c.draft ? <p className="tiny" style={{ marginTop: 10 }}>Draft ready. Open the Outreach tab to read, edit and approve.</p> : null}
             </div>
           ) : null}
