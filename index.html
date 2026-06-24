@@ -164,7 +164,7 @@
 </head>
 <body>
 <div id="boot">
-  <svg width="40" height="40" viewBox="0 0 100 100" aria-hidden="true"><rect x="22" y="16" width="50" height="14" fill="#172A3A"></rect><rect x="22" y="48" width="50" height="14" fill="#172A3A"></rect><rect x="22" y="80" width="14" height="14" fill="#D8281C"></rect></svg>
+  <svg width="40" height="40" viewBox="0 0 100 100" aria-hidden="true"><rect x="22" y="16" width="50" height="14" fill="#172A3A"></rect><rect x="22" y="48" width="50" height="14" fill="#172A3A"></rect><rect x="22" y="80" width="14" height="14" fill="#172A3A"></rect></svg>
   <div class="fade">Loading the studio</div>
 </div>
 <div id="root"></div>
@@ -205,9 +205,23 @@ const FORBIDDEN = [
   "your hardest problem is","the real issue is","two things follow from that","not a sales call"
 ].join(", ");
 
+/* Super admin is granted only to these emails, and only after the security
+   question is answered. The answer is stored as a simple hash, not in plain
+   text, so reading the source does not reveal it. Easy to change: replace
+   ANSWER_HASH by running hashStr on your chosen answer in the browser console. */
+const SUPERADMINS = ["kayvee.pro@gmail.com", "siva.prasad@futurebridge.com"];
+const SECURITY_QUESTION = "What was the make of your first car?";
+function hashStr(s) {
+  const t = String(s).toLowerCase().replace(/\s+/g, "").trim();
+  let h = 5381; for (let i = 0; i < t.length; i++) h = ((h << 5) + h + t.charCodeAt(i)) >>> 0;
+  let h2 = 52711; for (let i = 0; i < t.length; i++) h2 = ((h2 << 5) + h2 ^ t.charCodeAt(i)) >>> 0;
+  return h.toString(16) + ":" + h2.toString(16);
+}
+const ANSWER_HASH = "d3d1e77:8dea0451"; // stored only as a hash. To change the answer, run hashStr("your new answer") in the browser console and paste the result here.
+
 function Mark({ size = 32 }) {
   return (<svg width={size} height={size} viewBox="0 0 100 100" aria-label="FutureBridge">
-    <rect x="22" y="16" width="50" height="14" fill="#172A3A" /><rect x="22" y="48" width="50" height="14" fill="#172A3A" /><rect x="22" y="80" width="14" height="14" fill="#D8281C" /></svg>);
+    <rect x="22" y="16" width="50" height="14" fill="#172A3A" /><rect x="22" y="48" width="50" height="14" fill="#172A3A" /><rect x="22" y="80" width="14" height="14" fill="#172A3A" /></svg>);
 }
 
 const LS = {
@@ -256,7 +270,7 @@ const DIVISIONS = {
     ambition: "Lead the shift to the new ablation method, then defend it through data and lab workflow rather than the device alone." },
   "Interventional Cardiology": { priority: "P1",
     angle: "Treating high blood pressure through the nerves near the kidneys opens a field that sits between heart care and metabolic health, with competitors arriving from outside the usual device world.",
-    wedge: "Which less obvious players enter the high blood pressure field from outside MedTech, and what that does to the next three years.",
+    wedge: "Which less obvious players enter the high blood pressure field from outside MedTech, and what that does to the next 3 years.",
     ambition: "Hold the lead in complex coronary work and open the high blood pressure field before the field gets crowded." },
   "Endoscopy": { priority: "P1",
     angle: "Energy delivered through the gut is quietly becoming a way to treat metabolic disease. A route into type 2 diabetes would change what this division is, and it would meet the new weight loss drugs head on.",
@@ -275,7 +289,7 @@ const DIVISIONS = {
     wedge: "Which patient finding methods from other fields could release the large group of patients who are never diagnosed.",
     ambition: "Hold the clear lead in heart appendage closure and grow it by finding the patients who are never diagnosed." },
   "Neurovascular and Penumbra": { priority: "P1",
-    angle: "This is a return to a field the company left in 2011, against a rival that bought the original business. The first two years are about integration and winning back routine use, not about heritage.",
+    angle: "This is a return to a field the company left in 2011, against a rival that bought the original business. The first 2 years are about integration and winning back routine use, not about heritage.",
     wedge: "What the return signals about where value was left behind, and which nearby signals lower the risk of the integration.",
     ambition: "Re enter the brain blood vessel field and win back routine use from the rival that bought the old business." },
   "Corporate R&D": { priority: "P2",
@@ -297,16 +311,16 @@ const SEED_INTEL = {
   stamp: "Verified against Boston Scientific full year 2025 results reported 4 February 2026, the 2025 annual report and the Q4 2025 highlights. Figures are company reported. Refresh to pull later updates with sources.",
   narrative: [
     { id: "n1", title: "The market punished a record year, which shows where the worry sits",
-      summary: "Full year sales reached 20 billion dollars, up 19.9 percent, yet the shares fell about 18 percent on results day. The concern was not the year. It was that electrophysiology and Watchman were flat from the third quarter to the fourth.",
-      detail: "Full year 2025 net sales were 20.074 billion dollars, up 19.9 percent reported. Cardiovascular grew 23.2 percent to 13.27 billion and MedSurg grew 13.9 percent to 6.83 billion. Despite this the stock fell about 18 percent on the day, because the two engines that carried the story, the Farapulse ablation platform and Watchman, did not grow from the third quarter to the fourth. The read is that the first wave of pulsed field ablation adoption may be maturing faster than expected as Medtronic, Johnson and Johnson and Abbott bring their own systems to market. The open question for electrophysiology leadership is what carries growth after the first Farapulse wave.",
+      summary: "Full year sales reached 20 billion dollars, up 19.9%, yet the shares fell about 18% on results day. The concern was not the year. It was that electrophysiology and Watchman were flat from the third quarter to the fourth.",
+      detail: "Full year 2025 net sales were 20.074 billion dollars, up 19.9% reported. Cardiovascular grew 23.2% to 13.27 billion and MedSurg grew 13.9% to 6.83 billion. Despite this the stock fell about 18% on the day, because the two engines that carried the story, the Farapulse ablation platform and Watchman, did not grow from the third quarter to the fourth. The read is that the first wave of pulsed field ablation adoption may be maturing faster than expected as Medtronic, Johnson and Johnson and Abbott bring their own systems to market. The open question for electrophysiology leadership is what carries growth after the first Farapulse wave.",
       source: "Boston Scientific Q4 and full year 2025 results, 4 February 2026" },
     { id: "n2", title: "Capacity and integration are the ceiling, not demand",
-      summary: "The company absorbed roughly seven acquisitions in eighteen months. Urology missed its own plan on supply chain and low cost competition. The limit on a 10 percent plus growth rate is how fast the company can build, prove and integrate.",
-      detail: "Management guides to 10 percent plus growth and 150 basis points of margin expansion over the 2026 to 2028 plan. The risk to that is operational, not commercial. Urology grew 23.1 percent reported in 2025 but only 4.7 percent organic, and the company stated the unit came in below plan on supply chain issues and low cost competition. Across the group the integration queue of Bolt, SoniVie, Nalu, Cortex and the pending Penumbra and Valencia deals is large. Manufacturing capacity, clinical evidence throughput and integration are the real subjects for an operations or strategy conversation, more than end demand.",
+      summary: "The company absorbed roughly 7 acquisitions in 18 months. Urology missed its own plan on supply chain and low cost competition. The limit on a 10% plus growth rate is how fast the company can build, prove and integrate.",
+      detail: "Management guides to 10% plus growth and 150 basis points of margin expansion over the 2026 to 2028 plan. The risk to that is operational, not commercial. Urology grew 23.1% reported in 2025 but only 4.7% organic, and the company stated the unit came in below plan on supply chain issues and low cost competition. Across the group the integration queue of Bolt, SoniVie, Nalu, Cortex and the pending Penumbra and Valencia deals is large. Manufacturing capacity, clinical evidence throughput and integration are the real subjects for an operations or strategy conversation, more than end demand.",
       source: "Q4 2025 highlights and earnings call, 4 February 2026" },
     { id: "n3", title: "Penumbra takes the company back into the brain, where its recent knowledge is thinnest",
       summary: "The pending Penumbra deal re enters neurovascular and thrombectomy, a field Boston Scientific left in 2011. It is the largest strategic bet and the one where internal knowledge is thinnest, which is where an outside market view is worth most.",
-      detail: "The agreement to acquire Penumbra adds peripheral thrombectomy, peripheral embolization and neurovascular tools for stroke and access. The company exited neurovascular in 2011, so it is buying back a position after fourteen years against rivals such as Medtronic and Stryker that built share in the interval. The questions that follow are about the stroke care pathway, the competitive set, reimbursement and where the next adjacent white space sits. These are external market questions where the internal team has the least recent experience.",
+      detail: "The agreement to acquire Penumbra adds peripheral thrombectomy, peripheral embolization and neurovascular tools for stroke and access. The company exited neurovascular in 2011, so it is buying back a position after 14 years against rivals such as Medtronic and Stryker that built share in the interval. The questions that follow are about the stroke care pathway, the competitive set, reimbursement and where the next adjacent white space sits. These are external market questions where the internal team has the least recent experience.",
       source: "Q4 2025 highlights, pending acquisitions, 4 February 2026" },
     { id: "n4", title: "Endobariatrics quietly puts the company into the weight loss debate",
       summary: "Reimbursement wins for endoscopic sleeve gastroplasty place an endoscopy device line directly into the obesity market now being redrawn by GLP-1 drugs. Where device and drug combine is an open and high value question.",
@@ -366,12 +380,12 @@ const SEED_INTEL = {
   market: {
     note: "Positioning from company reporting and analyst coverage. Confirm specific share figures with a source before external use.",
     leader: [
-      { area: "Left atrial appendage closure, Watchman", bsx: "Clear market leader, 600,000 patients treated, ten years on market", next: "Abbott, with the Amulet device, is the main other player" },
+      { area: "Left atrial appendage closure, Watchman", bsx: "Clear market leader, 600,000 patients treated, 10 years on market", next: "Abbott, with the Amulet device, is the main other player" },
       { area: "Pulsed field ablation, Farapulse", bsx: "Early leader on adoption, over 500,000 patients treated", next: "Medtronic, Johnson and Johnson and Abbott are all now in the same method" },
       { area: "Single use devices in gut endoscopy", bsx: "Among the leaders", next: "Olympus leads the scopes, then Cook Medical, ConMed and Medtronic" },
     ],
     laggard: [
-      { area: "Pacemakers and implantable defibrillators", leaders: "Medtronic and Abbott lead by a wide margin", bsx: "Cardiac Rhythm Management grew only 2.3 percent in 2025", note: "A mature unit the company has not chased hard" },
+      { area: "Pacemakers and implantable defibrillators", leaders: "Medtronic and Abbott lead by a wide margin", bsx: "Cardiac Rhythm Management grew only 2.3% in 2025", note: "A mature unit the company has not chased hard" },
       { area: "Aortic valve replacement, TAVR", leaders: "Edwards Lifesciences and Medtronic lead, Abbott third", bsx: "Out of the United States market after discontinuing the ACURATE valve in 2025", note: "A large market the company has now left" },
       { area: "Soft tissue surgical robots", leaders: "Intuitive Surgical dominates, Medtronic and Johnson and Johnson entering", bsx: "Not present", note: "A field left to others" },
     ],
@@ -380,7 +394,7 @@ const SEED_INTEL = {
     note: "Corporate direction from the 2025 annual report and the 2026 to 2028 plan.",
     corporate: [
       "Be the highest performing large cap company in medical technology, with above market revenue growth.",
-      "Guide to 10 to 11.5 percent reported growth for 2026, with adjusted EPS of 3.43 to 3.49 dollars.",
+      "Guide to 10% to 11.5% reported growth for 2026, with adjusted EPS of 3.43 to 3.49 dollars.",
       "Expand adjusted operating margin by about 150 basis points over the 2026 to 2028 plan.",
       "Use steady mid sized deals to enter or re enter fast growing areas, often buying back ground sold earlier.",
       "Build capacity, including the second research base in India, since the limit on growth is how fast the company can build, prove and integrate.",
@@ -389,11 +403,11 @@ const SEED_INTEL = {
   },
   targets: [
     { role: "President or General Manager, Electrophysiology", division: "Electrophysiology", seniority: "President or GM",
-      why: "The unit grew 74.6 percent in 2025 but went flat from the third to the fourth quarter, and the market reacted hard.",
+      why: "The unit grew 74.6% in 2025 but went flat from the third to the fourth quarter, and the market reacted hard.",
       opportunity: "An outside scan of the pulsed field ablation competitive field and the next adjacent technologies after the first Farapulse wave.",
       soWhat: "If first wave PFA adoption is maturing, the growth case rests on what comes next. That is a foresight question, not an internal one." },
     { role: "Head of Strategy or Business Development, Cardiovascular", division: "Interventional Cardiology", seniority: "VP or Head",
-      why: "The pending Penumbra deal re enters neurovascular after a fourteen year absence, where recent internal knowledge is thin.",
+      why: "The pending Penumbra deal re enters neurovascular after a 14 year absence, where recent internal knowledge is thin.",
       opportunity: "A market and competitive assessment of the stroke and thrombectomy pathway and the adjacent white space.",
       soWhat: "The largest strategic bet sits in the field where the team has the least recent experience, so external perspective carries the most value." },
     { role: "Head of Endoscopy or Endobariatrics", division: "Endoscopy", seniority: "VP or Head",
@@ -401,11 +415,11 @@ const SEED_INTEL = {
       opportunity: "Consumer and adoption insight on how device and drug combine, and which patient segments the device serves best.",
       soWhat: "The obesity market is being redrawn by drugs. Where the device fits is an open question worth a serious external read." },
     { role: "Head of Supply Chain or Operations, MedSurg or group", division: "Urology", seniority: "VP or Head",
-      why: "Urology grew only 4.7 percent organic in 2025 and the company named supply chain and low cost competition as the cause.",
+      why: "Urology grew only 4.7% organic in 2025 and the company named supply chain and low cost competition as the cause.",
       opportunity: "A scan of low cost competitors and a view on supply chain resilience across the integration queue.",
       soWhat: "If capacity and competition, not demand, are the ceiling, the operations agenda is where the growth rate is won or lost." },
     { role: "Head of Cardiac Rhythm Management", division: "Cardiac Rhythm Management", seniority: "President or GM",
-      why: "The unit grew only 2.3 percent in 2025, the slowest in the cardiovascular segment, and leans on envelope acquisitions to add value.",
+      why: "The unit grew only 2.3% in 2025, the slowest in the cardiovascular segment, and leans on envelope acquisitions to add value.",
       opportunity: "White space and adjacency scanning to reposition a mature franchise.",
       soWhat: "A near flat unit inside a fast growing segment is the clearest place to ask what reinvention looks like." },
   ],
@@ -421,7 +435,7 @@ function firstNameOf(name) {
 }
 function sanitize(t) {
   if (t == null) return "";
-  const NUM_WORDS = { "thirty": "30", "sixty": "60", "ninety": "90", "seventy-four": "74", "seventy four": "74", "one hundred and eighty": "180", "one hundred eighty": "180" };
+  const NUM_WORDS = { "thirty minutes": "30 minutes", "thirty": "30", "twenty": "20", "forty": "40", "fifty": "50", "sixty": "60", "seventy": "70", "eighty": "80", "ninety": "90", "one hundred and eighty": "180", "one hundred eighty": "180", "one hundred": "100" };
   let s = String(t)
     .replace(/\u2014/g, ", ").replace(/\u2013/g, "-")
     .replace(/[\u2192\u21d2\u2794\u2799\u279c\u2190\u2191\u2193]/g, " ").replace(/->|=>/g, " ")
@@ -445,21 +459,32 @@ function extractJSON(text) {
 /* ============================================================
    Service calls
    ============================================================ */
-async function callClaude({ system, user, model, apiKey, useSearch = false, maxTokens = 4000 }) {
+async function callClaude({ system, user, model, apiKey, useSearch = false, maxTokens = 4000, onRetry }) {
   if (!apiKey) throw new Error("No Anthropic key set. Open Settings and add it.");
   const headers = { "content-type": "application/json", "x-api-key": apiKey, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" };
   const body = { model: model || DEFAULT_MODEL, max_tokens: maxTokens, system, messages: [{ role: "user", content: user }] };
   if (useSearch) body.tools = [{ type: "web_search_20250305", name: "web_search" }];
-  let res;
-  try { res = await fetch("https://api.anthropic.com/v1/messages", { method: "POST", headers, body: JSON.stringify(body) }); }
-  catch (e) { throw new Error("Could not reach the model. Check the network and the key."); }
-  let data; try { data = await res.json(); } catch (e) { throw new Error("The model returned an unreadable response."); }
-  if (!res.ok || data.error) {
+  const MAX_TRIES = 4;
+  const WAITS = [8000, 18000, 35000]; // ms between retries: 8s, 18s, 35s
+  for (let attempt = 0; attempt < MAX_TRIES; attempt++) {
+    let res;
+    try { res = await fetch("https://api.anthropic.com/v1/messages", { method: "POST", headers, body: JSON.stringify(body) }); }
+    catch (e) { throw new Error("Could not reach the model. Check the network and the key."); }
+    let data; try { data = await res.json(); } catch (e) { throw new Error("The model returned an unreadable response."); }
+    if (res.ok && !data.error) {
+      return (data.content || []).filter(b => b.type === "text").map(b => b.text).join("\n").trim();
+    }
     if (res.status === 401) throw new Error("The Anthropic key was rejected. Check it in Settings.");
     if (res.status === 429) throw new Error("Rate limit reached. Wait a moment and try again.");
+    const overloaded = res.status === 529 || (data && data.error && data.error.type === "overloaded_error");
+    if (overloaded && attempt < MAX_TRIES - 1) {
+      const wait = WAITS[attempt];
+      if (onRetry) onRetry(attempt + 1, Math.round(wait / 1000));
+      await new Promise(r => setTimeout(r, wait));
+      continue;
+    }
     throw new Error((data && data.error && data.error.message) || ("Request failed, status " + res.status));
   }
-  return (data.content || []).filter(b => b.type === "text").map(b => b.text).join("\n").trim();
 }
 
 function proxied(proxyUrl, target) { return proxyUrl ? (proxyUrl.replace(/\/$/, "") + "?url=" + encodeURIComponent(target)) : target; }
@@ -526,6 +551,194 @@ async function gistRequest(token, method, id, payload) {
 }
 
 /* ============================================================
+   Sign in gate. The person enters their email once on this device.
+   The studio remembers them, so they are recognised on every later
+   visit without entering anything again. Email is the identity, and
+   every edit and approval is recorded against it. A super admin email
+   must also answer a security question to switch on the admin layer.
+   ============================================================ */
+function SignIn({ onSignIn }) {
+  const [email, setEmail] = React.useState("");
+  const [stage, setStage] = React.useState("email"); // "email" | "secq"
+  const [answer, setAnswer] = React.useState("");
+  const [err, setErr] = React.useState("");
+  const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+
+  const proceed = () => {
+    const e = email.trim().toLowerCase();
+    if (!valid) { setErr("Enter a valid email address."); return; }
+    setErr("");
+    if (SUPERADMINS.includes(e)) { setStage("secq"); return; }
+    onSignIn(e, false);
+  };
+  const checkAnswer = () => {
+    if (hashStr(answer) === ANSWER_HASH) { onSignIn(email.trim().toLowerCase(), true); }
+    else { setErr("That answer does not match. You can continue as a standard user instead."); }
+  };
+
+  return (
+    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
+      <div style={{ width: "100%", maxWidth: 430 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
+          <Mark size={36} />
+          <div><div className="eyebrow">FutureBridge, Life Sciences and MedTech</div><h1 className="title" style={{ fontSize: 19 }}>Account Studio</h1></div>
+        </div>
+        <div className="card"><div className="body">
+          {stage === "email" ? (
+            <>
+              <p className="lead" style={{ margin: "0 0 16px" }}>Enter your work email to continue. This device will remember you, so you will not need to enter it again here. Every edit and approval is recorded against your email.</p>
+              <label className="lab">Email address</label>
+              <div style={{ display: "flex", gap: 8 }}>
+                <input className="f" style={{ flex: 1 }} type="email" placeholder="you@futurebridge.com" value={email} onChange={e => { setEmail(e.target.value); setErr(""); }} onKeyDown={e => { if (e.key === "Enter") proceed(); }} autoFocus />
+                <button className="btn primary" disabled={!valid} onClick={proceed}>Continue</button>
+              </div>
+              {err ? <p className="note" style={{ color: "var(--red)", margin: "10px 0 0" }}>{err}</p> : null}
+            </>
+          ) : (
+            <>
+              <p className="lead" style={{ margin: "0 0 6px" }}>This email has admin rights. Answer the security question to switch on the admin layer.</p>
+              <p className="tiny" style={{ margin: "0 0 16px" }}>Signing in as {email.trim().toLowerCase()}</p>
+              <label className="lab">{SECURITY_QUESTION}</label>
+              <div style={{ display: "flex", gap: 8 }}>
+                <input className="f" style={{ flex: 1 }} type="password" placeholder="Your answer" value={answer} onChange={e => { setAnswer(e.target.value); setErr(""); }} onKeyDown={e => { if (e.key === "Enter") checkAnswer(); }} autoFocus />
+                <button className="btn primary" disabled={!answer.trim()} onClick={checkAnswer}>Unlock admin</button>
+              </div>
+              {err ? <p className="note" style={{ color: "var(--red)", margin: "10px 0 0" }}>{err}</p> : null}
+              <div style={{ marginTop: 12, display: "flex", gap: 8 }}>
+                <button className="btn sm" onClick={() => onSignIn(email.trim().toLowerCase(), false)}>Continue as standard user</button>
+                <button className="btn sm" onClick={() => { setStage("email"); setAnswer(""); setErr(""); }}>Use a different email</button>
+              </div>
+            </>
+          )}
+        </div></div>
+        <p className="tiny" style={{ textAlign: "center", marginTop: 14, color: "var(--faint)" }}>Standard users sign in with email alone. The admin layer is reserved.</p>
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
+   Method. Explains, per contact, how the studio writes the email.
+   ============================================================ */
+function MethodView() {
+  const anchors = [
+    ["Strategy or transformation leaders", "Market foresight, disruption monitoring, adjacency growth, competitive movement and scenario based choices."],
+    ["R&D, science or technology leaders", "Emerging science, technology landscapes, application scouting, IP intelligence and innovation portfolio prioritisation."],
+    ["Innovation leaders", "Innovation scanning, adoption pathways, technology roadmaps and white space mapping."],
+    ["Business unit, category or commercial leaders", "Demand spaces, market white space, opportunity sizing, category reinvention, competitor movement and growth thesis."],
+    ["Supply chain, procurement or operations leaders", "Supplier ecosystems, resilience, raw material shifts, localisation, value chain risk and alternative sourcing."],
+    ["Sustainability leaders", "Circularity, decarbonisation, alternative materials, policy shifts and transition pathways."],
+  ];
+  const steps = [
+    ["The opening signal", "One uncommon, current observation relevant to the reader's mandate. Not a compliment, not a summary of their business, and never a fact they already own."],
+    ["The opportunity area", "One or two whitespace or market signals where an outside view helps, framed as worth exploring, in measured language, not as conclusions about their business."],
+    ["The capability anchor", "The signal and opportunity sit inside what FutureBridge actually does. The studio matches the reader's role to the right anchor, shown below, and brings the Life Sciences and MedTech sector lens."],
+    ["The credibility line", "One short line that FutureBridge works with their peers and leading players in adjacent spaces, with no unapproved names and no unsupported claims."],
+    ["The meeting ask", "A confident thirty minute ask, framed as us sharing what we are seeing across their peers and adjacent industries and what it may mean for them. Never framed as comparing notes, and never implying the reader must prepare anything."],
+    ["The guardrails", "Plain English, sentence case, no marketing or preachy or AI sounding lines, R&D with an ampersand, numbers in digits, the greeting Hi and the close Warm regards, the email near 180 words and the LinkedIn note 70 to 100 words."],
+  ];
+  return (
+    <div>
+      <p className="lead">How the studio writes each email. The aim is one senior advisor writing to another, anchored to what FutureBridge does, never generic outreach.</p>
+      <div className="card"><div className="cap">The shape of every email</div><div className="body">
+        {steps.map(([h, b], i) => <div className="ibul" key={i}><span className="dot" /><p><strong>{h}.</strong> {b}</p></div>)}
+      </div></div>
+      <div className="card"><div className="cap">How the angle is matched to the reader</div><div className="body">
+        <p className="note" style={{ margin: "0 0 12px" }}>The studio reads the contact's role and division, then anchors the email to the capability area that leader would care about and act on.</p>
+        <div className="tblwrap"><table className="tbl"><thead><tr><th>If the reader is in</th><th>The email anchors on</th></tr></thead>
+          <tbody>{anchors.map((a, i) => <tr key={i}><td>{a[0]}</td><td>{a[1]}</td></tr>)}</tbody></table></div>
+      </div></div>
+      <div className="card"><div className="cap">What the studio will not do</div><div className="body">
+        <p className="note" style={{ margin: 0 }}>It will never anchor on CRM, lead generation, marketing, sales tooling, websites, software platforms, IT services or generic digital transformation. If the only visible signal points there, the studio chooses a different signal that fits a FutureBridge capability instead.</p>
+      </div></div>
+    </div>
+  );
+}
+
+/* ============================================================
+   Admin. The complete action log. A super admin sees and manages
+   everything. A standard user sees only their own actions. A super
+   admin email that has not unlocked can unlock here.
+   ============================================================ */
+function AdminView({ currentUser, isSuperAdmin, isSuperAdminEmail, adminUnlocked, setAdminUnlocked, audit, setAudit, logAudit, flash }) {
+  const [filter, setFilter] = React.useState("");
+  const [answer, setAnswer] = React.useState("");
+  const [err, setErr] = React.useState("");
+  const shown = audit.filter(a => !filter || (a.who || "").toLowerCase().includes(filter.toLowerCase()) || (a.type || "").toLowerCase().includes(filter.toLowerCase()) || (a.detail || "").toLowerCase().includes(filter.toLowerCase()));
+  const people = Array.from(new Set(audit.map(a => a.who).filter(Boolean)));
+
+  const exportCsv = () => {
+    const head = "time,who,type,detail\n";
+    const body = audit.map(a => [a.time, a.who || "", a.type, (a.detail || "").replace(/"/g, "'")].map(x => '"' + x + '"').join(",")).join("\n");
+    const blob = new Blob([head + body], { type: "text/csv" }); const url = URL.createObjectURL(blob);
+    const link = document.createElement("a"); link.href = url; link.download = "futurebridge-audit-log.csv"; link.click(); URL.revokeObjectURL(url);
+  };
+
+  if (!isSuperAdmin) {
+    return (
+      <div>
+        <p className="lead">Your record of actions in the studio. Every edit, draft and approval you make is logged against your email.</p>
+        {isSuperAdminEmail && !adminUnlocked ? (
+          <div className="card" style={{ borderLeft: "3px solid var(--red)" }}><div className="body">
+            <strong>Admin layer locked.</strong>
+            <p className="note" style={{ margin: "6px 0 10px" }}>This email has admin rights. Answer the security question to switch on the full log and controls on this device.</p>
+            <label className="lab">{SECURITY_QUESTION}</label>
+            <div style={{ display: "flex", gap: 8, maxWidth: 420 }}>
+              <input className="f" style={{ flex: 1 }} type="password" value={answer} onChange={e => { setAnswer(e.target.value); setErr(""); }} onKeyDown={e => { if (e.key === "Enter" && answer.trim()) { if (hashStr(answer) === ANSWER_HASH) { setAdminUnlocked(true); logAudit("Admin layer unlocked", currentUser, []); flash("Admin layer on."); } else setErr("That answer does not match."); } }} />
+              <button className="btn primary" disabled={!answer.trim()} onClick={() => { if (hashStr(answer) === ANSWER_HASH) { setAdminUnlocked(true); logAudit("Admin layer unlocked", currentUser, []); flash("Admin layer on."); } else setErr("That answer does not match."); }}>Unlock</button>
+            </div>
+            {err ? <p className="note" style={{ color: "var(--red)", margin: "10px 0 0" }}>{err}</p> : null}
+          </div></div>
+        ) : null}
+        <div className="card"><div className="cap">My recent actions</div><div className="body">
+          {audit.filter(a => a.who === currentUser).slice(0, 60).map((a, i) => (
+            <div key={i} style={{ display: "flex", gap: 12, padding: "7px 0", borderBottom: "1px solid var(--hair)", fontSize: 13 }}>
+              <span className="tiny" style={{ minWidth: 96 }}>{a.time}</span><span style={{ fontWeight: 600, minWidth: 150 }}>{a.type}</span><span style={{ color: "var(--ink-2)" }}>{a.detail}</span>
+            </div>
+          ))}
+          {!audit.some(a => a.who === currentUser) ? <p className="note" style={{ margin: 0 }}>No actions recorded yet.</p> : null}
+        </div></div>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <p className="lead">The complete action log across the team. Every edit, draft and approval is recorded against the person's email. As admin you can filter, export and clear it, and override where needed.</p>
+
+      <div className="card"><div className="cap">Who has been active</div><div className="body">
+        {people.length ? (
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+            {people.map((p, i) => {
+              const count = audit.filter(a => a.who === p).length;
+              return <button key={i} className="btn sm" onClick={() => setFilter(p === filter ? "" : p)} style={filter === p ? { borderColor: "var(--ink)", fontWeight: 700 } : {}}>{p} <span className="tiny" style={{ marginLeft: 4 }}>{count}</span></button>;
+            })}
+          </div>
+        ) : <p className="note" style={{ margin: 0 }}>No activity recorded yet.</p>}
+      </div></div>
+
+      <div className="card"><div className="cap" style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+        Complete action log, {audit.length} entries
+        <div style={{ marginLeft: "auto", display: "flex", gap: 8 }}>
+          <input className="f" style={{ width: 200, fontWeight: 400 }} placeholder="Filter by person or action" value={filter} onChange={e => setFilter(e.target.value)} />
+          <button className="btn sm" style={{ fontWeight: 400 }} onClick={exportCsv}>Export CSV</button>
+          <button className="btn sm" style={{ fontWeight: 400 }} onClick={() => { if (confirm("Clear the entire action log? This cannot be undone.")) { setAudit([]); } }}>Clear log</button>
+        </div>
+      </div><div className="body">
+        {shown.length ? shown.map((a, i) => (
+          <div key={i} style={{ display: "flex", gap: 12, padding: "7px 0", borderBottom: "1px solid var(--hair)", fontSize: 13, alignItems: "baseline" }}>
+            <span className="tiny" style={{ minWidth: 96 }}>{a.time}</span>
+            <span className="pill" style={{ minWidth: 150, background: "#EAF0FB", color: "#2A52A0", overflow: "hidden", textOverflow: "ellipsis" }}>{a.who || "Unknown"}</span>
+            <span style={{ fontWeight: 600, minWidth: 150 }}>{a.type}</span>
+            <span style={{ color: "var(--ink-2)", flex: 1 }}>{a.detail}{a.sources && a.sources.length ? <span className="tiny" style={{ marginLeft: 6 }}>{a.sources.length} source{a.sources.length > 1 ? "s" : ""}</span> : null}</span>
+          </div>
+        )) : <p className="note" style={{ margin: 0 }}>No matching entries.</p>}
+      </div></div>
+    </div>
+  );
+}
+
+/* ============================================================
    App
    ============================================================ */
 function App() {
@@ -537,12 +750,15 @@ function App() {
   const [approved, setApproved] = useState(() => loadArray("fb_approved"));
   const [audit, setAudit] = useState(() => loadArray("fb_audit"));
   const [cloud, setCloud] = useState(() => LS.get("fb_cloud", { lastSync: "" }));
+  const [currentUser, setCurrentUser] = useState(() => { const v = LS.get("fb_current_user", ""); return typeof v === "string" ? v : ""; });
+  const [adminUnlocked, setAdminUnlocked] = useState(() => LS.get("fb_admin_unlocked", false) === true);
   const [toast, setToast] = useState("");
   const [drawer, setDrawer] = useState(null); // null or {scope:'global'|contactId, title}
   const [globalChat, setGlobalChat] = useState([]);
-  const [targetHits, setTargetHits] = useState({});
+  const [targetHits, setTargetHits] = useState(() => LS.get("fb_target_hits", {}));
   const [pdlBusy, setPdlBusy] = useState("");
   const [contextBusy, setContextBusy] = useState(false);
+  useEffect(() => LS.set("fb_target_hits", targetHits), [targetHits]);
 
   /* Push one or all targets from Intelligence to Contacts as Recommended */
   const pushTargets = (indexOrAll) => {
@@ -597,13 +813,35 @@ function App() {
   useEffect(() => LS.set("fb_approved", approved), [approved]);
   useEffect(() => LS.set("fb_audit", audit), [audit]);
   useEffect(() => LS.set("fb_cloud", cloud), [cloud]);
+  useEffect(() => LS.set("fb_current_user", currentUser), [currentUser]);
+  useEffect(() => LS.set("fb_admin_unlocked", adminUnlocked), [adminUnlocked]);
+
+  const isSuperAdmin = SUPERADMINS.includes((currentUser || "").toLowerCase().trim()) && adminUnlocked;
+  const isSuperAdminEmail = SUPERADMINS.includes((currentUser || "").toLowerCase().trim());
 
   const flash = (m) => { setToast(m); setTimeout(() => setToast(""), 2800); };
-  const logAudit = (type, detail, sources) => setAudit(prev => [{ time: new Date().toISOString().slice(0, 16).replace("T", " "), type, detail, sources: sources || [] }, ...prev].slice(0, 250));
+  const logAudit = (type, detail, sources) => setAudit(prev => [{ time: new Date().toISOString().slice(0, 16).replace("T", " "), who: currentUser || "Unknown", type, detail, sources: sources || [] }, ...prev].slice(0, 600));
   const setContact = (id, patch) => setContacts(prev => prev.map(c => c.id === id ? { ...c, ...(typeof patch === "function" ? patch(c) : patch) } : c));
   const keySet = !!settings.apiKey;
   const pdlReady = !!(settings.proxyUrl && settings.pdlKey);
   const pdlKeySet = !!settings.pdlKey;
+  const perplexityReady = !!(settings.proxyUrl && settings.perplexityKey);
+  const [intelFindings, setIntelFindings] = useState(() => LS.get("fb_intel_findings", {}));
+  useEffect(() => LS.set("fb_intel_findings", intelFindings), [intelFindings]);
+  const [auditBusy, setAuditBusy] = useState("");
+
+  /* Audit a single intelligence data point with Perplexity, on demand */
+  const auditIntelPoint = async (key, claimText) => {
+    if (!perplexityReady) { flash("Add the proxy and a Perplexity key in Settings to audit with Perplexity."); return; }
+    setAuditBusy("intel:" + key);
+    try {
+      const r = await auditFacts({ claimsText: claimText, contact: "Boston Scientific", settings });
+      setIntelFindings(prev => ({ ...prev, [key]: { engine: r.engine, findings: r.findings || [] } }));
+      logAudit("Intelligence audit, " + r.engine, key + ", " + (r.findings ? r.findings.length : 0) + " claims checked", (r.findings || []).map(f => f.source).filter(Boolean));
+      flash("Checked with " + r.engine + ".");
+    } catch (e) { flash("Audit failed. " + (e.message || "")); }
+    finally { setAuditBusy(""); }
+  };
 
   const verifyTarget = async (i) => {
     const t = intel.targets[i]; if (!t) return;
@@ -666,7 +904,9 @@ function App() {
         "Return only valid JSON with this exact shape, filling real, sourced numbers where public, and the words not disclosed where a figure is not public:",
         "{\"stamp\":\"Refreshed, with the date\",\"narrative\":[{\"id\":\"\",\"title\":\"a plain conclusion as the heading\",\"summary\":\"two plain sentences\",\"detail\":\"a short plain paragraph\",\"source\":\"https://...\"}],\"financials\":{\"note\":\"\",\"columns\":[\"FY2023\",\"FY2024\",\"FY2025\"],\"rows\":[{\"metric\":\"Net sales, USD millions\",\"cells\":[\"\",\"\",\"\"]}]},\"market\":{\"note\":\"\",\"leader\":[{\"area\":\"\",\"bsx\":\"\",\"next\":\"\"}],\"laggard\":[{\"area\":\"\",\"leaders\":\"\",\"bsx\":\"\",\"note\":\"\"}]},\"strategy\":{\"corporate\":[\"\"]}}",
       ].join("\n");
-      const text = await callClaude({ system, user: "Refresh the Boston Scientific brief now. Today is " + new Date().toDateString() + ". Include full year 2025 if it has been reported.", model: settings.model, apiKey: settings.apiKey, useSearch: true, maxTokens: 8000 });
+      const text = await callClaude({ system, user: "Refresh the Boston Scientific brief now. Today is " + new Date().toDateString() + ". Include full year 2025 if it has been reported.", model: settings.model, apiKey: settings.apiKey, useSearch: true, maxTokens: 8000,
+        onRetry: (n, secs) => flash("Refresh API busy, retrying in " + secs + "s (attempt " + n + " of 3)...")
+      });
       const p = extractJSON(text);
       if (p) {
         setIntel(prev => ({
@@ -738,12 +978,14 @@ function App() {
         "Step one. Check the person currently holds a role at Boston Scientific. If trusted sources show they have left, stop and report that.",
         "Step two. If current, correct the title and division if the sources show a change.",
         "Step three. Gather public signals from the last six to twelve months. Talks, interviews, articles, posts, patents, or visible division focus. Paraphrase, never long quotes, with a source and a month.",
-        "Step four. From their role and the signals, name and score their three most likely work pressures, one to ten, each with a one line reason. Order them most pressing first.",
+        "Step four. From their role and the signals, name and score their three most likely work pressures, one to ten, each with a one line reason. Order them most pressing first. The pressures and signals you surface must be ones FutureBridge could actually help with, that is foresight and disruption intelligence, innovation scanning and roadmapping, growth and market white space, competitive and ecosystem intelligence, technology science and IP intelligence, consumer and category intelligence, sustainability and transition intelligence, supply chain and value chain intelligence, or regulation and geopolitical impact. Do not surface pressures about CRM, marketing, sales tooling, IT systems, software platforms or generic digital transformation, even if visible, since those are not what FutureBridge does.",
         "Plain English, short sentences, no jargon, no em dashes, no arrows.",
         "Return only valid JSON, no markdown: {\"status\":\"verified|left_company|unclear\",\"corrected_title\":\"\",\"corrected_division\":\"\",\"summary\":\"two or three plain sentences\",\"signals\":[{\"text\":\"\",\"source\":\"https://...\",\"date\":\"Mon YYYY\"}],\"pains\":[{\"pain\":\"\",\"score\":8,\"reason\":\"\"}]}",
       ].join("\n");
       const user = ["Person: " + c.name, "Stated title: " + (c.title || "unknown"), "Stated division: " + (c.division || "unknown"), "Company: Boston Scientific", c.linkedin ? "LinkedIn: " + c.linkedin : "", "Today is " + new Date().toDateString() + "."].filter(Boolean).join("\n");
-      const text = await callClaude({ system, user, model: settings.model, apiKey: settings.apiKey, useSearch: true, maxTokens: 3500 });
+      const text = await callClaude({ system, user, model: settings.model, apiKey: settings.apiKey, useSearch: true, maxTokens: 3500,
+        onRetry: (n, secs) => { flash("API busy, retrying in " + secs + "s (attempt " + n + " of 3)..."); setContact(id, { status: "researching" }); }
+      });
       const p = extractJSON(text) || {};
       const status = p.status === "left_company" ? "left" : p.status === "verified" ? "verified" : "unclear";
       setContact(id, { status, title: sanitize(p.corrected_title) || c.title, division: (p.corrected_division && DIVISIONS[p.corrected_division]) ? p.corrected_division : c.division, summary: sanitize(p.summary || ""), signals: (p.signals || []).map(s => ({ text: sanitize(s.text), source: s.source || "", date: s.date || "" })), pains: (p.pains || []).map(x => ({ pain: sanitize(x.pain), score: x.score, reason: sanitize(x.reason || "") })) });
@@ -778,7 +1020,15 @@ function App() {
         "",
         "CREDIBILITY. Add one short line that FutureBridge works with their peers and leading players in adjacent spaces, and that this gives a view they may find useful for their own areas of focus. Be specific but do not name any company unless it is given to you as approved. Make no unsupported claims.",
         "",
-        "MEETING ASK. Ask simply and confidently for thirty minutes to share what we are seeing and compare perspectives. Say we are confident the conversation will be worth their time. No weak or apologetic language.",
+        "ANCHOR EVERYTHING TO WHAT FUTUREBRIDGE ACTUALLY DOES. FutureBridge is a strategic foresight, innovation and growth advisory firm. The signal you open on and the opportunity area you raise must sit inside one of these capability anchors, and nothing else: strategic foresight and disruption intelligence; innovation scanning, scouting and adoption; innovation strategy and roadmapping; growth strategy and market white space; competitive and ecosystem intelligence; technology, science and IP intelligence; consumer, category and demand intelligence; sustainability, circularity and transition intelligence; supply chain and value chain intelligence; regulation, policy and geopolitical impact intelligence.",
+        "",
+        "MATCH THE ANCHOR TO THE READER'S MANDATE. For a strategy or transformation leader, anchor on market foresight, disruption monitoring, adjacency growth, competitive movement and scenario based choices. For an R&D, science or technology leader, anchor on emerging science, technology landscapes, application scouting, IP intelligence and innovation portfolio prioritisation. For an innovation leader, anchor on innovation scanning, adoption pathways, technology roadmaps and white space mapping. For a business unit, category or commercial or growth leader, anchor on demand spaces, market white space, opportunity sizing, category reinvention, competitor movement and growth thesis. For a supply chain, procurement or operations leader, anchor on supplier ecosystems, resilience, raw material shifts, localisation, value chain risk and alternative sourcing. For a sustainability leader, anchor on circularity, decarbonisation, alternative materials, policy shifts and transition pathways. Bring the relevant sector lens, for Boston Scientific that is Life Sciences and MedTech.",
+        "",
+        "NEVER position FutureBridge as any of these, and never raise these as the angle: CRM, lead generation, appointment setting, digital or performance marketing, website or social, marketing automation or martech, sales enablement tooling, data dashboards, generic digital transformation, IT services or any software platform. If the only signal you can find points there, choose a different signal that fits a FutureBridge anchor instead.",
+        "",
+        "The proprietary frameworks Consumomics, TerraCaptus and Company Genomics may be referenced only where they naturally fit the reader's mandate. Do not force a framework name into the email.",
+        "",
+        "MEETING ASK. Ask simply and confidently for thirty minutes. Frame it as us sharing what we are seeing in the field, including what we are seeing across their peers and the read across from adjacent industries, and what that may mean for their priorities. Do not frame it as comparing notes, and do not imply the reader has to prepare or bring anything. The value is in what we bring to them. Say we are confident the conversation will be worth their time. No weak or apologetic language.",
         "",
         "USE THEIR TWO MOST PRESSING AREAS only as the background for the opening signal and the opportunity area. Do not list them back. Let them shape what you choose to raise.",
         "",
@@ -808,7 +1058,9 @@ function App() {
         "Use \\n for line breaks inside a body.",
       ].join("\n");
       const user = ["READER", "Name: " + c.name, "First name for the greeting: " + fn, "Title: " + (c.title || "senior leader"), "Division: " + c.division, "Region: " + (c.region || "not stated"), "Verification: " + c.status, "Summary: " + (c.summary || "none"), "Verified recent signals: " + (c.signals.length ? c.signals.map(s => s.text + " (" + (s.date || "") + ")").join(" | ") : "none, so lead on a division level insight, not a personal hook"), "Pressures, most pressing first: " + (c.pains.length ? c.pains.map(p => p.pain + " (" + p.score + "/10)").join(" | ") : "infer the top two from the division")].join("\n");
-      const text = await callClaude({ system, user, model: settings.model, apiKey: settings.apiKey, maxTokens: 3000 });
+      const text = await callClaude({ system, user, model: settings.model, apiKey: settings.apiKey, maxTokens: 3000,
+        onRetry: (n, secs) => flash("API busy, retrying in " + secs + "s (attempt " + n + " of 3)...")
+      });
       const p = extractJSON(text);
       if (p && p.email) {
         setContact(id, { draft: { fit: p.fit !== false, fitReason: sanitize(p.fitReason || ""), painsUsed: (p.painsUsed || []).map(sanitize).filter(Boolean), insight: sanitize(p.insight || ""), signalsUsed: (p.signalsUsed || []).map(sanitize).filter(Boolean), email: { subject: sanitize(p.email.subject || ""), body: sanitize(p.email.body || "") }, inmail: { body: sanitize((p.inmail && p.inmail.body) || "") }, edited: false, findings: null, auditEngine: "" } });
@@ -820,15 +1072,20 @@ function App() {
   };
 
   /* ---------------- Fact audit ---------------- */
-  const [auditBusy, setAuditBusy] = useState("");
   const runAudit = async (id) => {
-    const c = contacts.find(x => x.id === id); const d = c && c.draft; if (!c || !d) return;
+    const c = contacts.find(x => x.id === id); if (!c) return;
+    const d = c.draft;
     setAuditBusy(id);
     try {
-      const claims = "Email subject: " + d.email.subject + "\n" + d.email.body + "\n\nLinkedIn: " + d.inmail.body + (c.signals.length ? ("\n\nSupporting signals used in research:\n" + c.signals.map(s => s.text + " (" + (s.source || "no source") + ")").join("\n")) : "");
+      const claims = d
+        ? ("Email subject: " + d.email.subject + "\n" + d.email.body + "\n\nLinkedIn: " + d.inmail.body + (c.signals.length ? ("\n\nSupporting signals used in research:\n" + c.signals.map(s => s.text + " (" + (s.source || "no source") + ")").join("\n")) : ""))
+        : ((c.summary || "") + (c.signals.length ? ("\n\nResearch signals:\n" + c.signals.map(s => s.text + " (" + (s.source || "no source") + ")").join("\n")) : "") + (c.pains.length ? ("\n\nPressures:\n" + c.pains.map(p => p.pain).join("\n")) : ""));
+      if (!claims.trim()) { flash("Nothing to audit yet. Research the contact first."); setAuditBusy(""); return; }
       const r = await auditFacts({ claimsText: claims, contact: c.name + ", " + (c.title || "") + ", " + c.division + ", Boston Scientific", settings });
-      setContact(id, prev => ({ draft: { ...prev.draft, findings: (r.findings || []).map(f => ({ claim: sanitize(f.claim), verdict: f.verdict, confidence: Number(f.confidence) || 0, note: sanitize(f.note || ""), source: f.source || "" })), auditEngine: r.engine } }));
-      logAudit("Fact audit, " + r.engine, c.name + ", " + (r.findings ? r.findings.length : 0) + " claims checked", (r.findings || []).map(f => f.source).filter(Boolean));
+      const findings = (r.findings || []).map(f => ({ claim: sanitize(f.claim), verdict: f.verdict, confidence: Number(f.confidence) || 0, note: sanitize(f.note || ""), source: f.source || "" }));
+      if (d) setContact(id, prev => ({ draft: { ...prev.draft, findings, auditEngine: r.engine } }));
+      else setContact(id, { researchFindings: findings, researchAuditEngine: r.engine });
+      logAudit("Fact audit, " + r.engine, c.name + ", " + findings.length + " claims checked" + (d ? ", on the draft" : ", on the research"), findings.map(f => f.source).filter(Boolean));
       flash("Audit complete with " + r.engine + ".");
     } catch (e) { flash("Audit failed. " + (e.message || "")); }
     finally { setAuditBusy(""); }
@@ -853,7 +1110,7 @@ function App() {
       const ctx = c ? ("You are editing outreach for " + c.name + ", " + (c.title || "") + ", " + c.division + " at Boston Scientific.\nCurrent email subject: " + (c.draft ? c.draft.email.subject : "none") + "\nCurrent email body:\n" + (c.draft ? c.draft.email.body : "none") + "\nCurrent LinkedIn message:\n" + (c.draft ? c.draft.inmail.body : "none")) : "You help the operator steer the studio and answer questions about the account.";
       const system = [
         "You are the studio assistant inside a Boston Scientific outreach tool built for FutureBridge.",
-        "You can do three things. Answer a question plainly. Propose a standing instruction that should apply to every future draft. Rewrite the current email and LinkedIn message when asked, keeping the standard: written like a senior business development leader speaking to a peer, plain and human, no marketing or clever or preachy lines, do not repeat facts the reader already knows, open on one uncommon signal, raise one or two areas worth exploring with measured phrasing, one short credibility line on FutureBridge working with their peers and leading players, a confident thirty minute ask, the greeting Hi <first name>, the closing Warm regards on the email only, no em dashes, no arrows, sentence case, email about 180 words, LinkedIn 70 to 100 words. Do not use these words or phrases: " + FORBIDDEN + ".",
+        "You can do three things. Answer a question plainly. Propose a standing instruction that should apply to every future draft. Rewrite the current email and LinkedIn message when asked, keeping the standard: written like a senior business development leader speaking to a peer, plain and human, no marketing or clever or preachy lines, do not repeat facts the reader already knows, open on one uncommon signal, raise one or two areas worth exploring with measured phrasing, and keep the angle inside what FutureBridge actually does, that is strategic foresight, innovation scanning and roadmapping, growth and market white space, competitive and ecosystem intelligence, technology science and IP intelligence, consumer and category intelligence, sustainability and transition intelligence, supply chain intelligence, or regulation and geopolitical impact, never CRM, marketing, sales tooling, software or generic digital transformation. One short credibility line on FutureBridge working with their peers and leading players. A confident thirty minute ask framed as us sharing what we are seeing across their peers and adjacent industries, never as comparing notes and never implying the reader must prepare anything. The greeting Hi <first name>, the closing Warm regards on the email only, no em dashes, no arrows, sentence case, R&D with an ampersand, numbers in digits, email about 180 words, LinkedIn 70 to 100 words. Do not use these words or phrases: " + FORBIDDEN + ".",
         "You cannot change the application's own code or layout. If asked for that, say so plainly and suggest it be done in the chat that generated this file.",
         ctx,
         "Reply in plain English. Then return a single JSON object at the very end, on its own, no markdown: {\"reply\":\"your plain reply\",\"standingRule\":\"a one or two line rule to save, or empty\",\"emailEdit\":{\"subject\":\"\",\"body\":\"\",\"inmail\":\"\"}}. Set emailEdit to null unless you actually rewrote the email.",
@@ -906,7 +1163,11 @@ function App() {
 
   const copy = async (text, label) => { try { await navigator.clipboard.writeText(text); } catch (e) { const ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); } catch (er) {} document.body.removeChild(ta); } flash((label || "Copied") + "."); };
 
-  const TABS = [["intel", "Intelligence"], ["contacts", "Contacts"], ["outreach", "Outreach"], ["approved", "Approved"], ["settings", "Settings"]];
+  const TABS = [["intel", "Intelligence"], ["contacts", "Contacts"], ["outreach", "Outreach"], ["approved", "Approved"], ["method", "Method"], ["admin", "Admin"], ["settings", "Settings"]];
+
+  if (!currentUser) {
+    return <SignIn onSignIn={(email, admin) => { setCurrentUser(email); setAdminUnlocked(!!admin); logAudit("Signed in", email + (admin ? ", admin layer on" : ""), []); }} />;
+  }
 
   return (
     <div>
@@ -914,7 +1175,8 @@ function App() {
         <Mark size={32} />
         <div><div className="eyebrow">FutureBridge, Life Sciences and MedTech</div><h1 className="title">Account Studio</h1></div>
         <div className="spacer" />
-        <div className="acct"><div className="k">Account</div><div className="v">Boston Scientific</div></div>
+        <div className="acct"><div className="k">Signed in</div><div className="v">{currentUser}</div></div>
+        <button className="btn sm" onClick={() => { logAudit("Signed out", currentUser, []); setCurrentUser(""); setAdminUnlocked(false); }}>Sign out</button>
         <button className="btn sm" onClick={() => setDrawer({ scope: "global", title: "Studio assistant" })}>Assistant</button>
       </div></header>
 
@@ -944,11 +1206,13 @@ function App() {
             </div></div>
           ) : null}
 
-          {tab === "intel" ? <IntelView intel={intel} refreshing={refreshing} onRefresh={refreshIntel} keySet={keySet} targetHits={targetHits} onVerifyTarget={verifyTarget} pdlBusy={pdlBusy} pdlReady={pdlReady} pdlKeySet={pdlKeySet} onPushTargets={pushTargets} onAddContext={addContext} contextBusy={contextBusy} /> : null}
-          {tab === "contacts" ? <ContactsView contacts={contacts} setContact={setContact} setContacts={setContacts} onUpload={() => fileRef.current && fileRef.current.click()} onAddManual={addManual} onPullHs={pullFromHubSpot} hsPulling={hsPulling} onResearch={research} onGenerate={generate} genBusy={genBusy} keySet={keySet} goOutreach={() => setTab("outreach")} onVerifyPdl={verifyContact} pdlBusy={pdlBusy} pdlReady={pdlReady} pdlKeySet={pdlKeySet} /> : null}
+          {tab === "intel" ? <IntelView intel={intel} refreshing={refreshing} onRefresh={refreshIntel} keySet={keySet} targetHits={targetHits} onVerifyTarget={verifyTarget} pdlBusy={pdlBusy} pdlReady={pdlReady} pdlKeySet={pdlKeySet} onPushTargets={pushTargets} onAddContext={addContext} contextBusy={contextBusy} onAuditIntel={auditIntelPoint} auditBusy={auditBusy} perplexityReady={perplexityReady} intelFindings={intelFindings} /> : null}
+          {tab === "contacts" ? <ContactsView contacts={contacts} setContact={setContact} setContacts={setContacts} onUpload={() => fileRef.current && fileRef.current.click()} onAddManual={addManual} onPullHs={pullFromHubSpot} hsPulling={hsPulling} onResearch={research} onGenerate={generate} genBusy={genBusy} keySet={keySet} goOutreach={() => setTab("outreach")} onVerifyPdl={verifyContact} pdlBusy={pdlBusy} pdlReady={pdlReady} pdlKeySet={pdlKeySet} onAuditContact={runAudit} auditBusy={auditBusy} perplexityReady={perplexityReady} /> : null}
           {tab === "outreach" ? <OutreachView contacts={contacts} signer={SIGNERS[settings.signer] || SIGNERS[0]} onGenerate={generate} genBusy={genBusy} onAudit={runAudit} auditBusy={auditBusy} onApprove={approve} onCopy={copy} onSaveEdit={saveEdit} onAsk={(id) => setDrawer({ scope: id, title: "Editing " + ((contacts.find(c => c.id === id) || {}).name || "") })} keySet={keySet} goContacts={() => setTab("contacts")} /> : null}
-          {tab === "approved" ? <ApprovedView approved={approved} setApproved={setApproved} onDownload={downloadCSV} onCopy={copy} cloud={cloud} onSync={() => syncCloud(approved)} cloudOn={!!settings.githubToken} settings={settings} flash={flash} logAudit={logAudit} /> : null}
-          {tab === "settings" ? <SettingsView settings={settings} setSettings={setSettings} direction={direction} setDirection={setDirection} audit={audit} setAudit={setAudit} /> : null}
+          {tab === "approved" ? <ApprovedView approved={approved} setApproved={setApproved} onDownload={downloadCSV} onCopy={copy} cloud={cloud} onSync={() => syncCloud(approved)} cloudOn={!!settings.githubToken} settings={settings} flash={flash} logAudit={logAudit} isSuperAdmin={isSuperAdmin} /> : null}
+          {tab === "method" ? <MethodView /> : null}
+          {tab === "admin" ? <AdminView currentUser={currentUser} isSuperAdmin={isSuperAdmin} isSuperAdminEmail={isSuperAdminEmail} adminUnlocked={adminUnlocked} onUnlock={() => setTab("admin")} setAdminUnlocked={setAdminUnlocked} audit={audit} setAudit={setAudit} logAudit={logAudit} flash={flash} /> : null}
+          {tab === "settings" ? <SettingsView settings={settings} setSettings={setSettings} direction={direction} setDirection={setDirection} audit={audit} setAudit={setAudit} isSuperAdmin={isSuperAdmin} /> : null}
         </div></main>
       </div>
 
@@ -982,10 +1246,29 @@ function Expand({ title, summary, detail, source }) {
 }
 
 /* ---------------- Intelligence ---------------- */
-function IntelView({ intel, refreshing, onRefresh, keySet, targetHits, onVerifyTarget, pdlBusy, pdlReady, pdlKeySet, onPushTargets, onAddContext, contextBusy }) {
+function IntelView({ intel, refreshing, onRefresh, keySet, targetHits, onVerifyTarget, pdlBusy, pdlReady, pdlKeySet, onPushTargets, onAddContext, contextBusy, onAuditIntel, auditBusy, perplexityReady, intelFindings }) {
   const fileRef = React.useRef(null);
   const [ctxUrl, setCtxUrl] = React.useState("");
   const [ctxMode, setCtxMode] = React.useState("file"); // "file" | "url"
+
+  const AuditBtn = ({ k, text }) => (
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 8, marginTop: 8 }}>
+      <button className="btn sm" disabled={!perplexityReady || auditBusy === ("intel:" + k)} onClick={() => onAuditIntel(k, text)} title={perplexityReady ? "Check this with Perplexity Pro" : "Add a Perplexity key and the proxy in Settings"}>
+        {auditBusy === ("intel:" + k) ? <span><span className="spin" />Checking</span> : "Audit with Perplexity"}
+      </button>
+      {intelFindings && intelFindings[k] ? <span className="tiny">Checked with {intelFindings[k].engine}, {intelFindings[k].findings.length} claims</span> : null}
+    </span>
+  );
+  const AuditOut = ({ k }) => (intelFindings && intelFindings[k] && intelFindings[k].findings.length) ? (
+    <div style={{ marginTop: 8, borderTop: "1px dashed var(--hair)", paddingTop: 8 }}>
+      {intelFindings[k].findings.map((f, i) => (
+        <p key={i} style={{ margin: "0 0 4px", fontSize: 13 }}>
+          <span className="pill" style={{ background: f.verdict === "confirmed" ? "var(--ok-soft)" : f.verdict === "unsupported" ? "#FBEAEA" : "var(--panel)", color: f.verdict === "confirmed" ? "#1B6A45" : f.verdict === "unsupported" ? "#9A2020" : "var(--ink-2)" }}>{f.verdict}</span>
+          {" "}{f.claim}<span className="tiny"> {f.note}</span>{f.source ? <a className="src" href={f.source} target="_blank" rel="noreferrer">source</a> : null}
+        </p>
+      ))}
+    </div>
+  ) : null;
 
   const handleCtxFile = (e) => {
     const f = e.target.files && e.target.files[0]; if (!f) return;
@@ -1049,12 +1332,16 @@ function IntelView({ intel, refreshing, onRefresh, keySet, targetHits, onVerifyT
 
       <div className="card"><div className="cap">What is really going on, click any line for the detail</div><div className="body">
         {intel.narrative.map(s => <Expand key={s.id} title={s.title} summary={s.summary} detail={s.detail} source={s.source} />)}
+        <AuditBtn k="narrative" text={intel.narrative.map(s => s.title + ". " + s.summary).join("\n")} />
+        <AuditOut k="narrative" />
       </div></div>
 
       <div className="card"><div className="cap">Company financial performance, full year</div><div className="body">
         <div className="tblwrap"><table className="tbl fin"><thead><tr><th>Metric</th>{intel.financials.columns.map((c, i) => <th key={i} className="num">{c}</th>)}</tr></thead>
           <tbody>{intel.financials.rows.map((r, i) => <tr key={i}><td>{r.metric}</td>{r.cells.map((c, j) => <td key={j} className="num">{c}</td>)}</tr>)}</tbody></table></div>
         <p className="note" style={{ margin: "10px 0 0" }}>{intel.financials.note}</p>
+        <AuditBtn k="financials" text={"Boston Scientific full year figures: " + intel.financials.columns.join(", ") + ". " + intel.financials.rows.map(r => r.metric + ": " + r.cells.join(", ")).join(". ")} />
+        <AuditOut k="financials" />
       </div></div>
 
       <div className="card"><div className="cap">Revenue by segment, full year 2025</div><div className="body">
@@ -1140,7 +1427,7 @@ function StatusPill({ status }) {
   const m = { new: ["Not researched", ""], researching: ["Researching", "warn"], verified: ["Verified, current", "ok"], left: ["Left the company", "bad"], unclear: ["Could not confirm", "warn"] }[status] || ["Not researched", ""];
   return <span className={"pill " + m[1]}>{m[0]}</span>;
 }
-function ContactsView({ contacts, setContact, setContacts, onUpload, onAddManual, onPullHs, hsPulling, onResearch, onGenerate, genBusy, keySet, goOutreach, onVerifyPdl, pdlBusy, pdlReady, pdlKeySet }) {
+function ContactsView({ contacts, setContact, setContacts, onUpload, onAddManual, onPullHs, hsPulling, onResearch, onGenerate, genBusy, keySet, goOutreach, onVerifyPdl, pdlBusy, pdlReady, pdlKeySet, onAuditContact, auditBusy, perplexityReady }) {
   const [showForm, setShowForm] = React.useState(false);
   const blank = { name: "", title: "", division: "Electrophysiology", email: "", linkedin: "", region: "", company: "Boston Scientific" };
   const [form, setForm] = React.useState(blank);
@@ -1201,6 +1488,7 @@ function ContactsView({ contacts, setContact, setContacts, onUpload, onAddManual
             <div className="grow">
               <button className="btn sm" disabled={c.status === "researching" || !keySet} onClick={() => onResearch(c.id)}>{c.status === "researching" ? <span><span className="spin" />Researching</span> : c.status === "new" ? "Verify and research" : "Re run research"}</button>
               <button className="btn sm" disabled={!pdlKeySet || !c.name || pdlBusy === ("c" + c.id)} onClick={() => onVerifyPdl(c.id)} title={pdlKeySet ? "Confirm title and current employer with People Data Labs" : "Add a People Data Labs key in Settings"}>{pdlBusy === ("c" + c.id) ? <span><span className="spin" />Checking</span> : "Verify with PDL"}</button>
+              <button className="btn sm" disabled={!perplexityReady || !(c.summary || c.signals.length) || auditBusy === c.id} onClick={() => onAuditContact(c.id)} title={perplexityReady ? "Check the research with Perplexity Pro" : "Add a Perplexity key and the proxy in Settings"}>{auditBusy === c.id ? <span><span className="spin" />Checking</span> : "Audit with Perplexity"}</button>
               <button className="btn sm" disabled={c.status === "left" || genBusy === c.id || !keySet} onClick={() => onGenerate(c.id)}>{genBusy === c.id ? <span><span className="spin" />Writing</span> : "Draft outreach"}</button>
               <button className="btn sm" onClick={() => setContacts(prev => prev.filter(x => x.id !== c.id))}>Remove</button>
             </div>
@@ -1214,6 +1502,17 @@ function ContactsView({ contacts, setContact, setContacts, onUpload, onAddManual
               {c.signals.length ? (<div style={{ marginBottom: 10 }}><p className="tiny" style={{ margin: "0 0 5px", textTransform: "uppercase", letterSpacing: ".8px" }}>Recent signals</p>{c.signals.map((s, i) => <p key={i} style={{ margin: "0 0 4px", fontSize: 13 }}>{s.text} <span className="tiny">{s.date}</span>{s.source ? <a className="src" href={s.source} target="_blank" rel="noreferrer">source</a> : null}</p>)}</div>) : null}
               {c.pains.length ? (<div><p className="tiny" style={{ margin: "0 0 5px", textTransform: "uppercase", letterSpacing: ".8px" }}>Likely areas, most pressing first</p>{c.pains.map((p, i) => <p key={i} style={{ margin: "0 0 4px", fontSize: 13 }}><span className="pri">{p.score}/10</span> {p.pain}<span className="tiny"> {p.reason}</span></p>)}</div>) : null}
               {c.draft ? <p className="tiny" style={{ marginTop: 10 }}>Draft ready. Open the Outreach tab to read, edit and approve.</p> : null}
+              {c.researchFindings && c.researchFindings.length ? (
+                <div style={{ marginTop: 10, borderTop: "1px dashed var(--hair)", paddingTop: 10 }}>
+                  <p className="tiny" style={{ margin: "0 0 6px", textTransform: "uppercase", letterSpacing: ".8px" }}>Checked with {c.researchAuditEngine || "Perplexity"}</p>
+                  {c.researchFindings.map((f, i) => (
+                    <p key={i} style={{ margin: "0 0 4px", fontSize: 13 }}>
+                      <span className="pill" style={{ background: f.verdict === "confirmed" ? "var(--ok-soft)" : f.verdict === "unsupported" ? "#FBEAEA" : "var(--panel)", color: f.verdict === "confirmed" ? "#1B6A45" : f.verdict === "unsupported" ? "#9A2020" : "var(--ink-2)" }}>{f.verdict}</span>
+                      {" "}{f.claim}<span className="tiny"> {f.note}</span>{f.source ? <a className="src" href={f.source} target="_blank" rel="noreferrer">source</a> : null}
+                    </p>
+                  ))}
+                </div>
+              ) : null}
             </div>
           ) : null}
         </div>
